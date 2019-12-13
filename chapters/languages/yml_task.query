@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<component type="impl" name="prodMat_impl"
+	abstract="prodMat" description="A = B x A">
+<impl lang="XMP" nodes="CPU:(32,32)">
+  <templates>
+    <template name="t" format="block,block" size="512,512"/>
+  </templates>
+  <distribute>
+    <param template="t" name="B0(512,512)" align="[i][j]:(j,i)"/>
+    <param template="t" name="A0(512,512)" align="[i][j]:(j,i)"/>
+  </distribute>
+<header>
+<![CDATA[
+#include<xmp.h>
+double A[512][512];
+double B[512][512];
+
+#pragma xmp align A[i][j] with t(j,i)
+#pragma xmp align B[i][j] with t(j,i)
+
+#pragma xmp shadow A[*][0]
+#pragma xmp shadow B[0][*]
+]]>
+</header>
+<source>
+<![CDATA[
+  // XMP code
+]]>
+</source>
+<footer />
+</impl>
+</component>
+

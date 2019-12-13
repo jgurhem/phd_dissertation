@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<application name="block LU">
+<description>Block LU decomposition of a matrix.</description>
+<graph>
+par(i:=0;blockcount-1)(j:=0;blockcount-1) do
+    compute XMP_genMat(A[i][j],i,j);
+    notify(p[i][j][0]);
+enddo
+
+par(i:=0;blockcount-1)(j:=0;blockcount-1) do
+    if (j gt i) then
+        par(k:=i+1;blockcount-1) do
+            wait(p[k][j][i]);
+            wait(p[k][i][i+1]);
+            wait(p[i][j][i]);
+            compute XMP_prodDiff(A[k][i],A[i][j],A[k][j]);
+            notify(p[k][j][i+1]);
+        enddo
+    else
+        if (i eq j) then
+            if(i neq blockcount-1) then
+                wait(p[i][i][i]);
+                compute XMP_inversion(A[i][i],B[i]);
+                notify(p[i][i][i+1]);
+            endif
+        else
+            wait(p[j][j][j+1]);
+            wait(p[i][j][j]);
+            compute XMP_prodMat2(A[i][j],B[j]);
+            notify(p[i][j][j+1]);
+        endif
+    endif
+enddo
+</graph>
+</application>
