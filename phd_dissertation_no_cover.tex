@@ -1,0 +1,32 @@
+\documentclass[11pt,a4paper,notitlepage]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[top=30mm,bottom=30mm,left=17mm,right=17mm]{geometry}
+\usepackage[T1]{fontenc}
+\input{packages.tex}
+
+
+
+\title{Distributed and Parallel Programming using Graphs of Tasks with a Scheduler Optimizing Data Migrations}
+\author{Jérôme Gurhem}
+
+
+\begin{document}
+
+	\maketitle
+
+	\tableofcontents
+
+	\include{chapters/introduction}
+	\include{chapters/hpc}
+	\include{chapters/methods}
+	\include{chapters/languages}
+	\include{chapters/exp_dense}
+	\include{chapters/exp_sparse}
+	\include{chapters/exp_kirchhoff}
+	\include{chapters/taxonomy}
+	\include{chapters/conclusion}
+
+	\printbibliography[heading=bibintoc, title={References}]
+\end{document}

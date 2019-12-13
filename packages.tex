@@ -1,0 +1,35 @@
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{empheq}
+\usepackage{array}
+\usepackage{datetime}
+
+\newdateformat{monthyeardate}{\monthname[\THEMONTH], \THEYEAR}
+
+\usepackage{pgfplots}
+\usepackage{graphicx}
+\graphicspath{{logos/}}
+
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{3}
+
+\usepackage[ruled]{algorithm2e}
+\SetKw{KwStep}{step \hspace{1mm}}
+\SetKw{KwFrom}{from}
+\SetKw{KwAnd}{ and }
+\SetKwFor{For}{for}{do}{end\hspace{1mm}for}
+\SetKwFor{Par}{par}{do}{end\hspace{1mm}par}
+\SetKwIF{If}{ElseIf}{Else}{if}{then}{else\hspace{1mm}if}{else}{end\hspace{1mm}if}
+\SetKwComment{tcn}{}{}
+
+\usepackage[backend=bibtex,style=ieee,sorting=none]{biblatex}
+\addbibresource{biblio}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black}
+
+\newcommand{\pluseq}{\mathrel{+}=}
