@@ -1,22 +1,132 @@
 \chapter{Analysis of Language Properties and Languages Extension}
 \label{chap:taxonomy}
 
+This chapter introduces the taxonomy of the languages and the criterion deduced from the usage of the different languages.
+
 \section{Taxonomy}
 
 \subsection{Workflow type}
+It represents how the user has to input the dependencies between the tasks.
+The user may have to describe a directed acyclic graph (DAG) with the tasks and the associated dependencies.
+Another possibility is to use the provided interface of the programming paradigm which runtime system will represent the tasks and dependencies in its way.
+
 \subsection{Granularity}
+The granularity of the tasks correspond to the size of the task compared to the whole application.
+Fine grained tasks are relatively small in term of code size and execution time.
+Coarse grain tasks are bigger.
+In the context of parallel and distributed applications, they can be a distributed and parallel sub-part of the whole application.
+
 \subsection{Communications}
+In a distributed and parallel applications, there is two types of communications : inside a task and between tasks.
+We consider how the communications between tasks are managed.
+Does the user has to implement them and the programming paradigm use them to transfer the data between the task ?
+Is the user provided with data interface to store its data and has to ask the system to retrieve the needed data ?
+
 \subsection{Scheduling policy}
+The scheduling policy is how the tasks are ordered during the execution of the task-based application.
+The dependencies between the tasks are respected by the scheduler.
+It can also be optimised to reduce the data migrations across the nodes and try to execute tasks on the node where the data are present.
+
 \subsection{Dynamic workflow}
+It represents the ability of the scheduler to adapt its policy during runtime depending on the results of the tasks.
+For instance, stop the application when the convergence is attained.
+
 \subsection{Type of task}
+It represents which code attribute is used as a task.
+For instance, it could be a piece of code, a function or a compiled application.
+
 \subsection{Parallel tasks}
+Are the tasks of the programming paradigm parallel ?
+Is it shared or distributed memory ?
+
 \subsection{Multi-backend}
+Is the programming paradigm able to use several backends ?
+Is it possible to use code in other languages as tasks ?
+
 \subsection{Control / Data flow graph}
+It represents how the programming paradigm interprets the dependencies between the tasks.
+It can use the data dependencies, the control dependencies or both of them.
+
 \subsection{Fault tolerant}
+Is the programming paradigm fault tolerant ?
+
 \subsection{Installation facilities}
+It represents the available facilities to install and use the programming paradigm.
+For instance, a Docker file can be provided to install it in a virtual environment or a Docker image can be available on the Docker hub so that it can be used directly.
+Moreover, the code can be pre-compiled for several architectures and the binaries provided to the users.
+
 \subsection{Code accessibility}
+How can the users access the source code ?
+The source code can be provided as a tar ball or in a public repository.
+
+%\subsection{Learnability}
+%\subsection{Understandability}
+%\subsection{Communicativeness}
 
 \section{Taxonomy Summary}
+
+\begin{table}[H]
+	\caption{Taxonomy I}
+	\centering
+	\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+	\begin{tabular}{c|c|c|M{3.5cm}|M{3.5cm}|M{2cm}}
+		   Paradigm    &   Workflow    & Granularity & Communications                  & Scheduling policy         & Dynamic workflow \\ \hline
+		    PaRSEC     &      DAG      & Fine/Coarse & App (MPI)                       & Specialised rules         & Yes              \\
+		   YML/XMP     &     Graph     &   Coarse    & App (user defined, file system) & FIFO, changeable          & No               \\
+		    DAGMan     &      DAG      &    Fine     & User (file system)              & CONDOR                    & No               \\
+		    Swift      &    Worflow    &    Fine     & App (file system)               & Future task               & Yes              \\
+		   Swift/T     &    Worflow    & Fine/Coarse & App (MPI)                       & Future task               & Yes              \\
+		    Legion     & Tree of tasks &    Fine     & App (GASNet)                    & Differed until it is OK   & Yes              \\
+		    OmpSs      &               &   Middle    & User                            & Nanos++                   & No               \\
+		     CnC       &   Petri net   &   Middle    & App                             & Dedicated                 & No               \\
+		  TensorFlow   &      DAG      &    Fine     & App                             & Dedicated                 & Yes              \\
+		Apache Airflow &     Graph     &   Middle    &                                 &                           & No               \\
+		     HPX       & DAG(Futures)  &     Any     & App                             & Work-stealing scheduler   & Yes              \\
+		   Pegasus     &      DAG      &     Any     & User (file system)              & HTCondor Schedd (Default) & No
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\caption{Taxonomy II}
+	\centering
+	\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+	\begin{tabular}{c|c|c|c|M{3.5cm}|c}
+		   Paradigm    &   Type of task   & Parallel tasks & Multi-backend & Control / Data flow graph & Fault tolerant \\ \hline
+		    PaRSEC     &     function     &       No       &      No       & Data(PTG) / Control(DTD)  &       No       \\
+		   YML/XMP     &    Component     &      Yes       &      Yes      & Both                      &      Yes       \\
+		    DAGMan     &   Application    &       No       &      No       & Data                      &                \\
+		    Swift      &   Application    &       No       &      Yes      & Data                      &       No       \\
+		   Swift/T     & (//) func/script &      Yes       &      Yes      & Data                      &       No       \\
+		    Legion     &     Function     &       No       &      No       & Control                   &       No       \\
+		    OmpSs      &  Block of code   &       No       &      No       & Control                   &       No       \\
+		     CnC       &  Block of code   &       No       &      No       & Both                      &                \\
+		  TensorFlow   &     Function     &      Yes       &      No       & Data                      &      Yes       \\
+		Apache Airflow & Job on Services  &                &      Yes      & Control                   &                \\
+		     HPX       &     function     &       No       &      No       & Data                      &       No       \\
+		   Pegasus     &   Application    &      Yes       &      Yes      & Control                   &      Yes
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\caption{Taxonomy III}
+	\centering
+	\begin{tabular}{c|c|c}
+		Paradigm       & Installation facilities        & Code accessibility         \\ \hline
+		PaRSEC         & Complex dependencies + Docker  & Public (bitbucket)         \\
+		YML/XMP        & Complex dependencies + VM      & Restrained access (gitlab) \\
+		DAGMan         & Binaries                       & Public (github)            \\
+		Swift          & Binaries + Building though ant & Public (github)            \\
+		Swift/T        & Binaries + Install script      & Public (github)            \\
+		Legion         & Simple dependencies + Docker   & Public (github)            \\
+		OmpSs          & Docker + VM                    & Public (github)            \\
+		CnC            & Binaries + Docker              & Public (github)            \\
+		TensorFlow     & Docker + pip + Google Colab    & Public (github)            \\
+		Apache Airflow & Docker + pip                   & Public (github)            \\
+		HPX            & Binaries + Docker              & Public (github)            \\
+		Pegasus        & Binaries + VM                  & Public (github)            \\
+	\end{tabular}
+\end{table}
+
 
 \section{Language Properties Relevant for Task-Based Programming}
 
