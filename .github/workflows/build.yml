@@ -5,8 +5,8 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: docker://blang/latex
     steps:
-    - uses: actions/checkout@v1
-    - uses: docker://blang/latex
-    - name: Run a one-line script
-      run: make
+      - uses: actions/checkout@v1
+      - name: Run a one-line script
+        run: make
