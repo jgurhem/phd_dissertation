@@ -1,0 +1,12 @@
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{M{2cm}CCCCC}
+\\ \hline
+& 4 & 8 & 16 & 32 & 64 \\ \hline
+HPX & $90^2$(1) & $90^2$(1) & $90^2$(1) & $75^2$(1) & $81^2$(1) \\
+PaRSEC & $70^2$(1) & $120^2$(1) & $270^2$(1) & $380^2$(1) & $420^2$(1) \\
+Regent & $70^2$(1) & $70^2$(1) & $60^2$(1) & $50^2$(1) & $50^2$(1) \\
+YML+XMP & $1^2$(64) & $4^2$(64) & $8^2$(32) & $8^2$(128) & $8^2$(128) \\
+\hline
+\end{tabularx}
