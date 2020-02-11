@@ -133,31 +133,22 @@ The XMP components that make the different operations are also written to take a
 	}
 \end{algorithm}
 
-\section{Description of the computers used}
 
-\subsection{K Computer}
+\section{Numerical Experiments on Linear systems}
+
+In the first place, the multi-level programming YML/XMP will be compared to XMP on the K computer where OmniRPC and XMP are installed.
+Then, YML/XMP and XMP will be compared to ScaLAPACK and the implementation of the resolution of a dense linear in MPI on Poincare.
+
+
+\subsection{Experiments on the K computer}
+
+\subsubsection{The supercomputer}
 In this section, the tests were performed on the K Computer from Riken AICS in Kobe, Japan.
 This supercomputer was manufactured by Fujitsu.
 There is 88,128 compute nodes containing an eight-core SPARC64 VIIIfx processor and 16 Go of memory.
 The network is based on Tofu interconnect.
 
-\subsection{Poincare}
-The tests were performed on Poincare, the cluster of \textit{La Maison de la Simulation} in France.
-It is an IBM cluster mainly composed of iDataPlex dx360 M4 servers, hosted at the CNRS supercomputer centre in Saclay, France.
-Several research teams work in this computer and we did not have dedicated access or any special assistance.
-There is 92 compute nodes with 2 Sandy Bridge E5-2670 processors (8 cores each, so 16 cores per nodes) and 32 Go of memory.
-The file system is constituted of two parts : a replicated file system with the homes of the users and a scratch file system with a faster access from the nodes.
-The network is based on QLogic QDR InfiniBand.
-
-
-
-\section{Numerical Experiments on Linear systems}
-
-In the first place, the multi-level programming YML/XMP will be compared to XMP on the K computer where OmniRPC and XMP are installed and optimized.
-Then, compare YML/XMP and XMP will be compared to ScaLAPACK and the implementation of the resolution of a dense linear in MPI on Poincare.
-
-
-\subsection{Resolution of a linear system of size 16384 on 1024 cores}
+\subsubsection{Resolution of a linear system of size 16384 on 1024 cores}
 This experiment consists in solving a dense linear system of size 16384 with the block-wise Gaussian elimination with YML/XMP.
 The matrix is already generated and each YML component has to load its data from the file system, makes the computations on the data then saves its results to the file system.
 The matrix is stored by blocks and each task makes an operation on blocks of the global matrix.
@@ -202,21 +193,9 @@ In this case, XMP was faster than YML/XMP.
 We think that the number of cores is too small thus the overhead from YML doesn't compensate for direct communications across all the cores.
 Then, we tried to solve a bigger system on a higher number of cores.
 
-\subsection{Prediction of the optimal parameters}
-The prediction of the optimal values for the number of blocks (size of the block) and the number of processes per task (number of parallel tasks) is not a deterministic problem since it depends on the machine and the available resources.
-On a given machine, the job manager will allow the unused resources which differ each time a job is submitted.
-Thus, the communications time between two cores will depend on their distance.
-The execution time of a task also depends on the loading of the machine since each user can use the network.
-Moreover, the computation time has to be higher than the scheduling time so it is worth scheduling the tasks.
-The execution time of the application will also depend on the scheduling strategies since it will change the order of execution of the tasks.
 
-The parameters are highly related.
-Indeed, the size of a block depends on the number of blocks which influences the total number of tasks.
-Furthermore, the size of the block will define the number operation in the task while the number of communications will depend on the number of processes and the size of the block.
 
-Hence, the prediction of the optimal values is difficult but, for a given machine, the machine learning may be able to give an estimation of the value of the parameters.
-
-\subsection{Resolution of a linear system of size 32768 and 65536 on 8096 cores}
+\subsubsection{Resolution of a linear system of size 32768 and 65536 on 8096 cores}
 We also made experiments on larger systems with more cores : 32768 and 65536 on 8096 cores.
 The Table \ref{tab:K} summarize the execution times obtained.
 
@@ -243,8 +222,15 @@ We compared YML/XMP to XMP for several cases on the K computer to evaluate the m
 As YML and XMP were introduced by authors of this paper, as the OmniRPC middleware used fore these experiments, we have to evaluate such programming on a more general cluster and compare it to more classic end-user programming.
 Then, in the next section, we compare YML/XMP and XMP to ScaLAPACK and our MPI implementation of the resolution of a dense linear system on Poincare, an IBM cluster.
 
-\subsection{Evaluation and analysis on a cluster\label{sec:exp}}
+\subsection{Experiments on Poincare\label{sec:exp}}
 
+\subsubsection{The cluster}
+The tests were performed on Poincare, the cluster of \textit{La Maison de la Simulation} in France.
+It is an IBM cluster mainly composed of iDataPlex dx360 M4 servers, hosted at the CNRS supercomputer centre in Saclay, France.
+Several research teams work in this computer and we did not have dedicated access or any special assistance.
+There is 92 compute nodes with 2 Sandy Bridge E5-2670 processors (8 cores each, so 16 cores per nodes) and 32 Go of memory.
+The file system is constituted of two parts : a replicated file system with the homes of the users and a scratch file system with a faster access from the nodes.
+The network is based on QLogic QDR InfiniBand.
 
 \subsubsection{The experiments}
 We performed the same tests on YML/XMP as on the K Computer.
@@ -373,6 +359,21 @@ The efficiency of the YML/XMP depends on the method implemented since the Gaussi
 The methods with a high parallelism are very suited to the parallel task programming paradigm and perform very well compared to XMP and ScaLAPCK.
 The format of the data stored in files by the data server (row-wise) wasn't suited for the distribution of the data used by ScaLAPACK so it didn't performed well as an application.
 The use of a better distribution of the data in ScaLAPCK and a data server making IO with the file system in YML/XMP may have shown better performances but YML/XMP and the parallel task programming paradigm show that, even with a high overhead for each task, we can get good performances.
+
+
+\subsection{Prediction of the optimal parameters}
+The prediction of the optimal values for the number of blocks (size of the block) and the number of processes per task (number of parallel tasks) is not a deterministic problem since it depends on the machine and the available resources.
+On a given machine, the job manager will allow the unused resources which differ each time a job is submitted.
+Thus, the communications time between two cores will depend on their distance.
+The execution time of a task also depends on the loading of the machine since each user can use the network.
+Moreover, the computation time has to be higher than the scheduling time so it is worth scheduling the tasks.
+The execution time of the application will also depend on the scheduling strategies since it will change the order of execution of the tasks.
+
+The parameters are highly related.
+Indeed, the size of a block depends on the number of blocks which influences the total number of tasks.
+Furthermore, the size of the block will define the number operation in the task while the number of communications will depend on the number of processes and the size of the block.
+
+Hence, the prediction of the optimal values is difficult but, for a given machine, the machine learning may be able to give an estimation of the value of the parameters.
 
 \section{Numerical Experiments on the LU factorization}
 \subsection{Experiments details}
