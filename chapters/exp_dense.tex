@@ -150,21 +150,34 @@ The network is based on Tofu interconnect.
 
 \subsubsection{Resolution of a linear system of size 16384 on 1024 cores}
 This experiment consists in solving a dense linear system of size 16384 with the block-wise Gaussian elimination with YML/XMP.
-The matrix is already generated and each YML component has to load its data from the file system, makes the computations on the data then saves its results to the file system.
+The matrix is already generated and each YML task has to load its data from the file system, makes the computations on the data then saves its results to the file system.
 The matrix is stored by blocks and each task makes an operation on blocks of the global matrix.
 YML expresses the operations on blocks while XMP is used to implement them.
 We experiment different numbers of blocks and numbers of cores per task.
 Only one process runs on each core.
-We used from $1\times 1$ block to $16\times 16$ blocks with tasks from 16 to 512 cores from the 1024 cores of the K Computer allocated to each run.
+We used from $1\times 1$ block to $16\times 16$ blocks with tasks from 16 to 512 cores out of the 1024 cores of the K Computer allocated to each run.
 The time needed to solve the linear system without the generation of the matrix is evaluated in this study.
 
-\begin{figure}
+\begin{figure}[h]
 	\caption{Resolution of linear system using Gaussian elimination + back substitution (size of 16384) on the K computer\label{fig:K_g}}
 	\centering
-	\includegraphics[width=.49\textwidth]{figK-g-16k.pdf}
+	\includegraphics[width=.6\textwidth]{figK-g-16k.pdf}
 \end{figure}
 
-In the Figure \ref{fig:K_g}, we observe the impact of the number of blocks and the number of cores per task on the execution time.
+\begin{figure}[h]
+	\caption{Resolution of linear system using Gauss-Jordan elimination (size of 16384) on the K computer\label{fig:K_gj}}
+	\centering
+	\includegraphics[width=.6\textwidth]{figK-gj-16k.pdf}
+\end{figure}
+
+\begin{figure}[h]
+	\caption{Resolution of linear system using LU factorization + forward and backward substitution (size of 16384) on the K computer\label{fig:K_lu}}
+	\centering
+	\includegraphics[width=.6\textwidth]{figK-lu-16k.pdf}
+\end{figure}
+
+In the Figure \ref{fig:K_g}, we observe the impact of the number of blocks and the number of cores per task on the execution time for the Gaussian elimination.
+We also observe the same kind of behavior for the two other applications using different methods to solve the same linear system : the Gauss-Jordan elimination in Figure \ref{fig:K_gj} and the LU factorization in Figure \ref{fig:K_lu}.
 We also compare the YML/XMP application to a XMP implementation of the resolution of a linear system through the non-block Gaussian elimination.
 We reached the best time in YML/XMP with $4 \times 4$ blocks and 128 cores per task for 141s while the XMP code took 102s.
 
@@ -189,38 +202,65 @@ The number of cores per task gives the number of parallel workers and the execut
 The good compromise gives enough parallel tasks so the workers are busy most of the time and the execution time of the tasks is balanced with the size of the data that need to be treated.
 It results in applications that use efficiently the available resources.
 
-In this case, XMP was faster than YML/XMP.
-We think that the number of cores is too small thus the overhead from YML doesn't compensate for direct communications across all the cores.
-Then, we tried to solve a bigger system on a higher number of cores.
+\begin{table}[h]
+	\caption{Execution time (s) to solve a linear system on the K computer with 1024 cores\label{tab:K_1024p_16384n}}
+	\centering
+	\begin{tabular}{ccccc}
+		                         &      \multicolumn{3}{c}{YML/XMP}      &  XMP   \\
+		                         &    blocks    & cores/task & best time &        \\ \hline
+		  Gaussian elimination   & $4 \times 4$ &    512     &  141.02   & 102.82 \\
+		Gauss-Jordan elimination & $4 \times 4$ &    512     &  138.931  & 229.74 \\
+		    LU factorization     & $4 \times 4$ &    512     &  141.221  & 103.07
+	\end{tabular}
+\end{table}
 
+
+As shown in Table \ref{tab:K_1024p_16384n}, XMP is faster than YML+XMP in solving the linear system without considering the method used.
+However, the Gauss-Jordan elimination elimination performs better in YML+XMP than in XMP whereas the Gaussian elimination and the LU factorization are faster in XMP than their counterpart in YML+XMP.
+Moreover, the Gauss-Jordan elimination is more compute and communication intensive compared to the LU factorization and the Gaussian elimination and thus, takes more time than the other two in XMP.
+On the other hand, the Gauss-Jordan elimination in YML+XMP has a similar execution time compared to the Gaussian elimination and the LU factorization in YML+XMP.
+We think that the number of cores is too small thus the overhead from YML doesn't compensate for direct communications across all the cores in the Gaussian elimination and the LU factorization although it works well for the Gauss-Jordan elimination.
+Then, we tried to solve a bigger system on a higher number of cores.
 
 
 \subsubsection{Resolution of a linear system of size 32768 and 65536 on 8096 cores}
 We also made experiments on larger systems with more cores : 32768 and 65536 on 8096 cores.
-The Table \ref{tab:K} summarize the execution times obtained.
+The Table \ref{tab:K_8096p} summarize the execution times obtained.
 
-\begin{table}
-	\caption{Execution time (s) to solve a linear system with the Gaussian elimination on the K computer with 8096 cores\label{tab:K}}
+\begin{table}[h]
+	\caption{Execution time (s) to solve a linear system on the K computer with 8096 cores\label{tab:K_8096p}}
 	\centering
-	\begin{tabular}{ccccc}
-		\hline
-		Size  &      \multicolumn{3}{c}{YML/XMP}      &  XMP  \\
-     &    blocks    & cores/task & best time &       \\ \hline
-		32768 & $4 \times 4$ &    512     &   276.8   & 508.5 \\
-		65536 & $8 \times 8$ &    512     &    690    & 2512  \\ \hline
+	\begin{tabular}{cccccc}
+		                                          & Size  &      \multicolumn{3}{c}{YML/XMP}      &   XMP    \\
+		                                          &       &    blocks    & cores/task & best time &          \\ \hline
+		  \multirow{2}{*}{Gaussian elimination}   & 32768 & $4 \times 4$ &    512     &   276.8   &  508.5   \\
+		                                          & 65536 & $8 \times 8$ &    512     &    690    &   2512   \\ \hline
+		\multirow{2}{*}{Gauss-Jordan elimination} & 32768 & $4 \times 4$ &    512     &  285.12   & 615.868  \\
+		                                          & 65536 & $8 \times 8$ &    512     &  792.737  & 2970.393 \\ \hline
+		    \multirow{2}{*}{LU factorization}     & 32768 & $4 \times 4$ &    512     &  332.35   & 505.412  \\
+		                                          & 65536 & $8 \times 8$ &    512     &  881.032  & 2306.163
 	\end{tabular}
 \end{table}
 
 In this experiment, we increased the size of the system and the number of cores.
-In this case, YML/XMP performed better than XMP alone for the two different size whereas XMP was faster than YML/XMP on smaller cases.
+In this case, YML/XMP performed better than XMP alone for the two different size for each application.
 This is mainly due to the fact that YML doesn't make any global communications like broadcast over all the cores allocated to the application.
 Indeed, each task runs on a subset of the resources and the communications between tasks are made through the data server.
-Although, the overhead of YML is noticeable (this will be discussed in the next section), YML/XMP runs faster than XMP alone on 8096 cores of the K Computer.
-Thus YML/XMP and the task programming languages may be a good solution to develop and execute complex applications on huge numbers of cores on large super-computers.
+Although, the overhead of YML is noticeable (this will be discussed in the next section), YML+XMP runs faster than XMP alone on 8096 cores of the K Computer.
+Thus YML+XMP and the task programming languages may be a good solution to develop and execute complex applications on huge numbers of cores on large super-computers.
+
+In this case, where the size of the problem and the number of computational resources has increased, the Gaussian elimination in YML+XMP is noticeably faster than the LU factorization and the Gauss-Jordan elimination in YML+XMP whereas the three of them were equivalent in the previous case.
+Moreover, the Gaussian elimination and the LU factorization have almost the same number of tasks but the Gaussian elimination executes faster.
+Indeed, the critical path of the Gaussian elimination is shorter than the critical path of the LU factorization due to the fact that, in the LU factorization, there is two triangular systems to solve while there is only one in the Gaussian elimination.
+The Gauss-Jordan elimination also performs better than the LU factorization although there is more computation but the critical path is even shorter than the critical path of the Gaussian elimination.
+We think that with greater sizes of problem and number of computational resources, the discrepancy between the LU factorization and the Gaussian elimination will increase whereas it will decrease between the Gauss-Jordan elimination and the Gaussian elimination.
+The Gauss-Jordan elimination may even execute faster than the Gaussian elimination at some point.
+
 
 We compared YML/XMP to XMP for several cases on the K computer to evaluate the multi-level distributed/parallel programming associated to the studied programming paradigm on such supercomputer, even if the system of these machines does not yet propose smart scheduling.
 As YML and XMP were introduced by authors of this paper, as the OmniRPC middleware used fore these experiments, we have to evaluate such programming on a more general cluster and compare it to more classic end-user programming.
 Then, in the next section, we compare YML/XMP and XMP to ScaLAPACK and our MPI implementation of the resolution of a dense linear system on Poincare, an IBM cluster.
+
 
 \subsection{Experiments on Poincare\label{sec:exp}}
 
