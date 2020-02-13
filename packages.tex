@@ -7,8 +7,17 @@
 \usepackage{empheq}
 \usepackage{array}
 \usepackage{datetime}
+\usepackage{tabularx}
 
 \newdateformat{monthyeardate}{\monthname[\THEMONTH], \THEYEAR}
+
+
+\usepackage{placeins}
+\let\Oldsection\section
+\renewcommand{\section}{\FloatBarrier\Oldsection}
+\let\Oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+
 
 \usepackage{pgfplots}
 \usepackage{graphicx}
