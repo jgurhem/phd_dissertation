@@ -102,13 +102,280 @@ ccl : physical simulation can produce sparse matrices to save space and computat
 \subsection{Sparse Matrix Applications}
 \subsection{Sparse Matrix Storage and Sparse Matrix-Vector Multiplication}
 
+Sparse matrix format are used to store and process sparse matrices in a wide range of domains and libraries.
+SPARSKIT \cite{Saad1990} is a library which provides routines to convert matrices in one sparse format to another one.
+It also provides a set of routines to make operation on sparse matrices like matrix vector product, eigenvalues computations and linear system solving.
+The following sections will describe several widely used sparse matrices formats and give the algorithm to compute a matrix vector product with those formats.
+
 \subsubsection{Dense}
+Dense is the classical and most straightforward format used to store matrices.
+It is usually used for matrices with a few number of null values.
+In the case of sparse matrices, it is not efficient since it stores a large amount of unused values (the zeros).
+Those zeros will also be part of computations while making operations on the matrix.
+Therefore, storing the sparse matrices into a more adapted format will reduce memory footprint and save operations on zeros.
+Figure \ref{fig:methods:dense_ex} shows a $5 \times 5$ sparse matrix stored as a dense matrix.
+
+\begin{figure}
+\centering
+\begin{tabular}{|ccccc|}
+\hline
+1 & 2 & 0 & 0 & 3 \\
+0 & 0 & 4 & 0 & 0 \\
+0 & 5 & 0 & 0 & 0 \\
+0 & 6 & 0 & 7 & 0 \\
+8 & 0 & 9 & 0 & 10 \\
+\hline
+\end{tabular}
+\caption{Sparse matrix stored in dense format \label{fig:methods:dense_ex}}
+\end{figure}
+
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	\caption{Matrix vector multiplication - dense\label{fig:methods:dense_algo}}
+	%\scriptsize
+	\For{i = 1, $N_{row}$}{
+		y[i] = 0.0 \;
+		\For{j = 1, $N_{col}$}{
+			$y[i] \pluseq val[i,j] \times x[i]$ \;
+		}
+	}
+\end{algorithm}
+
 \subsubsection{Coordinates - COO}
+COO are the first letters of the word coordinates which summarize how the sparse matrices will be stored in this format.
+It uses two two vectors to store the two dimensional coordinates of the value in the matrix and another vector which contains the values.
+It is a key-value storage type.
+The key is the coordinates of the value in the matrix.
+
+The COO format is used in TensorFlow to store sparse matrices into tensors.
+%used in MaP Reduce
+
+The COO format has several useful properties.
+The values can be easily split and distributed by dividing the three vectors while keeping the coordinates-values pairs.
+It is also a format that allows easy construction of matrices since the addition of new values is easy.
+Indeed, they can easily be added at the end of the three vectors.
+The transposition is fast.
+Only, the row and the column vectors have to be exchanged.
+
+Figure \ref{fig:methods:coo_ex} shows an example of the storage of the example matrix in COO format.
+
+\begin{figure}
+\centering
+row
+\bigskip
+\begin{tabular}{|cccccccccc|}
+\hline
+0 & 0 & 0 & 1 & 2 & 3 & 3 & 4 & 4 & 4  \\
+\hline
+\end{tabular}
+
+col
+\bigskip
+\begin{tabular}{|cccccccccc|}
+\hline
+0 & 1 & 4 & 2 & 1 & 1 & 3 & 0 & 2 & 4 \\
+\hline
+\end{tabular}
+
+val
+\bigskip
+\begin{tabular}{|cccccccccc|}
+\hline
+1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+\hline
+\end{tabular}
+\caption{Sparse matrix stored in COO format \label{fig:methods:coo_ex}}
+\end{figure}
+
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	\caption{Matrix vector multiplication - COO\label{fig:methods:coo_algo}}
+	%\scriptsize
+	\For{i = 1, $N_{row}$}{
+		y[i] = 0.0 \;
+	}
+	\For{i = 1, NNZ}{
+		$y[row[i]] \pluseq val[i] \times x[col[i]]$ \;
+	}
+\end{algorithm}
+
 \subsubsection{Compressed Sparse Row - CSR}
+The Compressed Sparse Row format (CSR) \cite{HacBG1971} \cite{Gusta1972} is a derivation of the COO format where the vector containing the index of the rows is compressed.
+The array giving the row index of the value at the same position in the array of values is replaced by an array which gives the position of the beginning of each row in the column array.
+In COO, the row array has NNZ values (the number of non zero values) whereas there is only $N+1$ values (N is the dimension of the matrix) where N is smaller than NNZ.
+Therefore, it saves space in memory.
+
+However, inserting new values in a matrix stored in the CSR format implies to move the values in the column and values arrays after the inserted value.
+
+Figure \ref{fig:methods:csr_ex} shows an example of the storage of the example matrix in CSR format.
+
+\begin{figure}
+\centering
+idx
+\bigskip
+\begin{tabular}{|cccccc|}
+\hline
+0 & 3 & 4 & 5 & 7 & 10 \\
+\hline
+\end{tabular}
+
+col
+\bigskip
+\begin{tabular}{|cccccccccc|}
+\hline
+0 & 1 & 4 & 2 & 1 & 1 & 3 & 0 & 2 & 4 \\
+\hline
+\end{tabular}
+
+val
+\bigskip
+\begin{tabular}{|cccccccccc|}
+\hline
+1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+\hline
+\end{tabular}
+\caption{Sparse matrix stored in CSR format \label{fig:methods:csr_ex}}
+\end{figure}
+
+
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	\caption{Matrix vector multiplication - CSR\label{fig:methods:csr_algo}}
+	%\scriptsize
+	\For{i = 1, $N_{row}$}{
+		y[i] = 0.0 \;
+		\For{j = idx[i], idx[i+1]}{
+			$y[i] \pluseq val[j] \times x[col[j]]$ \;
+		}
+	}
+\end{algorithm}
+
+
 \subsubsection{Diagonal - DIA}
+The diagonal format (DIA) is very useful in the case of matrices which have a pattern where the non-zero are located in a small amount of diagonals.
+It is composed of two arrays : a one dimensional array which represents the offsets from the diagonal of the values in the associated column and a two dimensional array with the values in each row in the column associated to their offset from the diagonal.
+The values array needs to be padded with zeros where there no values from the initial matrix in order to be used in the algorithms.
+This format is designed for matrices where diagonals are very populated since it needs a column in the values array for each diagonal where there is values.
+
+Figure \ref{fig:methods:dia_ex} shows an example of the storage of the example matrix in diagonal format.
+However, this example is not adapted to the diagonal storage format since it leaves a lot of padding values in the values matrices.
+For this format, a matrix where is non-zero values are located on the same diagonals is more interesting.
+
+\begin{figure}
+\centering
+\begin{tabular}{c|cccccc|}
+	\cline{2-7}
+	        offset          & -4 & -2 & -1 & 0  & 1 & 4 \\ \cline{2-7}
+	\multirow{5}{*}{values} & 0  & 0  & 0  & 1  & 2 & 3 \\
+	                        & 0  & 0  & 0  & 0  & 4 & 0 \\
+	                        & 0  & 0  & 5  & 0  & 0 & 0 \\
+	                        & 0  & 6  & 0  & 7  & 0 & 0 \\
+	                        & 8  & 9  & 0  & 10 & 0 & 0 \\ \cline{2-7}
+\end{tabular}
+\caption{Sparse matrix stored in diagonal format \label{fig:methods:dia_ex}}
+\end{figure}
+
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	\caption{Matrix vector multiplication - DIA\label{fig:methods:dia_algo}}
+	%\scriptsize
+	\For{i = 1, $N_{row}$}{
+		y[i] = 0.0 \:
+		\For{j = 1, $n\_diag$}{
+			$y[i] \pluseq  values[i,j] \times x[i+offset(j)]$ \;
+		}
+	}
+\end{algorithm}
+
+
 \subsubsection{Ellpack-Itpack - ELL}
+The Ellpack-Itpack format (ELL) is a generalization of the diagonal format.
+It uses two arrays with two dimensions to store the position of the values in the columns and the values.
+Each row of those arrays store the values in the rows of the original matrix without zeros and the column array store the column index of the value in the original matrix.
+The values array needs to be padded with zeros where there no values from the initial matrix in order to be used in the algorithms.
+
+Figure \ref{fig:methods:ell_ex} shows an example of the storage of the example matrix in Ellpack-Itpack format.
+
+
+\begin{figure}
+\centering
+\begin{tabular}{c|ccc|}
+	\cline{2-4}
+	\multirow{5}{*}{values}  & 1 & 2 & 3  \\
+	                         & 4 & 0 & 0  \\
+	                         & 5 & 0 & 0  \\
+	                         & 6 & 7 & 0  \\
+	                         & 8 & 9 & 10 \\ \cline{2-4}
+	\multirow{5}{*}{columns} & 0 & 1 & 4  \\
+	                         & 2 & * & *  \\
+	                         & 1 & * & *  \\
+	                         & 1 & 3 & *  \\
+	                         & 0 & 2 & 4  \\ \cline{2-4}
+\end{tabular}
+\caption{Sparse matrix stored in Ellpack-Itpack format \label{fig:methods:ell_ex}}
+\end{figure}
+
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	\caption{Matrix vector multiplication - ELL\label{fig:methods:ell_algo}}
+	%\scriptsize
+	\For{i = 1, $N_{row}$}{
+		y[i] = 0.0 \;
+		\For{j = 1, $max\_col$}{
+			$y[i] \pluseq  val[i,j] \times x[columns[i,j]]$ \;
+		}
+	}
+\end{algorithm}
+
 \subsubsection{Sparse General Pattern - SGP}
+The Sparse General Pattern format (SGP) was introduced in \cite{Petit1991} and there is an example of such format in \cite{PetiE1996}.
+
+\begin{figure}
+\centering
+\begin{tabular}{c|ccc|}
+	\cline{2-4}
+	  \multirow{5}{*}{values}    & 1 & 2 & 3  \\
+	                             & 4 & 0 & 0  \\
+	                             & 5 & 0 & 0  \\
+	                             & 6 & 7 & 0  \\
+	                             & 8 & 9 & 10 \\ \cline{2-4}
+	\multirow{5}{*}{columnindex} & 0 & 1 & 4  \\
+	                             & 2 & * & *  \\
+	                             & 1 & * & *  \\
+	                             & 1 & 3 & *  \\
+	                             & 0 & 2 & 4  \\ \cline{2-4}
+	 \multirow{5}{*}{columnpos}  & 0 & 0 & 0  \\
+	                             & 0 & * & *  \\
+	                             & 1 & * & *  \\
+	                             & 2 & 0 & *  \\
+	                             & 1 & 1 & 1  \\ \cline{2-4}
+\end{tabular}
+\caption{Sparse matrix stored in Sparse General Pattern with compressed rows format \label{fig:methods:sgpr_ex}}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\begin{tabular}{c|ccccc|}
+	\cline{2-6}
+	 \multirow{5}{*}{values}  & 1 & 2 & 4 & 7 & 3  \\
+	                          & 8 & 5 & 9 & 0 & 10 \\
+	                          & 0 & 6 & 0 & 0 & 0  \\ \cline{2-6}
+	\multirow{5}{*}{rowindex} & 0 & 0 & 1 & 3 & 0  \\
+	                          & 4 & 2 & 4 & * & 4  \\
+	                          & * & 3 & * & * & *  \\ \cline{2-6}
+	 \multirow{5}{*}{rowpos}  & 0 & 1 & 0 & 1 & 2  \\
+	                          & 0 & 0 & 1 & * & 2  \\
+	                          & * & 0 & * & * & *  \\ \cline{2-6}
+\end{tabular}
+\caption{Sparse matrix stored in Sparse General Pattern with compressed columns format \label{fig:methods:sgpc_ex}}
+\end{figure}
+
+
 \subsubsection{Hybrid - HYB}
+
+The hybrid method consist in using two types of format to store a matrix.
+For instance $A = B + C$ where $B$ and $C$ are not stored with the same format.
 \subsection{Sparse Matrix-Vector Parallelization}
 \subsection{Sparse Matrix-Vector Optimizations}
 \subsection{Sparse $A(Ax + x) + x$}
