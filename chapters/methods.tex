@@ -1,14 +1,104 @@
 \chapter{Methods}
 \graphicspath{{chapters/methods/}}
+This chapter introduces the base algorithms from which the task-based algorithms in the next chapters are derived.
+The dense linear algebra algorithms will be presented then the sparse linear algebra and finally, the Kirchhoff seismic pre-stack depth migration.
 
 \section{Dense Linear Algebra}
-\subsection{Dense Linear Algebra Applications}
-\subsection{Block-Based LU factorization}
+
+This section focus on the dense linear methods we consider as benchmark to experiment on the programming models.
+We introduce the LU factorization and three methods to solve a linear system namely the Gaussian elimination, the Gauss-Jordan elimination and the LU factorization.
+We introduce the regular point to point methods as well as the block based methods.
+
+
+The LU factorization and the solution of linear systems are two very useful dense linear algebra operations.
+They are used as base for more complex operations like linear solvers.
+For instance, the LU factorization to solve a linear system is used a benchmark which is called LINPACK \cite{Parle1981} \cite{DonLP2003} for the TOP 500 which ranks the performances of the supercomputers.
+The LU factorization is also used to invert a matrix in LAPACK \cite{ABBBD1999} and its distributed counterpart ScaLAPACK \cite{ChDPW1992} \cite{BCCDD1996}.
+
+These implementations are considered as using block algorithms.
+However, the term "block" as several meanings in the literature as shown in \cite{DemHS1995}.
+According to \cite{DemHS1995}, the algorithms used in LINPACK, LAPACK and ScaLAPACK as explained in \cite{CDOPW1996} are better termed as \textit{partitioned algorithms} which "is a scalar algorithm in which the operations have been grouped and reordered as matrix operations" whereas block algorithms are "a generalization of a scalar algorithm in which the basic scalar operations become matrix operations ($\alpha + \beta, \alpha\beta, \alpha / \beta$ become $A+B, AB, AB^{-1}$)"
+
+In this section, we are interested in the block algorithms referring to a generalization of the scalar algorithms.
+Therefore, this explain why our algorithms are different from ScaLAPACK's.
+
+
+% eigenvalues, eigenvectors ?
+
+
+\subsection{Block-Based LU factorization to Solve Linear Systems}
+
+The block LU factorization problem is introduced in \cite{DemHS1995} \cite{GoluL1983} \cite{BuncR1976}.
+It consists in finding $L$ and $U$ such as $A=L\cdot U$ where $L$ is a block lower triangular matrix of size $p \times p$ with identity on the diagonal and $U$ is a block upper triangular matrix of size $p\times p$ (see Equation \ref{eq:a_eq_lu}).
+However, in general, the $U_{ii}$ blocks are not triangular.
+They may be complete matrices.
+
+\begin{equation}
+	\label{eq:a_eq_lu}
+	A =
+	\begin{bmatrix*}[l]
+	A_{1,1} & A_{1,2} & A_{1,3}\\
+	A_{2,1} & A_{2,2} & A_{2,3}\\
+	A_{3,1} & A_{3,2} & A_{3,3}
+	\end{bmatrix*}
+	=
+	\begin{bmatrix*}[l]
+	I       &         &\\
+	L_{2,1} & I       &\\
+	L_{3,1} & L_{3,2} & I
+	\end{bmatrix*}
+	\begin{bmatrix*}[l]
+	U_{1,1} & U_{1,2} & U_{1,3}\\
+	        & U_{2,2} & U_{2,3}\\
+	        &         & U_{3,3}
+	\end{bmatrix*}
+	=
+	LU
+\end{equation}
+
+
+We consider LU factorization $A=LU \in \mathbb{R}^{n \times n}$ partitioned as follow where the diagonal blocks are square but are not necessarily of the same dimension.
+If $A_{11}$ is nonsingular, we can write
+\begin{equation}
+	\label{eq:a_eq_lu_schur}
+	A =
+	\begin{bmatrix*}[l]
+	A_{1,1} & A_{1,2}\\
+	A_{2,1} & A_{2,2}
+	\end{bmatrix*}
+	=
+	\begin{bmatrix*}[l]
+	I       & \\
+	L_{2,1} & I
+	\end{bmatrix*}
+	\begin{bmatrix*}[l]
+	A_{1,1} & A_{1,2}\\
+	        & S
+	\end{bmatrix*}
+\end{equation}
+
+Equation \ref{eq:a_eq_lu_schur} describes a step of a recursive algorithm to compute a block LU factorization where $S = A_{2,2} - A_{2,1}A_{1,1}^{-1}A_{1,2}$ is a Schur complement of A.
+If we partition S and its $(1,1)$ block is nonsingular, we can factorize S in a similar manner.
+This process can be repeated until a complete LU factorization is obtained.
+Algorithm \ref{alg:reclufact_block} shows this process.
+
 
 \begin{algorithm}[h]
 	\DontPrintSemicolon
 	%\SetAlgoVlined
-	\caption{LU Factorization\label{alg:lufact}}
+	\caption{Recursive Block (Generalized) LU Factorization\label{alg:reclufact_block}}
+	Partition the matrix A : $U_{1,1} = A_{1,1},U_{1,2} = A_{1,2}$\;
+	Solve $L_{2,1}A_{1,1} = A_{2,1}$ for $L_{2,1}$\;
+	$S = A_{2,2} - A_{2,1}A_{1,1}^{-1}A_{1,2}$\;
+	Repeat this process on S
+\end{algorithm}
+
+Algorithm \ref{alg:lufact_block} introduces a non-recursive algorithm for the block LU factorization.
+
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	%\SetAlgoVlined
+	\caption{Block (Generalized) LU Factorization\label{alg:lufact_block}}
 	\For{k \KwFrom 0 \KwTo p-2}{
 		(1) $\displaystyle Inv^{(k)} = [A_{k,k}^{(k)}]^{-1}$ \;
 		\For{i \KwFrom k+1 \KwTo p-1}{
@@ -20,12 +110,100 @@
 	}
 \end{algorithm}
 
-
-\subsection{Block-Based Gaussian Elimination to Solve Linear Systems}
+The goal here is to solve the linear system $Ax = b$ by replacing $A$ by its LU factorization.
+Therefore, the problem becomes solving the system $LUx=b$.
+There is two triangular linear systems to solve : $Ly=b$ then $Ux=y$.
+Algorithm \ref{alg:lufact_sls} solves the linear system $Ax = b$ to obtain $x$ given the LU factorization of $A$ stored in one matrix and $b$.
 
 \begin{algorithm}[h]
 	\DontPrintSemicolon
-	\caption{Block-Based Gaussian elimination and back substitution \label{alg:bg_el}}
+	%\SetAlgoVlined
+	\caption{Solution of a linear system with a block-based LU factorization\label{alg:lufact_sls}}
+	\For{i \KwFrom 0 \KwTo p-2}{
+		\For{j \KwFrom i+1 \KwTo p}{
+			(5) $b_j^{(i+1)} = b_j^{(i)} - A_{j,i}^{(i+1)} \cdot b_i^{(p)}$ \;
+		}
+	}
+	\;
+	\For{k \KwFrom p-1 \KwTo 0 \KwStep -1}{
+		(6) solve $b_{k}^{(p)} = A_{k,k}^{(k)} \cdot b_k^{(p-1)}$ \;
+		\For{i \KwFrom 1 \KwTo k-1}{
+			(7) $b_i^{(p-k+i)} = b_i^{(p-k+i-1)} - A_{i,k}^{(i)} \cdot b_k^{(p)}$ \;
+		}
+	}
+\end{algorithm}
+
+%\cite{GeisR1988}
+%\cite{HendW1994}
+%\cite{DonGW1994}
+%\cite{Straz1995}
+
+The block LU algorithm can also be obtained from the scalar algorithm since the it can be generalized by changing from scalar to matrices and using the appropriate operations.
+The scalar algorithm with pivot for the LU factorization can be found in \cite{BissV1988} \cite{Velde1990}.
+However, there is no pivoting in the block algorithm although pivoting may be used to increase the stability during the inversion of the diagonal blocks.
+Algorithm \ref{alg:lufact_scalar} is a scalar version without pivot of the LU factorization \cite{GoluL1983}.
+
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	%\SetAlgoVlined
+	\caption{Scalar LU Factorization\label{alg:lufact_scalar}}
+	\For{k \KwFrom 0 \KwTo p-2}{
+		\For{i \KwFrom k+1 \KwTo p-1}{
+			(1) $\displaystyle a_{i,k}^{(k+1)} = a_{i,k}^{(k)} / a^{(k)}$ \;
+			\For{j \KwFrom k+1 \KwTo p-1}{
+				(2) $a_{i,j}^{(k+1)} = a_{i,j}^{(k)} - a_{i,k}^{(k+1)} \cdot a_{k,j}^{(k)}$ \;
+			}
+		}
+	}
+\end{algorithm}
+
+The LU factorization is based on the Gaussian elimination which will can also be used to solve linear systems.
+
+\subsection{Block-Based Gaussian Elimination to Solve Linear Systems}
+
+The scalar Gaussian elimination algorithm with pivoting is discussed in \cite{Saad1986} and \cite{GeorC1987}.
+The pivoting increase the numerical stability of the operations.
+However, in the case of block algorithms with a generalization of the scalar operations into a matrix operation, pivoting the rows of sub-matrices means that we need to find a way to determine which matrix could be used as a pivot.
+Moreover, the increase in numerical stability of such method is unknown.
+This topic is not discussed in this work.
+Furthermore, the algorithm which is used as base for generalization in the LU factorization does not use pivoting on the sub-matrices.
+Although, pivoting may be used to improve the numerical stability in the inversion of the sub-matrices.
+Algorithm \ref{alg:bg_el_scalar} introduces a scalar Gaussian elimination without pivoting \cite{GoluL1983} which will be generalized into a block algorithm in Algorithm \ref{alg:bg_el_block}.
+These two algorithms are used to solve a linear system and include the back substitution which allow to compute the solution of the linear system.
+
+
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	\caption{Scalar Gaussian elimination and back substitution \label{alg:bg_el_scalar}}
+	%\scriptsize
+	\For{k \KwFrom 0 \KwTo p-2}{
+		(1) $b_k^{(k+1)} = b_k^{(k)} / a_{k,k}^{(k)}$ \;
+		\For{j \KwFrom k+1 \KwTo p-1}{
+			(2) $ a_{k,j}^{(k+1)} = a_{k,j}^{(k)} / a_{k,k}^{(k)}$ \;
+		}
+		\For{i \KwFrom k+1 \KwTo p-1}{
+			(3) $b_i^{(k+1)} = b_i^{(k)} - a_{i,k}^{(k)} \cdot b_k^{(k+1)}$ \;
+			\For{j \KwFrom k+1 \KwTo p-1}{
+				(4) $a_{i,j}^{(k+1)} = a_{i,j}^{(k)} - a_{i,k}^{(k)} \cdot a_{k,j}^{(k+1)}$ \;
+			}
+		}
+	}
+
+	(5) $b_{p-1}^{(p)} = b_{p-1}^{(p-1)} / a_{p-1,p-1}^{(p-1)} $ \;
+
+	\For{k \KwFrom 1 \KwTo p-1 }{
+		\For{i \KwFrom 0 \KwTo p-k-1 }{
+			(6) $b_i^{(k+i+1)} = b_i^{(k+i)} - a_{i,p-k}^{(i+1)} \cdot b_{p-k}^{(p)}$ \;
+		}
+	}
+\end{algorithm}
+
+The Gaussian elimination has a similar number of block operations as the block LU factorization but the critical path of the graph of operations is significantly shorter than the one in the block LU factorization since there is only one solution of a triangular system after the operations on the matrix whereas there is two in the block LU factorization.
+This means that the block LU factorization and the block Gaussian elimination have different performances.
+
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	\caption{Block (Generalized) Gaussian elimination and back substitution \label{alg:bg_el_block}}
 	%\scriptsize
 	\For{k \KwFrom 0 \KwTo p-2}{
 		(1) $\displaystyle Inv^{(k)} = [A_{k,k}^{(k)}]^{-1}$ \;
@@ -50,11 +228,44 @@
 	}
 \end{algorithm}
 
+
+
 \subsection{Block-Based Gauss-Jordan Elimination to Solve Linear Systems}
+
+The Gauss-Jordan elimination \cite{Petit1989} \cite{Attaw2012} is similar to the Gaussian elimination except that the computations made under the diagonal are also performed above it while directly outputting the solution of the linear system.
+Algorithm \ref{alg:bgj_scalar} is a scalar Gauss-Jordan elimination algorithm without pivoting \cite{Attaw2012}.
+It is indeed very similar to Algorithm \ref{alg:bg_el_scalar} which is the Gaussian elimination with the mentioned modifications.
+This algorithm is also converted into a generalized block Gauss-Jordan elimination \cite{MelTP1999} in Algorithm \ref{alg:bgj_block}.
 
 \begin{algorithm}[h]
 	\DontPrintSemicolon
-	\caption{Block-Based Gauss-Jordan elimination to solve a linear system \label{alg:bgj} }
+	\caption{Scalar Gauss-Jordan elimination to solve a linear system \label{alg:bgj_scalar} }
+	\For{k \KwFrom 0 \KwTo p-1}{
+		(1) $b_k^{(k+1)} =  b_k^{(k)} / a_{k,k}^{(k)}$ \;
+		\For{j \KwFrom k+1 \KwTo p-1}{
+			(2) $\displaystyle a_{k,j}^{(k+1)} = a_{k,j}^{(k)} / a_{k,k}^{(k)}$ \;
+			\For{i \KwFrom 0 \KwTo p-1}{
+				\If{k $\neq$ i}{
+					(3) $a_{i,j}^{(k+1)} = a_{i,j}^{(k)} - a_{i,k}^{(k)} \cdot a_{k,j}^{(k+1)}$ \;
+				}
+			}
+		}
+		\For{i \KwFrom 0 \KwTo p-1}{
+			\If{k $\neq$ i}{
+				(4) $b_i^{(k+1)} = b_i^{(k+1)} - a_{i,k}^{(k)} \cdot b_k^{(k+1)}$ \;
+			}
+		}
+	}
+\end{algorithm}
+
+The Gauss-Jordan elimination has more block operations than the block Gaussian elimination and the block LU factorization but the critical path of the block operations is even shorter than the Gaussian Elimination since there is no solution of triangular systems.
+Although, there is more block operations than the two other block algorithms but the critical path is shorter.
+This means that there is more block operations that can be performed in parallel during the elimination.
+This also means that this algorithm may be able to run faster than the two other block algorithms on a parallel machine.
+
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	\caption{Block (Generalized) Gauss-Jordan elimination to solve a linear system \label{alg:bgj_block} }
 	\For{k \KwFrom 0 \KwTo p-1}{
 		(1) $\displaystyle Inv^{(k)} = [A_{k,k}^{(k)}]^{-1}$ \;
 		(2) $b_k^{(k+1)} = Inv^{(k)} \cdot b_k^{(k)}$ \;
@@ -74,32 +285,33 @@
 	}
 \end{algorithm}
 
-\subsection{Block-Based LU factorization to Solve Linear Systems}
+In this section, we introduced the different meaning of block algorithm : the algorithms where the scalar operations are generalized into matrix operations or algorithms where the operations are reorganized in order to perform matrix operations (usually matrix product) on subset of the initial matrix.
+Moreover, we introduced the scalar and block algorithms for the LU factorization, the Gaussian elimination and the Gauss-Jordan elimination.
+Dense linear system solution is widely used in solvers for simulations so it is important to create robust and efficient library providing these operation since it will save time and computational resources.
+Simulations can also create sparse matrices to represent the simulated environment.
+In this case, direct method to solve linear systems based on the Gaussian elimination are not suitable since the factorization modify the rows of the matrices and may introduce new values at places where there is zeros in the sparse matrix.
+Iterative methods do not modify the input matrix and are used to deal with the sparse matrices.
+Most of these iterative methods are based on the sparse matrix vector product which will be discussed in the next section.
 
 
-\begin{algorithm}[h]
-	\DontPrintSemicolon
-	%\SetAlgoVlined
-	\caption{Solution of a linear system with a block-based LU factorization\label{alg:lufact_sls}}
-	\For{i \KwFrom 0 \KwTo p-2}{
-		\For{j \KwFrom i+1 \KwTo p}{
-			(5) $b_j^{(i+1)} = b_j^{(i)} - A_{j,i}^{(i+1)} \cdot b_i^{(p)}$ \;
-		}
-	}
-	\;
-	\For{k \KwFrom p-1 \KwTo 0 \KwStep -1}{
-		(6) solve $b_{k}^{(p)} = A_{k,k}^{(k)} \cdot b_k^{(p-1)}$ \;
-		\For{i \KwFrom 1 \KwTo k-1}{
-			(7) $b_i^{(p-k+i)} = b_i^{(p-k+i-1)} - A_{i,k}^{(i)} \cdot b_k^{(p)}$ \;
-		}
-	}
-\end{algorithm}
-
-
-ccl : physical simulation can produce sparse matrices to save space and computations \dots
 \section{Sparse Linear Algebra}
 
-\subsection{Sparse Matrix Applications}
+Discretization of partial differential equation in numerical simulations often leads to the creation of a linear system which has to be resolved in order to solve the equation.
+The linear system is most of the time stored as a matrix.
+When the matrix is dense, direct methods can be used to solve the linear system as seen in the previous section.
+However, the discretization of the partial differential equation can produce linear system where the matrix contains a lot of zero.
+In this case, the matrix is considered sparse and is stored using sparse storage formats.
+Some of the most commonly used sparse matrix storage formats are discussed in this section.
+Moreover, the direct methods are not suitable to solve sparse linear systems since it introduce new values in the matrix during the Gaussian elimination.
+Modifying a sparse matrix is difficult since depending on the storage format the row or the columns are compressed (the zero are removed from the arrays) so inserting new values means creating a new array and copying the previous values while adding the new one.
+Therefore, avoiding insertion in sparse matrix improves the performances greatly since the copy is very expensive.
+This leads to the use of iterative sparse methods to solve linear systems.
+These methods heavily rely on sparse matrix vector product.
+There is also several other methods that rely on sparse matrix vector product like the conjugate gradient, the Lanczos methods, the Krylov subspaces \cite{Saad1989} \cite{Saad2003}, Page Rank \cite{RidiS2002} and an essential part of many graph kernels \cite{KepnG2011}.
+Even hardware prototypes \cite{SoGLK2016} have been designed to improve the graph computational throughput compared to conventional hardware.
+
+In this section, we will focus on the different sparse matrix storage and their corresponding matrix vector product implementation.
+
 \subsection{Sparse Matrix Storage and Sparse Matrix-Vector Multiplication}
 
 Sparse matrix format are used to store and process sparse matrices in a wide range of domains and libraries.
@@ -376,11 +588,65 @@ The Sparse General Pattern format (SGP) was introduced in \cite{Petit1991} and t
 
 The hybrid method consist in using two types of format to store a matrix.
 For instance $A = B + C$ where $B$ and $C$ are not stored with the same format.
-\subsection{Sparse Matrix-Vector Parallelization}
-\subsection{Sparse Matrix-Vector Optimizations}
-\subsection{Sparse $A(Ax + x) + x$}
+
+
+\subsection{Sparse Matrix-Vector Product Parallelization}
+CSR is the most commonly used sparse storage format in the sparse libraries.
+Usually, the matrix is divided by its rows \cite{YeCP2015} since the CSR format provides an easy way to separate the rows of a matrix in the case of distributed memory computing.
+In the case of shared memory, the matrix is shared by all the threads.
+To parallelize the sparse matrix vector, each computing unit performs a subset of the computations with a subpart of the input matrix and vector \cite{PageK2018}.
+Then, each computing unit computes a subpart of the output vector.
+Depending on the matrix division, the output vectors will have to be gathered (matrix split by rows) or summed (matrix split columns) or both (matrix split in both dimensions).
+This post-processing on the output vector may not be necessary depending on how the output vector will be used afterwards.
+For instance, the output vector may not have to be gathered completely if the next operation performed on the computing only need the subpart computed by the sparse matrix vector product.
+
+
+To summarize, the parallelization of the sparse matrix vector product consist on splitting the input matrix and input vector on the available distributed computing resources then perform the sparse matrix vector product on the local operations and finally, construct, if necessary, the full output vector according to the data distribution used.
+The exact computations performed locally \cite{FeWPS1993} depends on the sparse storage format of the matrix.
+
+
+\subsection{Sparse Matrix-Vector Product Optimizations}
+As the sparse matrix vector product is a key component in graph kernels and sparse linear solvers which are often used in scientific applications, improving its efficiency could enhance the performances of those scientific applications.
+In this subsection, we will mention most of the common optimizations implemented to improve the performances of the sparse matrix vector product.
+
+One of the main optimization used is to properly take advantage of the hardware.
+For instance, some processors support vectorization instructions which allow the processors to apply operations on a array of elements instead of only one element.
+With  the random memory access necessary to access elements in sparse matrices, it is hardly possible to find contiguous data in the matrix to match the contiguous data of the vector and use vectorization on them.
+A solution to this issue is using block compressed sparse row storage (BCSR) \cite{PinaH1999} which consist in creating a sparse matrix of dense blocks and adding zero where there is missing value in order to increase locality \cite{Toledo1997} and allow the usage of vectorization.
+Moreover, AVX-512 instructions and a bit mask can be used to encode the zero \cite{BramK2018} and thus avoiding to put zero in the blocks.
+
+Another solution is to use cache and register blocking as well as multiplication by multiple vectors \cite{Vuduc2003phd} \cite{Im2000phd} in order to reuse the data stored in the cache and the registers to the maximum.
+
+
+Moreover, using storage format optimized to the type of matrix like the diagonal storage (DIA) \cite{Saad1990}  or the jagged diagonal storage (JAD) \cite{Saad2003} can also improve the performance but highly depends on the shape of the matrix considered.
+Furthermore, the use of GPUs can be considered since they are widely used in the current architectures.
+In \cite{NiBGS2008}, CUDA \cite{Shane2012} is used to implement the sparse matrix vector product and run on GPUs.
+On GPUs, the ELLPACK storage format seems to obtain very good performances as shown in \cite{HuguP2010} and is a popular storage format to use to perform sparse matrix operations on GPU.
+The ELLPACK format is also used to obtain better performances than the widely used CSR on Intel Xeon Phi Co-processor Knights Corner (KNC) \cite{LiSCD2013}.
+
+
+Auto-tuning can also be used to find the best implementation and parameters to obtain the best performance on a given architecture \cite{WOVSY2009} while trying different parameters for the optimizations available.
+
+Finally, the sparse matrix can be reordered by applying permutation on it as to improve the performances of the sparse matrix vector product afterwards \cite{PinaH1999} \cite{VuduM2005}.
+
+%\subsection{Sparse $A(Ax + x) + x$}
+
 \subsection{Test Matrices}
 
+The test matrices we will use to compare the performances are the C-diagonal Q-perturbed matrices introduced in \cite{HuguP2010}.
+These matrices consist in C values above the diagonal including the diagonal with a probability of Q to change the column position of the value.
+Figure \ref{fig:cqmat} represent a $30 \times 30$ C-diagonal Q-perturbed sparse matrix Q=0.05 and C=4 where each black square is a value.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\textwidth]{cqmat}
+	\caption{C-diagonal Q-perturbed sparse matrix with Q=0.05 and C=4\label{fig:cqmat}}
+\end{figure}
+
+In this section, we introduced commonly used sparse matrix storage formats and the corresponding algorithm to perform the sparse matrix vector product as well as a way to parallelize the sparse matrix vector product and classical optimizations implemented in the sparse matrix vector product to improve its performances.
+We also introduced C-diagonal Q-perturbed sparse matrices which are matrices that can be used as input to test the performances of the sparse matrix vector product.
+In the last sections, we introduced the linear algebra methods we consider to implement to evaluate the task based programming models.
+However, scientific applications cannot be reduced to only linear algebra methods so we also choose to study the Kirchhoff seismic pre-stack depth migration which will be introduced in the next section.
 
 \section{Kirchhoff seismic pre-stack depth migration}
 

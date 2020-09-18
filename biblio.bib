@@ -972,3 +972,361 @@ month={Sep.},}
  publisher = {Springer-Verlag},
  address = {Berlin, Heidelberg},
 }
+
+@article{DonLP2003,
+author = {Dongarra, Jack J. and Luszczek, Piotr and Petitet, Antoine},
+title = {The LINPACK Benchmark: past, present and future},
+journal = {Concurrency and Computation: Practice and Experience},
+volume = {15},
+number = {9},
+pages = {803-820},
+keywords = {benchmarking, BLAS, high-performance computing, HPL, linear algebra, LINPACK, TOP500},
+doi = {10.1002/cpe.728},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/cpe.728},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/cpe.728},
+abstract = {Abstract This paper describes the LINPACK Benchmark and some of its variations commonly used to assess the performance of computer systems. Aside from the LINPACK Benchmark suite, the TOP500 and the HPL codes are presented. The latter is frequently used to obtained results for TOP500 submissions. Information is also given on how to interpret the results of the benchmark and how the results fit into the performance evaluation process. Copyright © 2003 John Wiley \& Sons, Ltd.},
+year = {2003}
+}
+
+@article{Parle1981,
+author = {Parlett, B. N.},
+title = {LINPACK Users’ Guide (J. J. Dongarra, J. R. Bunch, C. B. Moler and G. W. Stewart)},
+journal = {SIAM Review},
+volume = {23},
+number = {1},
+pages = {126-128},
+year = {1981},
+doi = {10.1137/1023033},
+URL = {
+        https://doi.org/10.1137/1023033
+},
+eprint = {
+        https://doi.org/10.1137/1023033
+}
+
+}
+
+@BOOK{ABBBD1999,
+      AUTHOR = {Anderson, E. and Bai, Z. and Bischof, C. and
+                Blackford, S. and Demmel, J. and Dongarra, J. and
+                Du Croz, J. and Greenbaum, A. and Hammarling, S. and
+                McKenney, A. and Sorensen, D.},
+      TITLE = {{LAPACK} Users' Guide},
+      EDITION = {Third},
+      PUBLISHER = {Society for Industrial and Applied Mathematics},
+      YEAR = {1999},
+      ADDRESS = {Philadelphia, PA},
+      ISBN = {0-89871-447-8 (paperback)}
+}
+
+@article{GoluL1983,
+  title={Matrix Computations},
+  author={Golub, Gene H and Van Loan, Charles F},
+  journal={Johns Hopkins University, Baltimore},
+  year={1983}
+}
+
+@article{CDOPW1996,
+author = {Choi, Jaeyoung and Dongarra, Jack J. and Ostrouchov, L. Susan and Petitet, Antoine P. and Walker, David W. and Whaley, R. Clint},
+title = {The Design and Implementation of the ScaLAPACK LU, QR, and Cholesky Factorization Routines},
+year = {1996},
+issue_date = {August 1996},
+publisher = {IOS Press},
+address = {NLD},
+volume = {5},
+number = {3},
+url = {https://doi.org/10.1155/1996/483083},
+doi = {10.1155/1996/483083},
+journal = {Sci. Program.},
+month = aug,
+pages = {173–184},
+numpages = {12}
+}
+
+@article{DemHS1995,
+author = {Demmel, James W. and Higham, Nicholas J. and Schreiber, Robert S.},
+title = {Stability of block LU factorization},
+journal = {Numerical Linear Algebra with Applications},
+volume = {2},
+number = {2},
+pages = {173-190},
+keywords = {block algorithm, LAPACK, level 3 BLAS, iterative refinement, LU factorization, backward error analysis, block diagonal dominance},
+doi = {10.1002/nla.1680020208},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/nla.1680020208},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/nla.1680020208},
+abstract = {Many of the currently popular ‘block algorithms’ are scalar algorithms in which the operations have been grouped and reordered into matrix operations. One genuine block algorithm in practical use is block LU factorization, and this has recently been shown by Demmel and Higham to be unstable in general. It is shown here that block LU factorization is stable if A is block diagonally dominant by columns. Moreover, for a general matrix the level of instability in block LU factorization can be bounded in terms of the condition number K(A) and the growth factor for Gaussian elimination without pivoting. A consequence is that block LU factorization is stable for a matrix A that is symmetric positive definite or point diagonally dominant by rows or columns as long as A is well-conditioned.},
+year = {1995}
+}
+
+@incollection{BuncR1976,
+title = "BLOCK METHODS FOR SOLVING SPARSE LINEAR SYSTEMS",
+editor = "JAMES R. BUNCH and DONALD J. ROSE",
+booktitle = "Sparse Matrix Computations",
+publisher = "Academic Press",
+pages = "39 - 58",
+year = "1976",
+isbn = "978-0-12-141050-6",
+doi = "https://doi.org/10.1016/B978-0-12-141050-6.50008-8",
+url = "http://www.sciencedirect.com/science/article/pii/B9780121410506500088",
+author = "James R. Bunch",
+abstract = "Graph-theoretic techniques for analyzing the solution of large sparse systems of linear equations by partitioning and using block methods are developed. Questions concerning stability of block methods are discussed."
+}
+
+@InProceedings{BissV1988,
+author="Bisseling, Rob H.
+and van de Vorst, Johannes G. G.",
+editor="van Zee, G. A.
+and van de Vorst, J. G. G.",
+title="Parallel LU decomposition on a transputer network",
+booktitle="Parallel Computing 1988",
+year="1989",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="61--77",
+abstract="A parallel algorithm is derived for LU decomposition with partial pivoting on a local-memory multiprocessor. A general Cartesian data distribution scheme is presented which contains many of the existing distribution schemes as special cases. This scheme is used to prove optimality of load balance for the grid distribution. Experimental results of an implementation of the algorithm in occam-2 on a square mesh of 36 transputers show an efficiency of 88{\%} and a speed of 21.5 Mflop/s for a matrix of size n=1000.",
+isbn="978-3-540-46689-5"
+}
+
+@article{Velde1990,
+author = {van de Velde, Eric F.},
+title = {Experiments with multicomputer LU-decomposition},
+journal = {Concurrency: Practice and Experience},
+volume = {2},
+number = {1},
+pages = {1-26},
+doi = {10.1002/cpe.4330020102},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/cpe.4330020102},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/cpe.4330020102},
+abstract = {We present a new concurrent LU-decomposition algorithm based on implicit pivoting of both rows and columns. This algorithm is, to a large extent, independent of the distribution of the matrix over the concurrent processes. As a result, it can be used in programs with dynamically varying data distributions. Another advantage is that most pivoting strategies are easily incorporated. We also introduce two new, intrinsically concurrent, pivoting strategies: multirow and multicolumn pivoting. With this program, we study the performance of concurrent LU-decomposition as a function of data distribution and pivoting strategy. We show that LU-decomposition with some pivoting strategies is both faster and numerically more stable than LU-decomposition without pivoting. Experimental evidence on the Symult 2010 and the iPSC/2 shows that, for performance considerations, pivoting is equivalent to randomizing the data distribution.},
+year = {1990}
+}
+
+@article{Saad1986,
+title = "Communication complexity of the Gaussian elimination algorithm on multiprocessors",
+journal = "Linear Algebra and its Applications",
+volume = "77",
+pages = "315 - 340",
+year = "1986",
+issn = "0024-3795",
+doi = "https://doi.org/10.1016/0024-3795(86)90174-6",
+url = "http://www.sciencedirect.com/science/article/pii/0024379586901746",
+author = "Youcef Saad",
+abstract = "This paper proposes a few lower bounds for communication complexity of the Gaussian elimination algorithm on multiprocessors. Three types of architectures are considered: a bus architecture, a nearest neighbor ring network, and a nearest neighbor grid network. It is shown that for the bus and the ring architectures, the minimum communication time is O(N2), independent of the number of processors, while for the grid it is reduced to O(kbuilt-12N2)+O(kbuilt12N) for a lock step Gaussian elimination algorithm, and to O(kbuilt-12N2)+O(kbuilt12) for any pipelined Gaussian elimination algorithm, where k is the total number of processors. The practical implications of these bounds are discussed."
+}
+
+@article{GeorC1987,
+title={Gaussian elimination with partial pivoting and load balancing on a multiprocessor},
+author={E. Chu and A. George},
+journal={Parallel Comput.},
+year={1987},
+volume={5},
+pages={65-74}
+}
+
+@incollection{Attaw2012,
+title = "Chapter 12 - Matrix Representation of Linear Algebraic Equations",
+editor = "Stormy Attaway",
+booktitle = "Matlab (Second Edition)",
+publisher = "Butterworth-Heinemann",
+edition = "Second Edition",
+address = "Boston",
+pages = "367 - 399",
+year = "2012",
+isbn = "978-0-12-385081-2",
+doi = "https://doi.org/10.1016/B978-0-12-385081-2.00012-0",
+url = "http://www.sciencedirect.com/science/article/pii/B9780123850812000120",
+author = "Stormy Attaway"
+}
+
+@article{Saad1989,
+title={Krylov subspace methods on supercomputers},
+author={Y. Saad},
+journal={Siam Journal on Scientific and Statistical Computing},
+year={1989},
+volume={10},
+pages={1200-1232}
+}
+
+@book{Saad2003,
+author = {Saad, Yousef},
+title = {Iterative Methods for Sparse Linear Systems},
+publisher = {Society for Industrial and Applied Mathematics},
+year = {2003},
+doi = {10.1137/1.9780898718003},
+address = {},
+edition   = {Second},
+URL = {https://epubs.siam.org/doi/abs/10.1137/1.9780898718003},
+eprint = {https://epubs.siam.org/doi/pdf/10.1137/1.9780898718003}
+}
+
+@article{RidiS2002,
+  title={Pagerank uncovered},
+  author={Ridings, Chris and Shishigin, Mike},
+  journal={Technical Paper for the Search Engine Optimization Online Community},
+  year={2002}
+}
+
+@techreport{MPIForum,
+author = {Forum, Message P},
+title = {MPI: A Message-Passing Interface Standard},
+year = {1994},
+publisher = {University of Tennessee},
+address = {USA},
+abstract = {The Message Passing Interface Forum (MPIF), with participation from over 40 organizations, has been meeting since November 1992 to discuss and define a set of library standards for message passing. MPIF is not sanctioned or supported by any official standards organization. The goal of the Message Passing Interface, simply stated, is to develop a widely used standard for writing message-passing programs. As such the interface should establish a practical, portable, efficient and flexible standard for message passing. , This is the final report, Version 1.0, of the Message Passing Interface Forum. This document contains all the technical features proposed for the interface. This copy of the draft was processed by LATEX on April 21, 1994. , Please send comments on MPI to mpi-comments@cs.utk.edu. Your comment will be forwarded to MPIF committee members who will attempt to respond.}
+}
+
+@article{SoGLK2016,
+   title={Novel graph processor architecture, prototype system, and results},
+   ISBN={9781509035250},
+   url={http://dx.doi.org/10.1109/HPEC.2016.7761635},
+   DOI={10.1109/hpec.2016.7761635},
+   journal={2016 IEEE High Performance Extreme Computing Conference (HPEC)},
+   publisher={IEEE},
+   author={Song, William S. and Gleyzer, Vitaliy and Lomakin, Alexei and Kepner, Jeremy},
+   year={2016},
+   month={Sep}
+}
+
+@book{KepnG2011,
+author = {Kepner, Jeremy and Gilbert, John},editor = {Jeremy Kepner and John Gilbert},
+title = {Graph Algorithms in the Language of Linear Algebra},
+publisher = {Society for Industrial and Applied Mathematics},
+year = {2011},
+doi = {10.1137/1.9780898719918},
+address = {},
+edition   = {},
+URL = {https://epubs.siam.org/doi/abs/10.1137/1.9780898719918},
+eprint = {https://epubs.siam.org/doi/pdf/10.1137/1.9780898719918}
+}
+
+@INPROCEEDINGS{PageK2018,
+author={B. A. {Page} and P. M. {Kogge}},
+booktitle={2018 International Conference on High Performance Computing Simulation (HPCS)},
+title={Scalability of Hybrid Sparse Matrix Dense Vector (SpMV) Multiplication},
+year={2018},
+volume={},
+number={},
+pages={406-414},
+keywords={matrix multiplication;parallel processing;sparse matrices;vectors;hybrid sparse matrix dense vector;memory bandwidth;hybrid SpMV codes;strong scalability;Sparse matrices;Bandwidth;Protocols;Message systems;Hardware;Scalability;Indexes},
+doi={10.1109/HPCS.2018.00072},
+ISSN={},
+month={July},}
+
+@phdthesis{Vuduc2003phd,
+  author       = {R. W. Vuduc},
+  title        = {Automatic performance tuning of sparse matrix kernels},
+  school       = {University of California, Berkeley},
+  year         = 2003,
+}
+
+@phdthesis{Im2000phd,
+  author       = {E-J. Im},
+  title        = {Optimizing the performance of sparse matrix-vector multiplication},
+  school       = {EECS Department, University of California, Berkeley},
+  year         = 2000,
+}
+
+@ARTICLE{Toledo1997,
+  author={S. {Toledo}},
+  journal={IBM Journal of Research and Development},
+  title={Improving the memory-system performance of sparse-matrix vector multiplication},
+  year={1997},
+  volume={41},
+  number={6},
+  pages={711-725},}
+
+@inproceedings{PinaH1999,
+author = {Pinar, Ali and Heath, Michael T.},
+title = {Improving Performance of Sparse Matrix-Vector Multiplication},
+year = {1999},
+isbn = {1581130910},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/331532.331562},
+doi = {10.1145/331532.331562},
+booktitle = {Proceedings of the 1999 ACM/IEEE Conference on Supercomputing},
+pages = {30–es},
+numpages = {9},
+location = {Portland, Oregon, USA},
+series = {SC '99}
+}
+
+@article{NiBGS2008,
+    author = {Nickolls, John and Buck, Ian and Garland, Michael and Skadron, Kevin},
+    title = {Scalable Parallel Programming with CUDA},
+    journal = {Queue},
+    issue_date = {March/April 2008},
+    volume = {6},
+    number = {2},
+    month = mar,
+    year = {2008},
+    issn = {1542-7730},
+    pages = {40--53},
+    numpages = {14},
+    url = {http://doi.acm.org/10.1145/1365490.1365500},
+    doi = {10.1145/1365490.1365500},
+    acmid = {1365500},
+    publisher = {ACM},
+    address = {New York, NY, USA},
+}
+
+@book{Shane2012,
+author = {Cook, Shane},
+title = {CUDA Programming: A Developer’s Guide to Parallel Computing with GPUs},
+year = {2012},
+isbn = {9780124159334},
+publisher = {Morgan Kaufmann Publishers Inc.},
+address = {San Francisco, CA, USA},
+edition = {1st}
+}
+
+@article{WOVSY2009,
+title = "Optimization of sparse matrix vector multiplication on emerging multicore platforms",
+journal = "Parallel Computing",
+volume = "35",
+number = "3",
+pages = "178 - 194",
+year = "2009",
+note = "Revolutionary Technologies for Acceleration of Emerging Petascale Applications",
+issn = "0167-8191",
+doi = "https://doi.org/10.1016/j.parco.2008.12.006",
+url = "http://www.sciencedirect.com/science/article/pii/S0167819108001403",
+author = "Samuel Williams and Leonid Oliker and Richard Vuduc and John Shalf and Katherine Yelick and James Demmel",
+keywords = "Multicore, Sparse, Performance, Autotuning, HPC, Cell, Niagara",
+abstract = "We are witnessing a dramatic change in computer architecture due to the multicore paradigm shift, as every electronic device from cell phones to supercomputers confronts parallelism of unprecedented scale. To fully unleash the potential of these systems, the HPC community must develop multicore specific-optimization methodologies for important scientific computations. In this work, we examine sparse matrixâvector multiply (SpMV) â one of the most heavily used kernels in scientific computing â across a broad spectrum of multicore designs. Our experimental platform includes the homogeneous AMD quad-core, AMD dual-core, and Intel quad-core designs, the heterogeneous STI Cell, as well as one of the first scientific studies of the highly multithreaded Sun Victoria Falls (a Niagara2 SMP). We present several optimization strategies especially effective for the multicore environment, and demonstrate significant performance improvements compared to existing state-of-the-art serial and parallel SpMV implementations. Additionally, we present key insights into the architectural trade-offs of leading multicore design strategies, in the context of demanding memory-bound numerical algorithms."
+}
+
+@inproceedings{LiSCD2013,
+ author = {Liu, Xing and Smelyanskiy, Mikhail and Chow, Edmond and Dubey, Pradeep},
+ title = {Efficient Sparse Matrix-vector Multiplication on x86-based Many-core Processors},
+ booktitle = {Proceedings of the 27th International ACM Conference on International Conference on Supercomputing},
+ series = {ICS '13},
+ year = {2013},
+ isbn = {978-1-4503-2130-3},
+ location = {Eugene, Oregon, USA},
+ pages = {273--282},
+ numpages = {10},
+ url = {http://doi.acm.org/10.1145/2464996.2465013},
+ doi = {10.1145/2464996.2465013},
+ acmid = {2465013},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {esb format, intel many integrated core architecture (intel mic), intel xeon phi, knights corner, spmv},
+}
+
+@InProceedings{VuduM2005,
+author="Vuduc, Richard W.
+and Moon, Hyun-Jin",
+editor="Yang, Laurence T.
+and Rana, Omer F.
+and Di Martino, Beniamino
+and Dongarra, Jack",
+title="Fast Sparse Matrix-Vector Multiplication by Exploiting Variable Block Structure",
+booktitle="High Performance Computing and Communications",
+year="2005",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="807--816",
+abstract="We improve the performance of sparse matrix-vector multiplication(SpMV) on modern cache-based superscalar machines when the matrix structure consists of multiple, irregularly aligned rectangular blocks. Matrices from finite element modeling applications often have this structure. We split the matrix, A, into a sum, A1 + A2 + ... + As, where each term is stored in a new data structure we refer to as unaligned block compressed sparse row (UBCSR) format. A classical approach which stores A in a BCSR can also reduce execution time, but the improvements may be limited because BCSR imposes an alignment of the matrix non-zeros that leads to extra work from filled-in zeros. Combining splitting with UBCSR reduces this extra work while retaining the generally lower memory bandwidth requirements and register-level tiling opportunities of BCSR. We show speedups can be as high as 2.1{\texttimes} over no blocking, and as high as 1.8{\texttimes} over BCSR as used in prior work on a set of application matrices. Even when performance does not improve significantly, split UBCSR usually reduces matrix storage.",
+isbn="978-3-540-32079-1"
+}
