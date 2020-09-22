@@ -1,7 +1,96 @@
 \chapter{Introduction}
 
 \section{Motivations}
+Previously, the computing power of processors was increasing with the frequency of the processors which cannot be increased easily anymore due the heat generation and the energy consumption increasing alongside.
+Therefore, a major change in the architecture occurred in order to still increase the performances of the new supercomputers : more processors with tens of cores were introduced in supercomputers.
+Moreover, graphic processing unit (GPU) also made their appearance in supercomputer nodes due to their high performances considering their low energy consumption compared to regular processes.
+This leads to an increasing number of different architectures from which the users have to obtain performances.
+
+Furthermore, the increase in number of available processors while the performance of individual processors does not increase created a shift in the way to achieve performances.
+Indeed, with the improvement of processors the performances mainly came from the improvement of the hardware and the optimization of memory access of sequential applications.
+However, the recent massively parallel architectures need to take advantage of multiple nodes constituted of several processors connected by network to achieve performance, which is done by implementing parallel applications.
+This is a major change in programming models: the sequential applications, that cannot take advantage of the current architectures, are replaced by parallel applications that can execute multiple actions at the same time.
+Moreover, taking advantage of multiple nodes involves the use of the network to send data from one node to another since the memory is local to the nodes.
+
+Nowadays, parallel and distributed applications are based on MPI+X where MPI is the Message Passing Interface \cite{MPIForum}, that is used to send the data between the nodes, and X is a parallel programming model that is used to take advantage of the computing resources of the nodes.
+Usually, X may be OpenMP \cite{DaguM1998}, that takes advantage of shared memory and multi-threading to achieve performance on CPU and GPU and/or CUDA \cite{Shane2012}, that addresses parallelism on NVidia GPUs.
+Applications can also implemented with pure MPI where MPI is used to spawn multiple processes on each node.
+With the increase of available architectures (a combination of different generation of CPU and GPU), the portability of highly optimized applications for a given architecture is not assured on another architecture.
+If the architecture is too different, it may also be possible that the application cannot be installed due to missing libraries dependent on a given architecture.
+
+However, MPI may not be a solution efficient enough on exascale machines, especially in terms of fault tolerance and check-pointing \cite{SWAAB2014}.
+Task-based approach can help in managing fault tolerance and check-pointing since the tasks could be restarted on another location and data from tasks saved at any moment.
+
+While MPI focus on exchanging data between processes, other programming models may be efficient to parallelize applications with good scalability without being held back by global synchronizations.
+For instance, Partitioned Global Address Space Languages (PGAS) programming models, that let the users see the distributed memory as a global memory address space that is partitioned across each processing element \cite{CDMCE2005}, are an alternative to MPI.
+Task-based programming models, which allow to define fine-grain tasks (computations) on a specific set of data (input and output), are also an alternative to MPI.
+Runtime systems which can optimize execution are another one.
+Moreover, task-based programming models (first level of parallelism) combined with coarse-grain tasks implemented in a PGAS language (second level of parallelism) can also be one of them.
+Usually, fine-grain tasks use one process (eventually multi-threaded) whereas coarse-grain tasks perform on several processes (eventually with distributed memory).
 
 \section{Objectives and Contributions}
 
+As programming models are evolving rapidly, it is important to have a clear view of the main capabilities of the current programming models in order to use the most suitable programming model to the targeted architectures and the implemented application.
+Some have a high level of abstraction, others, more pragmatic, are based on adding pragmas to existing software.
+The existence of several levels of parallelism also generates programming paradigms mixing several approaches.
+Moreover, the development of realistic scientific applications in this context is very complex and cannot be considered for each experiment related to this research.
+The main objective of this thesis is to study what must be task-based programming for scientific applications and to propose a specification of such distributed and parallel programming, by experimenting for several simplified representations of important scientific applications for TOTAL.
+The optimization of data movements will be studied and scheduling strategies proposed and evaluated.
+During the dissertation, several programming languages and paradigms will be studied.
+A detailed taxonomy of these will be proposed and a watch on developments in the field will be realized.
+Software will be developed using these programming models for each simplified applications.
+As a result of this research, a methodology for parallel task programming will be proposed, optimizing data movements, in general, and for targeted scientific applications, in particular.
+A taxonomy of these languages and a strategy of evolution between the current codes and those respecting this methodology will be introduced in the dissertation.
+
+The first contribution of this dissertation is an in-depth study of several task based parallel and distributed programming models.
+These programming models are PaRSEC \cite{BBDHL2011}, Legion \cite{BaTSA2012}, Regent \cite{SLTBA2015}, TensorFlow \cite{AABBC2016}, HPX \cite{KHASF2014}, YML+XMP \cite{DelaP2004}, Pegasus \cite{DSSBG2005} and Swift \cite{ZHCFL2007}.
+TensorFlow is not a general purpose programming model since it mainly focuses on linear algebra and machine learning.
+However, it proposes tasks definition interfaces similar to the other task based programming models.
+PaRSEC, Legion, Regent and HPX are fine grained task based programming models where the tasks run on only one computing unit (a thread or a process) whereas YML+XMP, Pegasus and Swift are large grain task based programming model where the tasks can run on distributed resources (from one process to multiple processes on different nodes of a supercomputer).
+
+These task based programming models are used to implement three applications which are the second contribution of this dissertation.
+The first application is a block based dense linear solver based on three algorithms : the block LU factorization, the block Gaussian elimination and the block Gauss-Jordan elimination.
+This application has been implemented in XMP, MPI, YML+XMP, Regent, TensorFlow, Pegasus and HPX.
+A block based task sparse matrix vector product has been implemented in MPI, HPX and YML+XMP.
+It can perform the sparse matrix vector product with the COO, CSR and ELLPACK sparse matrix storage format as well as the dense format.
+Moreover, this application also supports multiple data distribution.
+Indeed, the matrix can distributed by block of rows, by block of columns and a rectangular block of rows and columns.
+The last considered application is a simplified version of the Kirchhoff seismic pre-stack depth migration which is implemented with MPI and HPX.
+
+Finally, the last contribution of this dissertation is a taxonomy of the task based programming models where the features are extracted from the study of the task based programming models.
+It also includes most of the task programming models encountered during thee work on this dissertation.
+% TODO : elaborate
+
+
 \section{Outline}
+This dissertation is organized as follows. In Chapter \ref{chap:hpc}, we will present the start-of-the-art of the task based high performance computing including programming models currently used in order to achieve performances and a presentation of the recent task based programming models.
+Finally, we will discuss the challenges the HPC community is facing for the exascale supercomputers.
+% TODO : update depending on what will be written in the actual chapter \ref{chap:hpc}
+
+Chapter \ref{chap:methods} covers the algorithms of the methods implemented as a benchmark for the task based programming models.
+The three considered methods are a block based dense linear solver, the block based task sparse matrix vector product and the Kirchhoff seismic pre-stack depth migration.
+
+In Chapter \ref{chap:languages}, we study some of the current task based programming models in detail.
+We outline the main features of each programming models studied and how to use them to define task, the dependencies between them, how to register the data used in the tasks and how to execute the tasks to perform the intended computations.
+
+In Chapter \ref{chap:exp_dense}, we detail the implementation of the block LU factorization, the block Gaussian elimination and the block Gauss-Jordan elimination.
+We also present the experiments performed on the K computer and the Poincare cluster as well as the results obtained with our applications compared to our MPI scalar implementation as well as ScaLAPACK.
+We also perform experiments with the block LU factorization on the Poincare cluster in which we compare our implementations of the block LU.
+We implemented it in Regent, HPX, YML+XM, PaRSEC, MPI and XMP.
+
+In Chapter \ref{chap:exp_sparse}, we introduce the data distribution we use to split the sparse matrices on the multiples nodes available during the run of the application.
+We present how we distribute the matrix by block of rows, by block of columns and a rectangular block of rows and columns.
+Then, we explain how the tasks are defined depending of the data distribution and the different sparse matrix storage we use.
+Finally, we present the numerical results we obtained on the supercomputers on which we ran experiments.
+
+In Chapter \ref{chap:exp_km}, the algorithm of the task based Kirchhoff seismic pre-stack depth migration are introduced.
+Its implementation is also detail in this chapter as well as the numerical experiments performed.
+
+Chapter \ref{chap:taxonomy} presents the taxonomy with the features we extracted from the study of the programming models in Chapter \ref{chap:languages} and we try to find these features in the other programming models.
+% TODO : update depending on what will be written in the actual chapter \ref{chap:taxonomy}
+
+%Chapter \ref{chap:properties+extension}
+% TODO : update depending on what will be written in the actual chapter \ref{chap:properties+extension}
+
+In Chapter \ref{chap:ccl}, we summarize the key results obtained in this thesis and present our concluding remarks.
+Finally, we suggest some possible paths to future research.

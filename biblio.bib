@@ -1330,3 +1330,29 @@ pages="807--816",
 abstract="We improve the performance of sparse matrix-vector multiplication(SpMV) on modern cache-based superscalar machines when the matrix structure consists of multiple, irregularly aligned rectangular blocks. Matrices from finite element modeling applications often have this structure. We split the matrix, A, into a sum, A1 + A2 + ... + As, where each term is stored in a new data structure we refer to as unaligned block compressed sparse row (UBCSR) format. A classical approach which stores A in a BCSR can also reduce execution time, but the improvements may be limited because BCSR imposes an alignment of the matrix non-zeros that leads to extra work from filled-in zeros. Combining splitting with UBCSR reduces this extra work while retaining the generally lower memory bandwidth requirements and register-level tiling opportunities of BCSR. We show speedups can be as high as 2.1{\texttimes} over no blocking, and as high as 1.8{\texttimes} over BCSR as used in prior work on a set of application matrices. Even when performance does not improve significantly, split UBCSR usually reduces matrix storage.",
 isbn="978-3-540-32079-1"
 }
+
+@article{SWAAB2014,
+author = {Marc Snir and Robert W Wisniewski and Jacob A Abraham and Sarita V Adve and Saurabh Bagchi and Pavan Balaji and Jim Belak and Pradip Bose and Franck Cappello and Bill Carlson and Andrew A Chien and Paul Coteus and Nathan A DeBardeleben and Pedro C Diniz and Christian Engelmann and Mattan Erez and Saverio Fazzari and Al Geist and Rinku Gupta and Fred Johnson and Sriram Krishnamoorthy and Sven Leyffer and Dean Liberty and Subhasish Mitra and Todd Munson and Rob Schreiber and Jon Stearley and Eric Van Hensbergen},
+title ={Addressing failures in exascale computing},
+journal = {The International Journal of High Performance Computing Applications},
+volume = {28},
+number = {2},
+pages = {129-173},
+year = {2014},
+doi = {10.1177/1094342014522573},
+
+URL = {
+        https://doi.org/10.1177/1094342014522573
+
+},
+}
+
+@inproceedings{CDMCE2005,
+author = {Coarfa, Cristian and Dotsenko, Yuri and Mellor-Crummey, John and Cantonnet, François and El-Ghazawi, Tarek and Mohanti, Ashrujit and Yao, Yiyi and Chavarría-Miranda, Daniel},
+year = {2005},
+month = {01},
+pages = {36-47},
+title = {An evaluation of global address space languages: Co-array fortran and Unified Parallel C},
+journal = {Proceedings of the ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming, PPOPP},
+doi = {10.1145/1065944.1065950}
+}
