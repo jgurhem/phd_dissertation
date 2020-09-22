@@ -1093,4 +1093,54 @@ There is three types of leaf functions in Swift/T :
 
 \section{Analysis and First Evaluation of the Languages}
 
+HPX is a task based programming model.
+The tasks are run as lightweight processes on the resources managed by HPX runtime.
+The data and the tasks can be transfered across distributed nodes.
+It uses modern C++ which starts to be used more often in HPC applications.
+It extends C++ future-based (tasks) multi-threaded programming to distributed.
+Moreover, HPX is very close to C++ standards so it provides an interface which is supported and documented.
+Those are the points for which we are choosing HPX.
+
+PaRSEC is a runtime which manages data and launches tasks.
+It also provides several DSLs to define and implement tasks.
+Two DSLs are already available.
+They allow the user to describe the dependencies between the tasks and how the tasks are implemented.
+PaRSEC has good performances compared to the one obtained with HPX as shown in \cite{GurhP2020} .
+
+YML+XMP is a distributed and parallel task based programming model where each task is also distributed and parallel.
+This programming has been selected because it has two level of programming, the graph which is the high level and the parallel and distributed task which is the second level.
+\cite{GurhP2020} shows that YML+XMP has a better scalability compared to the other programming models.
+However, the performances of YML+XMP are its weak points due the use of the file system to perform the communications.
+YML+XMP is not the only programming model to use is to make the communications.
+Indeed, Pegasus also use files to transfer data from a task to the others.
+
+Legion will not be used due to its way of defining tasks via a tree of tasks which is less natural than a graph of tasks.
+Moreover, Legion verbose API is difficult to use.
+Finally, Legion performances with the default data mapper are not as good as the performances obtained with the other languages as shown in \cite{GurhP2020} while using Regent to generate Legion code.
+Therefore, Regent will not be used too.
+
+
+TensorFlow is focused in Machine Learning and Neural Networks.
+It is well adapted to train models and to process data with those models.
+It offers a high level API to easily create and train models.
+In TensorFlow, the Operation is the main way to apply computations on data stored into Tensors aside the Machine Learning API.
+However, Operations can only be implemented by adding it directly into TensorFlow code and by recompiling it.
+Therefore, it is not well adapted to other kind of applications and will not be used to implement the Kirchhoff Migration.
+%TODO not used for which application ?
+
+CnC does not seem to be used a lot and does not seem maintained anymore.
+Thus, CnC will not be used to implement applications.
+
+OmpSs uses the same kind of approach as OpenMP.
+It uses directives to parallelize sections of code.
+However, the execution model is different but it still produces multi-threaded applications whereas distributed programming models are considered in this study.
+
+Swift is a parallel programming model where the tasks are also parallel and distributed.
+However, the data are sent to the tasks as blobs, an array of bytes, which is copied in each process of the tasks.
+Therefore, the distribution of the data is not optimal since each process of the task has a copy of the whole data instead of a part of it.
+Furthermore, the user has to write interface with the libraries that will be used as tasks.
+This interface consists of several Tcl wrappers and automatic interface generation.
+This process could be could be fully hidden from the user.
+Swift will not be studied further fo those reasons.
+
 \section{Application Deployment with Containers}
