@@ -1,9 +1,364 @@
 \chapter{Task Based High Performance Computing Chapter \label{chap:hpc}}
+High Performance Computing is one of the most active research area in computer science since it contributes to the solution of large scale problems in science, engineering and business.
+The improvement of HPC is due to the effort of several discipline including computer architecture design, parallel algorithms as well as programming models.
+This chapter gives a state-of-the-art of the task based programming models available to implement HPC applications and discuss the key challenges of the upcoming exascale.
+
 
 \section{Timeline of Task Based High Performance Computing}
 
-\section{Modern Computing Architectures}
+HPC or High Performance Computing is a computer science field which consists in aggregating computing power in order to obtain higher performances than a regular desktop computer.
+This power is currently achieved by connecting several computers to form a cluster for the small cases or a supercomputer for the very large cases.
+Initially, the increase in performance of an application was obtained from the improvement of the processors used to run the application and especially from the increase of the frequency of the processors.
+Indeed, the processors were becoming faster with each new generation and thus, the applications ran faster on them.
+Then, the frequency became impossible to increase without the processors producing too much heat in the early 2000s \cite{KirkH2010}.
+Therefore, either the processors had to be cooled at the cost of more power and infrastructure or setting the frequency of processors to a reasonable temperature so that the processors do not produce an excessive amount of heat and shut down so that they do not melt.
+%https://software.intel.com/content/www/us/en/develop/blogs/why-has-cpu-frequency-ceased-to-grow.html
+Thus, the frequency of processors has stabilized since then.
+At this point, high performance application developers could not rely on the improvement of individual processors to achieve performance.
+Instead of using one processing unit to run applications, several of them could be used at the same time to run multiple operations at the same time and create faster applications.
+This introduced the use of parallelism in order to achieve high performances on the HPC computing resources.
+Using multiple computing resources at the same time was not new since it was already researched in the 1980s with the Connection Machine \cite{Hilli1989phd} for instance.
+The change from the use of single core processors to the use of several multi-core processors also made a shift in the programming models used to run efficient applications on those architectures.
+Indeed, using several processors means that data from one processor has to be made available somehow to the other processors if they need this piece of data during their computation.
+Usually, this is done by sending message containing the data through the network connecting the processors between themselves.
+This greatly changed the way to implement applications for supercomputers since the developers also have to manage the data mapping on the different computing resources and the eventual data migrations to perform in order to obtain the intended results.
+
+Parallel and distributed programming models such as Message Passing Interface (MPI) \cite{MPIForum} and Parallel Virtual Machine (PVM) \cite{GBDJM1995} which are based on message-passing made their apparition in the early 1990s to address communications between several processors of supercomputers.
+In this programming model, the application uses several processes to make multiple computations at the same time on different cores and uses MPI or PVM to send data from one process to another one.
+They provide point-to-point and collective communication operations to help the developers to reorganize, migrate or perform operations on their distributed data.
+
+However, developing a parallel high performance application with such a programming model require the knowledge of parallel and distributed programming as well as the specificities of the targeted hardware.
+It takes time and may not be portable to other architectures without investing more time to make the structural modifications that may be necessary, for instance, to run on GPUs.
+An alternative that aims to reduce those costs and efficiently use the available hardware is task based programming models.
+Moreover, MPI may not be a solution efficient enough on exascale machines, especially in terms of fault tolerance and check-pointing \cite{SWAAB2014}.
+Task-based approach can help in managing fault tolerance and check-pointing since the tasks could be restarted on another location and data from tasks saved at any moment.
+They allow to separate of the expression of the parallelism from its parallel implementation by letting the developer express the tasks and their dependencies while the runtime of the programming models tries to run as much tasks as possible at the same time, respects the dependencies and tries to obtain the best performances possible.
+This means that application experts can express algorithms through tasks without being required to understand the hardware in detail.
+
+Several programming models which support the usage of tasks have appeared over the years.
+They implemented the task definition and management in different ways and have their unique features.
+Some of them will be introduced in the following section.
+
+%\section{Modern Computing Architectures}
 
 \section{Current Task Based Programming Models}
+A task can be defined as an atomic set of operations with precise data in input and output which can be asynchronously executed while enforcing data and/or control dependencies.
+This section introduces programming models supporting the definition and the scheduled execution of tasks.
+
+\subsection{HTCondor DAGMan}
+The DAGMan (Directed Acyclic Graph Manager) \cite{ThaTL2005} is designed to run complex sequences of long-running jobs with dependencies on the Condor \cite{ThaTL2002} \cite{CKRWW2007} middleware.
+DAGMan is fault-tolerant.
+It keeps private logs, allowing it to resume a DAG where it left off, even in the the case of failure.
+The language accepted by DAGMan is constituted of a few keywords.
+The JOB statement is used to describe a Condor job by associating a job name to a file.
+The PARENT-CHILD statement describes the dependencies between jobs.
+Jobs without dependencies between them can be executed at the same time.
+DAGMan also allows the usage of pre- and post-scripts by using the keywords PRE and POST to specify the program that will be executed.
+The RETRY keywords specify DAGMan that a given job can be retried if the job fails.
+
+\subsection{Cpp-Taskflow}
+Cpp-Taskflow \cite{LiHGW2019a} \cite{HuLGW2019} is a C++ parallel programming library based on the task dependency graph model.
+In Cpp-Taskflow, a tasks is an instance of the C++ \textit{Callable} object on which the operation \textit{std::invoke} is applicable and is used to run the tasks.
+Then, they can be declared into a taskflow object from the class \textit{tf::Taskflow} which allow to create a task dependency graph and schedule them for execution.
+The user can express task dependency with the method \textit{precede} applied on the task handler returned from the task creation.
+Tasks are executed through \textit{tf::Executor} which runs the taskflow and executes the tasks on threads through a work-stealing algorithm.
+
+Cpp-Taskflow has the feature of dependency graph composition.
+It allows the user to create dependency graphs and reuse them to compose larger graphs.
+It is also possible to make recursive and nested compositions \cite{LiHGW2019b}.
+Taskflow objects can be composed multiple times and the result can also be composed.
+Therefore, it allows to easily create large and complex parallel workloads.
+
+\subsection{QUARK}
+QUeueing And Runtime for Kernels (QUARK) \cite{YarkKD2011} is a runtime environment designed to schedule and execute applications that consist of precedence-constrained kernel routines on shared memory systems.
+The main principle behind QUARK is the implementation of the dataflow model where the scheduling depends on data dependencies between tasks (routines) in a task graph.
+The routines have parameters as input and output for computations which are used by QUARK to form an implicit DAG connecting the routines.
+Each parameter has to be extended by its size and its access mode (in, out, inout) depending if the data are consumed, produced or modified by the routine.
+This allows QUARK to enforce the data dependencies between the routines while preserving the nature of the original code.
+QUARK also supports multi-threaded tasks in order to manage large bottleneck tasks which would lock the computations by needing a large portion of the data as parameters.
+
+
+\subsection{OpenMP}
+OpenMP \cite{DaguM1998} is an API which provides a portable and scalable model to develop shared memory parallel applications.
+OpenMP is based on a fork-join programming model where the parallel regions and loops are specified by pragmas.
+Team of threads are spawned during parallel regions.
+Parallel loops are split and mapped on multiple threads so that several iterations of the loop can be executed at the same time.
+
+Tasks were introduced in OpenMP 3 \cite{ACDHM2009} in which tasks can be created with the pragma \textit{omp task} and synchronized with the pragmas \textit{omp taskwait} and \textit{omp barrier}.
+
+In OpenMP 4, the task model was extended with data dependencies.
+It introduced keywords for data dependencies : \textit{in} for consumed data, \textit{out} for produced data and \textit{inout} for data that will be modified during the task.
+It allows lock-less and more fine-grained synchronizations between tasks.
+
+\subsection{Kokkos}
+Kokkos C++ Performance Portability Library \cite{CarTS2014} implements a C++ programming model for writing performance portable applications targeting all major HPC platforms.
+To do so, it provides abstractions for parallel execution and data management.
+Kokkos is designed to target complex architectures with many level of memory and multiple type of execution resources.
+Kokkos can use CUDA, HPX \cite{KHASF2014}, OpenMP \cite{DaguM1998} and Pthreads programming models as backend.
+
+Kokkos also provides a tasking interface to create and execute a directed acyclic graph of task which supports execution of tasks on GPU \cite{CartI2017}.
+Kokkos previous programming model was limited to data parallelism with multidimensional array data structures.
+It has been enhanced with DAG of tasks to support performance critical algorithms which could not be effectively implemented with data parallelism only.
+
+The Kokkos C++ Performance Portability Programming EcoSystem also provides maths kernels as well as profiling and debugging tools.
+
+\subsection{Uintah}
+Uintah \cite{GeCPJ2000} \cite{HumpB2019} is an open-source asynchronous many-task runtime system.
+In Uintah, data dependencies and parallel computations are expressed with an abstract task graph representation.
+This representation is a directed acyclic graph of tasks.
+Uintah uses a Data Warehouse to store distributed data in which all data transfer takes place.
+It is an abstraction that ensures that the user-coded tasks are independent of the hidden MPI communication layer.
+Each Uintah application specifies a list of tasks and their data dependencies in a declarative style.
+Each task is implemented as a C++ function which performs the actual computation, consumes the input and produces an output.
+Uintah analyzes the DAG to automatically enable load-balancing, data communication, parallel I/O, and check-pointing/restarting.
+MPI communication are automatically set up for data dependencies between MPI processes.
+
+Kokkos \cite{CarTS2014} is used in Uintah to extend the code base to many-core architectures instead of adoption OpenMP \cite{HPHSD2019}.
+It also allows to extend Uintah to  GPU-based, many-core, and multi-core architectures although Uintah already supports  multi-core and GPU-based systems by directly using architecture specific programming models (for instance, CUDA) in the tasks.
+
+\subsection{Charm++}
+Charm++ \cite{KaleK1993} \cite{RobBK2016} is a parallel object-oriented programming language based on C++.
+It uses an asynchronous message driven execution model.
+\textit{Chares} are the basic parallel unit in Charm++.
+It is similar to a lightweight process.
+A \textit{chare} is similar to a C++ object which contains the data and the computations of an application.
+A Charm++ program consists in a large number of \textit{chares} distributed on the available computational resources.
+They interact with each other through asynchronous method invocations.
+When a \textit{chare} receives a message, the associated method is executed.
+The \textit{chares} are assigned to a core by the Charm++ runtime system.
+
+\subsection{X10}
+% Kawac2014
+X10 \cite{CGSDK2005} is an open-source programming language developed by IBM.
+It aims to provide a programming model that can address the architectural challenge of multiples cores, hardware accelerators, clusters, and supercomputers in a manner that provides scalable performance in a productive manner.
+X10 is a strongly-typed and garbage-collected object-oriented language.
+X10 uses the Asynchronous Partitioned Global Address Space programming model (APGAS) with its two main concepts :  places and asynchronous tasks.
+They are used to express both regular and irregular parallelism, message-passing-style and active-message-style computations, fork-join and bulk-synchronous parallelism.
+
+Resilient X10 \cite{HHMGT2016}  \cite{GHHIK2019} builds on X10 by exploiting the strong separation provided by places to provide a coherent semantics for execution in the presence of failures.
+
+
+\subsection{Swift}
+Swift \cite{ZHCFL2007} \cite{WHWCK2011} is a scripting language for executing many instances of ordinary application programs on distributed and parallel resources.
+Swift runs applications as soon as their inputs are available.
+Swift expressions are evaluated in dataflow order to run the workflows with the most concurrency possible.
+It only depends on the data dependencies and the available resources.
+Moreover, Swift allow to wrap applications into functions to create more complex scripts.
+The functions take files as input and produce files as output.
+
+Swift/T \cite{WAWKL2013} is a new implementation of Swift dedicated to HPC.
+It translates the Swift script into a MPI program using Turbine \cite{WAMLK2012} and ADLB (Asynchronous Dynamic Load Balancer) \cite{LusPB2010} libraries.
+Turbine is a Tcl library that assemble MPI, ADLB and the Turbine dataflow library.
+ADLB is a software library designed to build scalable parallel programs.
+Swift/T has two main level of programming : the Swift script and the Leaf functions (the task implementations).
+
+The extension functions are the first type of leaf functions.
+They consist in Tcl or native code functions like C, C++, Fortran or MPI which operate on in-memory data, and are appropriate for high-performance computing.
+There is also application functions.
+They are used to call a command-line program which process files, and are appropriate for ordinary workflows.
+Finally, external scripting functions are used to call an in-memory interpreter in another scripting language, such as Python, R or Julia.
+
+\subsection{Cilk}
+Cilk \cite{BJKLR1995} is a C-based runtime system for multi-threaded parallel programming.
+It extends the C language in order to ease the developing of Cilk based programs.
+Cilk programs consists in a set of procedures themselves composed of a sequence of threads.
+It is based on two main keywords : \textit{spawn} and \textit{sync} which are used to spawn fine grain tasks and synchronize spawned tasks with their parent.
+The keywords of a Cilk program can be removed and it leaves a serial version of the program that can be used for debugging purposes.
+In Cilk, tasks are scheduled using a work-first scheduling strategy as well as a randomized work stealing load balancing strategy.
+They implemented the strategy found optimal in \cite{BlumL1999}.
+
+Cilk++ \cite{Leise2009}, similarly, extends the C++ programming language and introduce Cilk keywords.
+As for the C interface, removing the keywords produces a serial application.
+Cilk++ also supports parallel loops by adding the keyword \textit{cilk\_for} which allows the iterations of the loop to be executed in parallel.
+
+\subsection{Legion (Regent, Pygion)}
+Legion \cite{BaTSA2012} is a data-centric parallel programming model.
+It aims to make the programming system aware of the structure of the data in the program.
+Legion provides explicit declaration of data properties (organization, partitioning, privileges, and coherence) and their implementation via the logical regions.
+They are the fundamental abstraction used to describe data in Legion applications.
+Logical regions can be partitioned into sub-regions and data structures can be encoded in logical regions to express locality describing data independence.
+
+A Legion program is executed as a tree of tasks spawning sub-tasks recursively.
+Each tasks specifies the logical region they will access.
+With the understanding of the data and their use, Legion can extract parallelism and find the data movement related to the specified data properties.
+Legion also provides a mapping interface to control the mapping of the tasks and the data on the processors during the execution of the application.
+
+Regent \cite{SLTBA2015} is a programming model which simplifies Legion.
+Regent compiler translates Regent programs into efficient implementations for Legion.
+It results in programs that are written with fewer lines of codes and at a higher level.
+
+Pygion \cite{SlauA2019} is a Python interface for Legion.
+It aims to provide the same functionalities as Regent while being more flexible than Regent and more concise and easier to use than the C++ Legion code.
+
+\subsection{PaRSEC}
+PaRSEC \cite{BBDHL2011} \cite{BBDFH2013} (Parallel Runtime Scheduling and Execution Controller) is an engine for scheduling tasks on distributed hybrid environments.
+
+It offers a flexible API to develop domain specific languages.
+It aims to shift the focus of developers from repetitive architectural details toward meaningful algorithmic improvements.
+Two domain specific languages are supported by Parsec, the Parameterized Task Graph \cite{DBBHD2014} (PTG) and Dynamic Task Discovery \cite{HoHBD2017} (DTD)
+
+In PTG \cite{DBBHD2014}, users would use a parameterized expression of task dependencies combined with PaRSEC which would implicitly infer the communication between nodes and the accelerators.
+The users have to provide a description of the data flow in their application and the tasks which are applied on the data.
+They also have to provide the tasks that are the source of the data and the tasks that are the destination.
+Therefore, this is a compressed representation of the task graph.
+Afterwards, it is transformed into C code using a pre-compiler.
+Users need to understand and provide all the data flow of their algorithm to use this model.
+
+
+DTD \cite{HoHBD2017} is a task-based programming paradigm which provides an alternative way to express task dependency in PaRSEC that achieves a similar purpose to PTG.
+On the contrary of PTG where users had to express tasks in a parameterized manner, DTD allows them to write sequential constructs (ifs, loops, etc\dots) to insert tasks in PaRSEC.
+The tasks are given to the runtime with the data they will use and their mode of usage.
+Then, the runtime will compute dependencies out of data pointers used by the tasks.
+In a distributed system, the data movements among the nodes are completely implicit.
+
+\subsection{YML+XMP}
+YML \cite{DelEP2006} is a development and execution environment for scientific workflow applications over various platforms, such as HPC, Cloud, P2P and Grid with multilevel of parallelism.
+YML defines an abstraction over the different middlewares, so the user can develop an application that can be executed on different middlewares without making changes related to the middleware used.
+YML can be adapted to different middlewares by changing its back-end.
+Currently, the proposed back-end \cite{TsSHP2013} uses OmniRPC-MPI \cite{SaHTS2001}, a grid RPC which supports master-worker parallel and distributed programs based on multi SPMD programming paradigms.
+This back-end is developed for large scale clusters such as Japanese K-Computer \cite{TsSHP2013}.
+A back-end for peer to peer networks is also available.
+
+For the experiments, we use XMP to develop the YML components as introduced in \cite{TsSHP2013}.
+This allows two levels programming.
+The higher level is the graph (YML) and the second level is the PGAS component (XMP).
+In the components, YML needs complementary information to manage the computational resources and the data at best : the number of XMP processes for a component and the distribution of the data in the processes (template).
+With this information, the scheduler can anticipate the resource allocation and the data movements.
+The scheduler creates the processes that the XMP components need to run the component.
+Then each process will get the piece of data which will be used in the process from the data repository.
+
+
+\subsection{HPX}
+High Performance ParalleX (HPX) \cite{KHASF2014} is a C++ Standard Library for Concurrency and Parallelism.
+It implements the facilities defined by the C++ Standard and functionalities proposed as part of the ongoing C++ standardization process.
+It also extends the C++ Standard APIs to the distributed case.
+The goal of HPX is to create a high quality, freely available, open source implementation of a new programming model for conventional systems.
+
+HPX API implements the interfaces defined by the C++11/14/17/20 ISO standard and respects the programming guidelines used by the Boost collection of C++ libraries.
+It aims to improve the scalability of current applications.
+It also tries to expose new levels of parallelism which are necessary to take advantage of the future systems.
+
+HPX is an open-source implementation of the ParalleX execution model.
+This model focuses on overcoming the four main barriers to achieve scalability (Starvation, Latencies, Overhead, Waiting for contention resolution).
+
+\subsection{Pegasus}
+Pegasus \cite{DSSBG2005} is a Workflow Management System.
+It allows the user to express multi-step computational tasks through a directed acyclic graph (DAG), where the nodes are tasks and the edges denote the task dependencies.
+The tasks can be everything  from short serial tasks to very large parallel tasks (MPI for example) surrounded by a large number of small, serial tasks used for pre- and post-processing.
+
+Pegasus provides helpers to execute workflow-based applications in different environments like desktops, clusters, grids and clouds.
+It automatically maps high-level workflow descriptions onto distributed resources.
+It also locates the necessary input data and computational resources needed during the workflow execution.
+Pegasus enables scientists to construct workflows in abstract terms.
+It can be linked with several middlewares (Condor, Globus, or Amazon EC2).
+
+Pegasus is fault tolerant.
+Indeed, when there is errors, it can retry the tasks, retry the entire workflow, checkpoint its execution, re-map part of the workflow, try alternative data sources and as last resort, provide a list of the remaining tasks.
+Storage is cleaned up during the execution of the workflow.
+Thus, data-intensive workflows can get enough space to run their tasks on resources with low-capability storage.
+Pegasus also keeps track of what has been done, where, which software was used and their parameters.
+
+\subsection{TensorFlow}
+TensorFlow \cite{AABBC2016} is “open source software library for high performance numerical computation”.
+A TensorFlow program consist of a set of Operations arranged into a graph and run by a Session.
+The Tensors contain the data and are used by the Operations.
+A Tensor is a set of primitive values shaped into a multidimensional array.
+An Operation runs computations on the provided Tensors.
+TensorFlow deduces the graph from the used Operations.
+It provides a lot of built-in Operations in its Low Level API.
+It also provides a higher-level API which can be used to implement Machine Learning and AI algorithms.
+Most of the algorithms are related to model training and layers of neural networks.
+Thus, the high-level API cannot be used to implement non-AI based applications.
+
+The Python package of TensorFlow is easy to install through pip.
+For the other languages (C, Java, Go, \dots), binaries can be downloaded and have to be linked in the program.
+There is also the possibility to build it from sources.
+
+By itself, TensorFlow does not support distributed architecture as it is designed to run on GPU and shared memory.
+A solution to use TensorFlow across multiple nodes is to use Dask \cite{Dask2016}, a library for parallel computing in Python.
+It could be used to schedule TensorFlow tasks on distributed resources as well as manage data through its Big Data collections which extends arrays to distributed environments.
+
+\subsection{OmpSs}
+OmpSs \cite{DABLM2011} is based on OpenMP \cite{DaguM1998} and StarSs \cite{PerRL2007}.
+StarSs is a parallel programming model that manage tasks.
+Each task is a piece of code which can be executed asynchronously in parallel.
+OmpSs uses the Mercurium source-to-source compiler and the Nanos++ Runtime Library.
+Mercurium provides the support to transform the high-level directives into a parallelized version of the application.
+Nanos++ manages the parallelism in the application, including task creation, synchronization and data movement.
+The tasks are expressed through the task construct with the in, out, inout clauses to express data dependencies.
+The control graph is never specified so there is the same kind of problem to find optimizations in the data flow graph than for PaRSEC.
+A mix with the OpenMP directives may give the information on the control graph but we didn't find any example of that.
+OmpSs stays close to the sequential code but a higher level language and more software engineering may be required to face the challenges of the exascale.
+
+\subsection{ClusterSs}
+Cluster Superscalar (ClusterSs) \cite{TFGBA2011} is also based on StarSs \cite{PerRL2007} and designed for large scale clusters.
+In ClusterSs, tasks are asynchronously created and spawned on the worker nodes as the application is executed.
+ClusterSs runtime is built on IBM APGAS runtime.
+APGAS is used to handle the inter-nodes communications and its Active Message paradigm allows to spawn tasks on remote nodes efficiently.
+The user is required to identify the methods that can be executed in parallel whereas the parallel execution and the data placement is managed by the runtime.
+Thee global data is automatically distributed according to computation needs.
+The execution model is based on one main node that generates tasks and workers that execute the tasks.
+The main node runs the user application and the selected functions marked by the user are replaced by a call to the ClusterSs runtime.
+Then, the runtime creates a task which is added to a DAG of dependency.
+When a task can be executed, the task is scheduled and sent to a node for execution.
+When choosing the node, ClusterSs tries to exploit data locality then executes the task on the selected node.
+It sends the data on the node if necessary.
+
+\subsection{CnC}
+CnC \cite{ChaKV2010} \cite{BBCKL2010} (Current Collections) is a graph parallel programming model.
+A CnC graph uses three types of nodes : the step collections is a computation task, the data collections stores the data needed in the computations, and the control collections creates instances of one or more step collections.
+With this structure, it is possible to represent both the control and data flow graphs.
+In CnC, there are two ordering requirements : producer/consumer linked to data dependencies and controller/controlee linked to computation dependencies.
+It allows important scheduling optimizations with the two graphs directly available.
+CnC has a lot of explanations and possibilities but the development of an application becomes complex very fast.
+
+\subsection{StarPU}
+StarPU \cite{AuTNW2011} is a runtime system.
+It schedules tasks on computing resources with accelerators.
+The tasks can have several implementations depending on the architecture of the processing units and data transfers are handled by StarPU.
+StarPU uses auto-tuning to predict execution time and data transfer overhead.
+It allows StarPU's dynamic scheduler to avoid load imbalance.
+
+Data has to be registered into StarPU so that it can transfer them.
+The algorithm as to be described as a set of tasks (usually kernels).
+A task is defined by a codelet, the data used by the task and their access mode.
+The dependencies between the tasks can be given explicitly or inferred from the data dependencies.
+
+\subsection{Chapel}
+Chapel \cite{CalCZ2004} is a parallel programming language designed to run on large-scale systems by Cray Inc and their collaborators.
+It is also designed to be portable and run from multicore desktop to large supercomputers.
+It was created from principles rather than being an extension of another language.
+It is a object-oriented programming model with type inference and features for generic programming.
+Chapel offers high-level abstractions for data parallelism, task parallelism, concurrency, and nested parallelism.
+It supplies a locale type which enables users to specify and reason about the placement of data and tasks.
+Finally, Chapel provides interoperability features to integrate other languages into Chapel or vice-versa.
+
+Chapel is an open-source project hosted on GitHub under the Apache v2.0 license.
+It uses third-party open-source packages under their own licenses.
+
 
 \section{Exascale Challenges of Supercomputers}
+The upcoming exascale supercomputers are raising both hardware and software challenges.
+On one side, computing power is now achieved with the multiplication of computing resources.
+This leads to highly hierarchical supercomputer with hundreds of high level computing nodes which are made of several multi-core processors and eventually one or more accelerators.
+In each node, there is also several levels of memory with the RAM and the different cache level of each processors and accelerators.
+Furthermore, there is the network connecting the nodes between themselves.
+Each node cannot be directly connected to all the others since it would be very costly with the large amount of computing nodes available in the supercomputers.
+Therefore, the network is also becoming more complex in order to support the communications between nodes.
+This increases the distance between the furthest nodes on the network and the cost of sending message to far away nodes.
+
+Finally, there is multiple variant of processors, accelerators and networks available on the market.
+Thus, a lot of different combinations of these components are now incorporated on the current supercomputers.
+These different architectures require different approaches to implement applications that can use the components available on the nodes efficiently.
+The first challenge is to an architecture among all the architectures available.
+
+As there is multiple programming models that address one or more of the available architecture, the second challenge will be to find a parallel programming model that can take advantage of the targeted architecture while being compatible with the application to execute on the supercomputer.
+This is the second challenge.
+
+The third challenge concerns the kind of application that will be run on supercomputers and the efficiency of their parallel algorithm as well as its implementation.
+The algorithm having the most operation that can be executed in parallel while reducing the number of communications will most likely obtain the best performances on this kind of systems even if there more computations locally.
+Moreover, highly optimized common kernels will be very valuable since many applications heavily rely on them.
+A few examples of such kernels are present in linear algebra such as direct (for instance, algorithms based on the Gaussian elimination) and iterative (Conjugate Gradient, Krylov subspaces\dots) methods to solve linear systems as well as in Artificial Intelligence (matrix vector product for neural network training, PCA, SVD\dots).
+
+The following chapter will introduce some of the methods we chose as examples to implement and compare the programming models considered in this dissertation.
+We chose dense linear algebra methods (solution of dense linear systems) and sparse linear algebra (sparse matrix vector product) as well as a real world application, the Kirchhoff seismic pre-stack depth migration.

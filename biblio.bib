@@ -1046,6 +1046,20 @@ eprint = {
   year={1983}
 }
 
+@inproceedings{GeCPJ2000,
+author = {Germain, J. Davison de St. and McCorquodale, John and Parker, Steven G. and Johnson, Christopher R.},
+title = {Uintah: A Massively Parallel Problem Solving Environment},
+year = {2000},
+isbn = {0769507832},
+publisher = {IEEE Computer Society},
+address = {USA},
+abstract = {This paper describes Uintah, a component-based visual problem-solving environment (PSE) that is designed to specifically address the unique problems of massively parallel computation on terascale computing platforms. Uintah supports the entire life cycle of scientific applications by allowing scientific programmers to quickly and easily develop new techniques, debug new implementations, and apply known algorithms to solve novel problems. Uintah is built on three principles: 1) As much as possible, the complexities of parallel execution should be handled for the scientist, 2) software should be reusable at the component level, and 3) scientists should be able to dynamically steer and visualize their simulation results as the simulation executes. To provide this functionality, Uintah builds upon the best features of the SCIRun PSE and the DoE Common Component Architecture (CCA).},
+booktitle = {Proceedings of the 9th IEEE International Symposium on High Performance Distributed Computing},
+pages = {33},
+numpages = {1},
+series = {HPDC '00}
+}
+
 @article{CDOPW1996,
 author = {Choi, Jaeyoung and Dongarra, Jack J. and Ostrouchov, L. Susan and Petitet, Antoine P. and Walker, David W. and Whaley, R. Clint},
 title = {The Design and Implementation of the ScaLAPACK LU, QR, and Cholesky Factorization Routines},
@@ -1375,4 +1389,354 @@ pages = {36-47},
 title = {An evaluation of global address space languages: Co-array fortran and Unified Parallel C},
 journal = {Proceedings of the ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming, PPOPP},
 doi = {10.1145/1065944.1065950}
+}
+
+@inproceedings{TFGBA2011,
+author = {Tejedor, Enric and Farreras, Montse and Grove, David and Badia, Rosa M. and Almasi, Gheorghe and Labarta, Jesus},
+title = {ClusterSs: A Task-Based Programming Model for Clusters},
+year = {2011},
+isbn = {9781450305525},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1996130.1996168},
+doi = {10.1145/1996130.1996168},
+abstract = {Programming for large-scale, multicore-based architectures requires adequate tools that offer ease of programming while not hindering application performance. StarSs is a family of parallel programming models based on automatic function level parallelism that targets productivity. StarSs deploys a data-flow model: it analyses dependencies between tasks and manages their execution, exploiting their concurrency as much as possible. We introduce Cluster Superscalar (ClusterSs), a new StarSs member designed to execute on clusters of SMPs. ClusterSs tasks are asynchronously created and assigned to the available resources with the support of the IBM APGAS runtime, which provides an efficient and portable communication layer based on one-sided communication.This short paper gives an overview of the ClusterSs design on top of APGAS, as well as the conclusions of a productivity study; in this study, ClusterSs was compared to the IBM X10 language, both in terms of programmability and performance. A technical report is available with the details.},
+booktitle = {Proceedings of the 20th International Symposium on High Performance Distributed Computing},
+pages = {267–268},
+numpages = {2},
+keywords = {parallel programming models, asynchronous execution, productivity, high-performance computing},
+location = {San Jose, California, USA},
+series = {HPDC '11}
+}
+
+@article{AuTNW2011,
+author = {Augonnet, Cédric and Thibault, Samuel and Namyst, Raymond and Wacrenier, Pierre-André},
+title = {StarPU: a unified platform for task scheduling on heterogeneous multicore architectures},
+journal = {Concurrency and Computation: Practice and Experience},
+volume = {23},
+number = {2},
+pages = {187-198},
+keywords = {GPU, multicore, accelerator, scheduling, runtime system},
+doi = "10.1002/cpe.1631",
+year = {2011}
+}
+
+@INPROCEEDINGS{CalCZ2004,
+author={D. {Callahan} and B. L. {Chamberlain} and H. P. {Zima}},
+booktitle={Ninth International Workshop on High-Level Parallel Programming Models and Supportive Environments, 2004. Proceedings.},
+title={The cascade high productivity language},
+year={2004},
+volume={},
+number={},
+pages={52-60},
+keywords={parallel programming;object-oriented programming;high level languages;software architecture;message passing;user interfaces;cascade high productivity language;high end computing;parallel programming;message passing;fragmented programming model;object code performance;Chapel;HPCS project;system programming;high-level user interface;language technology;multithreading technology;locality awareness;object orientation;generic programming;architectural support;Productivity;Parallel programming;High performance computing;Object oriented programming;Computer architecture;Programming profession;Concurrent computing;Multithreading;Communication system control;Message passing},
+doi={10.1109/HIPS.2004.1299190},
+ISSN={},
+month={April},}
+
+@book{Hilli1989phd,
+  title={The Connection Machine},
+  author={Hillis, W.D.},
+  isbn={9780262580977},
+  lccn={85015318},
+  series={ACM distinguished dissertations},
+  url={https://books.google.fr/books?id=xg\_yaoC6CNEC},
+  year={1989},
+  publisher={Cambridge}
+}
+
+@article{GBDJM1995,
+author = {Geist, Al and Beguelin, Adam and Dongarra, Jack and Jiang, Weicheng and Manchek, Robert and Sunderam, Vaidy},
+year = {1995},
+month = {11},
+pages = {},
+title = {Pvm 3 User's Guide And Reference Manual}
+}
+
+@book{KirkH2010,
+  title={Programming Massively Parallel Processors: A Hands-on Approach},
+  author={Kirk, D. and Hwu, W.},
+  isbn={9780123814722},
+  lccn={2009048259},
+  series={Applications of GPU Computing Series},
+  url={https://books.google.fr/books?id=x8oNlQEACAAJ},
+  year={2010},
+  publisher={Morgan Kaufmann Publishers}
+}
+
+@article{CGSDK2005,
+author = {Charles, Philippe and Grothoff, Christian and Saraswat, Vijay and Donawa, Christopher and Kielstra, Allan and Ebcioglu, Kemal and von Praun, Christoph and Sarkar, Vivek},
+title = {X10: An Object-Oriented Approach to Non-Uniform Cluster Computing},
+year = {2005},
+issue_date = {October 2005},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {40},
+number = {10},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/1103845.1094852},
+doi = {10.1145/1103845.1094852},
+journal = {SIGPLAN Not.},
+month = oct,
+pages = {519–538},
+numpages = {20},
+keywords = {Java, clocks, non-uniform cluster computing (NUCC), X10, productivity, data distribution, partitioned global address space (PGAS), scalability, multithreading, places, atomic blocks}
+}
+
+@inproceedings{HHMGT2016,
+author = {Hamouda, Sara S. and Herta, Benjamin and Milthorpe, Josh and Grove, David and Tardieu, Olivier},
+title = {Resilient X10 over MPI User Level Failure Mitigation},
+year = {2016},
+isbn = {9781450343862},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2931028.2931030},
+doi = {10.1145/2931028.2931030},
+booktitle = {Proceedings of the 6th ACM SIGPLAN Workshop on X10},
+pages = {18–23},
+numpages = {6},
+keywords = {MPI, X10, User Level Failure Mitigation, Resilience},
+location = {Santa Barbara, CA, USA},
+series = {X10 2016}
+}
+
+@INPROCEEDINGS{SlauA2019,
+  author={E. {Slaughter} and A. {Aiken}},
+  booktitle={2019 IEEE/ACM Parallel Applications Workshop, Alternatives To MPI (PAW-ATM)},
+  title={Pygion: Flexible, Scalable Task-Based Parallelism with Python},
+  year={2019},
+  volume={},
+  number={},
+  pages={58-72},}
+
+@inproceedings{BJKLR1995,
+author = {Blumofe, Robert D. and Joerg, Christopher F. and Kuszmaul, Bradley C. and Leiserson, Charles E. and Randall, Keith H. and Zhou, Yuli},
+title = {Cilk: An Efficient Multithreaded Runtime System},
+year = {1995},
+isbn = {0897917006},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/209936.209958},
+doi = {10.1145/209936.209958},
+abstract = {Cilk (pronounced “silk”) is a C-based runtime system for multi-threaded parallel programming. In this paper, we document the efficiency of the Cilk work-stealing scheduler, both empirically and analytically. We show that on real and synthetic applications, the “work” and “critical path” of a Cilk computation can be used to accurately model performance. Consequently, a Cilk programmer can focus on reducing the work and critical path of his computation, insulated from load balancing and other runtime scheduling issues. We also prove that for the class of “fully strict” (well-structured) programs, the Cilk scheduler achieves space, time and communication bounds all within a constant factor of optimal.The Cilk runtime system  currently runs on the Connection Machine CM5 MPP, the Intel Paragon MPP, the Silicon Graphics Power Challenge SMP, and the MIT Phish network of workstations. Applications written in Cilk include protein folding, graphic rendering, backtrack search, and the *Socrates chess program, which won third prize in the 1994 ACM International Computer Chess Championship.},
+booktitle = {Proceedings of the Fifth ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming},
+pages = {207–216},
+numpages = {10},
+location = {Santa Barbara, California, USA},
+series = {PPOPP '95}
+}
+
+@inproceedings{Leise2009,
+author = {Leiserson, Charles E.},
+title = {The Cilk++ Concurrency Platform},
+year = {2009},
+isbn = {9781605584973},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1629911.1630048},
+doi = {10.1145/1629911.1630048},
+abstract = {The availability of multicore processors across a wide range of computing platforms has created a strong demand for software frameworks that can harness these resources. This paper overviews the Cilk++ programming environment, which incorporates a compiler, a runtime system, and a race-detection tool. The Cilk++ runtime system guarantees to load-balance computations effectively. To cope with legacy codes containing global variables, Cilk++ provides a "hyperobject" library which allows races on nonlocal variables to be mitigated without lock contention or substantial code restructuring.},
+booktitle = {Proceedings of the 46th Annual Design Automation Conference},
+pages = {522–527},
+numpages = {6},
+keywords = {multithreading, dag model, speedup, race detection, parallel programming, hyperobject, work, reducer, parallelism, multicore programming, Amdahl's Law, span},
+location = {San Francisco, California},
+series = {DAC '09}
+}
+
+@article{BlumL1999,
+author = {Blumofe, Robert D. and Leiserson, Charles E.},
+title = {Scheduling Multithreaded Computations by Work Stealing},
+year = {1999},
+issue_date = {Sept. 1999},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {46},
+number = {5},
+issn = {0004-5411},
+url = {https://doi.org/10.1145/324133.324234},
+doi = {10.1145/324133.324234},
+abstract = {This paper studies the problem of efficiently schedulling fully strict (i.e., well-structured) multithreaded computations on parallel computers. A popular and practical method of scheduling this kind of dynamic MIMD-style computation is “work stealing,” in which processors needing work steal computational threads from other processors. In this paper, we give the first provably good work-stealing scheduler for multithreaded computations with dependencies.Specifically, our analysis shows that the expected time to execute a fully strict computation on P processors using our work-stealing scheduler is T1/P + O(T ∞ , where T1 is the minimum serial execution time of the multithreaded computation and (T ∞ is the minimum execution time with an infinite number of processors. Moreover, the space required by the execution is at most S1P, where S1 is the minimum serial space requirement. We also show that the expected total communication of the algorithm is at most O(PT ∞( 1 + nd)Smax), where Smax is the size of the largest activation record of any thread and nd is the maximum number of times that any thread synchronizes with its parent. This communication bound justifies the folk wisdom that work-stealing schedulers are more communication efficient than their work-sharing counterparts. All three of these bounds are existentially optimal to within a constant factor.},
+journal = {J. ACM},
+month = sep,
+pages = {720–748},
+numpages = {29},
+keywords = {multiprocessor, thread scheduling, randomized algorithm, work stealing, multithreading, critical-path length}
+}
+
+@article{GHHIK2019,
+author = {Grove, David and Hamouda, Sara S. and Herta, Benjamin and Iyengar, Arun and Kawachiya, Kiyokuni and Milthorpe, Josh and Saraswat, Vijay and Shinnar, Avraham and Takeuchi, Mikio and Tardieu, Olivier},
+title = {Failure Recovery in Resilient X10},
+year = {2019},
+issue_date = {July 2019},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {41},
+number = {3},
+issn = {0164-0925},
+url = {https://doi.org/10.1145/3332372},
+doi = {10.1145/3332372},
+journal = {ACM Trans. Program. Lang. Syst.},
+month = jul,
+articleno = {Article 15},
+numpages = {30},
+keywords = {APGAS, X10}
+}
+
+@inproceedings{RobBK2016,
+ author = {Robson, Michael P. and Buch, Ronak and Kale, Laxmikant V.},
+ title = {Runtime Coordinated Heterogeneous Tasks in Charm++},
+ booktitle = {Proceedings of the Second Internationsl Workshop on Extreme Scale Programming Models and Middleware},
+ series = {ESPM2},
+ year = {2016},
+ isbn = {978-1-5090-3858-9},
+ location = {Salt Lake City, Utah},
+ pages = {40--43},
+ numpages = {4},
+ url = {https://doi.org/10.1109/ESPM2.2016.7},
+ doi = {10.1109/ESPM2.2016.7},
+ acmid = {3018821},
+ publisher = {IEEE Press},
+ address = {Piscataway, NJ, USA},
+ keywords = {accelerator architectures, high performance computing, parallel programming, runtime},
+}
+
+@inproceedings{KaleK1993,
+  author        = "{Kal\'{e}}, L.V. and Krishnan, S.",
+  title         = "{CHARM++: A Portable Concurrent Object Oriented System  Based on C++}",
+  editor        = "Paepcke, A.",
+  fulleditor    = "Paepcke, Andreas",
+  pages         = "91--108",
+  Month         = "September",
+  Year          = "1993",
+  booktitle     = "{Proceedings of OOPSLA'93}",
+  publisher     = "{ACM Press}",
+}
+
+@article{ThaTL2005,
+author = {Thain, Douglas and Tannenbaum, Todd and Livny, Miron},
+title = {Distributed computing in practice: the Condor experience},
+journal = {Concurrency and Computation: Practice and Experience},
+volume = {17},
+number = {24},
+pages = {323-356},
+keywords = {Condor, Grid, history, community, planning, scheduling, split execution},
+doi = {10.1002/cpe.938},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/cpe.938},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/cpe.938},
+abstract = {Abstract Since 1984, the Condor project has enabled ordinary users to do extraordinary computing. Today, the project continues to explore the social and technical problems of cooperative computing on scales ranging from the desktop to the world-wide computational Grid. In this paper, we provide the history and philosophy of the Condor project and describe how it has interacted with other projects and evolved along with the field of distributed computing. We outline the core components of the Condor system and describe how the technology of computing must correspond to social structures. Throughout, we reflect on the lessons of experience and chart the course travelled by research ideas as they grow into production systems. Copyright Â© 2005 John Wiley \& Sons, Ltd.},
+year = {2005}
+}
+
+@inproceedings{PerRL2007,
+  title={A Flexible and Portable Programming Model for SMP and Multi-cores BSC-UPC COMPUTER SCIENCES PROGRAM},
+  author={J. M. P{\'e}rez and R. M. Badia and J. Labarta},
+  year={2007}
+}
+
+@inproceedings{LiHGW2019a,
+author = {Lin, Chun-Xun and Huang, Tsung-Wei and Guo, Guannan and Wong, Martin D. F.},
+title = {A Modern C++ Parallel Task Programming Library},
+year = {2019},
+isbn = {9781450368896},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3343031.3350537},
+doi = {10.1145/3343031.3350537},
+abstract = {In this paper we present Cpp-Taskflow, a C++ parallel programming library that enables users to quickly develop parallel applications using the task dependency graph model. Developers formulate their application as a task dependency graph and Cpp-Taskflow will manage the task execution and concurrency control.The task graph model is expressive and composable. It can express both regular and irregular parallel patterns, and developers can quickly compose large programs from small parallel modules. Cpp-Taskflow has an intuitive and unified API set. Users only need to learn the APIs to build and dispatch a task graph and no complex parallel programming concept is required. We have conducted experiments using both micro-benchmarks and real-world applications and Cpp-Taskflow outperforms state-of-the-art parallel programming libraries in both runtime and coding effort. Cpp-Taskflow is open-source and has been used in both industry and academic projects. From our users' feedback, we believe Cpp-Taskflow can benefit the industry and research community greatly through its ease-of-programming and inspire new research directions in multimedia system/software design.},
+booktitle = {Proceedings of the 27th ACM International Conference on Multimedia},
+pages = {2284–2287},
+numpages = {4},
+keywords = {task parallelism, task dependency graph, parallel programming},
+location = {Nice, France},
+series = {MM '19}
+}
+
+@INPROCEEDINGS{HuLGW2019,
+ author={T. {Huang} and C. {Lin} and G. {Guo} and M. {Wong}},
+booktitle={2019 IEEE International Parallel and Distributed Processing Symposium (IPDPS)},
+title={Cpp-Taskflow: Fast Task-Based Parallel Programming Using Modern C++},
+year={2019},
+volume={},
+number={},
+pages={974-983},}
+
+@INPROCEEDINGS{LiHGW2019b,
+  author={C. {Lin} and T. {Huang} and G. {Guo} and M. D. F. {Wong}},
+  booktitle={2019 IEEE High Performance Extreme Computing Conference (HPEC)},
+  title={An Efficient and Composable Parallel Task Programming Library},
+  year={2019},
+  volume={},
+  number={},
+  pages={1-7},}
+
+@TechReport{HPHSD2019,
+  author =    "J. K. Holmen and B. Peterson and A. Humphrey and
+              D. Sunderland and O. H. Diaz-Ibarra and J. N.
+              Thornock and M. Berzins",
+  title =     "Portably Improving Uintah's Readiness for Exascale
+              Systems Through the Use of Kokkos",
+  year =      "2019",
+  institution = "SCI Institute",
+  url =       "http://www.sci.utah.edu/publications/Hol2019a/UUSCI-2019-001.pdf",
+}
+
+@InProceedings{HumpB2019,
+  author =    "A. Humphrey and M. Berzins",
+  title =     "An Evaluation of An Asynchronous Task Based
+              Dataflow Approach For Uintah",
+  booktitle = "2019 IEEE 43rd Annual Computer Software and
+              Applications Conference (COMPSAC)",
+  volume =    "2",
+  pages =     "652-657",
+  year =      "2019",
+  month =     "July",
+  issn =      "0730-3157",
+  url =       "http://www.sci.utah.edu/publications/Hum2019b/dfm19_humphrey_berzins.pdf",
+}
+
+@article{CarTS2014,
+  title = "Kokkos: Enabling manycore performance portability through polymorphic memory access patterns",
+  journal = "Journal of Parallel and Distributed Computing",
+  volume = "74",
+  number = "12",
+  pages = "3202 - 3216",
+  year = "2014",
+  note = "Domain-Specific Languages and High-Level Frameworks for High-Performance Computing",
+  issn = "0743-7315",
+  doi = "https://doi.org/10.1016/j.jpdc.2014.07.003",
+  url = "http://www.sciencedirect.com/science/article/pii/S0743731514001257",
+  author = "H. Carter Edwards and Christian R. Trott and Daniel Sunderland"
+}
+
+@article{CartI2017,
+title = {Kokkos' Task DAG Capabilities.},
+author = {Edwards, Harold C. and Ibanez, Daniel Alejandro},
+abstractNote = {This report documents the ASC/ATDM Kokkos deliverable "Production Portable Dynamic Task DAG Capability." This capability enables applications to create and execute a dynamic task DAG ; a collection of heterogeneous computational tasks with a directed acyclic graph (DAG) of "execute after" dependencies where tasks and their dependencies are dynamically created and destroyed as tasks execute. The Kokkos task scheduler executes the dynamic task DAG on the target execution resource; e.g. a multicore CPU, a manycore CPU such as Intel's Knights Landing (KNL), or an NVIDIA GPU. Several major technical challenges had to be addressed during development of Kokkos' Task DAG capability: (1) portability to a GPU with it's simplified hardware and micro- runtime, (2) thread-scalable memory allocation and deallocation from a bounded pool of memory, (3) thread-scalable scheduler for dynamic task DAG, (4) usability by applications.},
+doi = {10.2172/1398234},
+place = {United States},
+year = {2017},
+month = {9}
+}
+
+@ARTICLE{ACDHM2009,
+  author={E. {Ayguade} and N. {Copty} and A. {Duran} and J. {Hoeflinger} and Y. {Lin} and F. {Massaioli} and X. {Teruel} and P. {Unnikrishnan} and G. {Zhang}},
+  journal={IEEE Transactions on Parallel and Distributed Systems},
+  title={The Design of OpenMP Tasks},
+  year={2009},
+  volume={20},
+  number={3},
+  pages={404-418},}
+
+@inproceedings{YarkKD2011,
+  title={QUARK Users' Guide: QUeueing And Runtime for Kernels},
+  author={A. YarKhan and J. Kurzak and J. Dongarra},
+  year={2011}
+}
+
+@Manual{Dask2016,
+  title = {Dask: Library for dynamic task scheduling},
+  author = {{Dask Development Team}},
+  year = {2016},
+  url = {https://dask.org},
 }

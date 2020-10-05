@@ -543,27 +543,6 @@ They work as the regular futures but allows to execute functions on GPUs.
 By default, the user has to use a future to execute CUDA functions to allocate memory on the device with CUDA, copy data to the device, make operations on the data and copy the results to the host.
 HPX also provides allocators which helps to manage memory on the device and copy data between the host and the device.
 
-
-\subsection{CnC}
-CnC \cite{ChaKV2010} \cite{BBCKL2010} (Current Collections) is a graph parallel programming model.
-A CnC graph uses three types of nodes : the step collections is a computation task, the data collections stores the data needed in the computations, and the control collections creates instances of one or more step collections.
-With this structure, it is possible to represent both the control and data flow graphs.
-In CnC, there are two ordering requirements : producer/consumer linked to data dependencies and controller/controlee linked to computation dependencies.
-It allows important scheduling optimizations with the two graphs directly available.
-CnC has a lot of explanations and possibilities but the development of an application becomes complex very fast.
-
-\subsection{OmpSs}
-OmpSs \cite{DABLM2011} is based on OpenMP \cite{DaguM1998} and StarSs.
-StarSs is a parallel programming model that manage tasks.
-Each task is a piece of code which can be executed asynchronously in parallel.
-OmpSs uses the Mercurium source-to-source compiler and the Nanos++ Runtime Library.
-Mercurium provides the support to transform the high-level directives into a parallelized version of the application.
-Nanos++ manages the parallelism in the application, including task creation, synchronization and data movement.
-The tasks are expressed through the task construct with the in, out, inout clauses to express data dependencies.
-The control graph is never specified so there is the same kind of problem to find optimizations in the data flow graph than for PaRSEC.
-A mix with the OpenMP directives may give the information on the control graph but we didn't find any example of that.
-OmpSs stays close to the sequential code but a higher level language and more software engineering may be required to face the challenges of the exascale.
-
 \section{Parallel and Distributed Task Based Programming Models}
 \subsection{YML+XMP}
 % TODO Mention Docker
