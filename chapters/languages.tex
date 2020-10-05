@@ -14,7 +14,18 @@
 
 This chapter contains description and examples of several languages and programming environment used to implement parallel and distributed applications.
 
-\section{Message Passing Library}
+\section{Message Passing Interface}
+The Message Passing Interface (MPI) \cite{MPIForum} is a standardized norm designed to work on a wide variety of parallel computers.
+It defines the syntax of the core library routines to write message-passing applications.
+The application uses several processes to make computation at the same time on different cores and uses MPI to send data from one process to another one.
+MPI has several implementations (OpenMPI, MPICH2, IntelMPI, \dots) which consist of a set of routines that can be called from C, C++ and Fortran.
+
+The MPI library interface includes point-to-point send/receive operations, aggregate functions involving communication between all processes, synchronous nodes (barrier operations), one-way communication, dynamic process management and I/O operations.
+MPI provides synchronous and asynchronous routines as well as blocking and non-blocking operations.
+Collective routines involve communications between all processes in a group, for instance MPI\_Bcast (broadcast that sends an array to all of the other processes).
+
+MPI can be used with shared memory programming models like OpenMP or with libraries to send data and make computations on CPUs like CUDA.
+
 
 \section{Task Based Programming Models}
 \subsection{PaRSEC}
@@ -95,7 +106,7 @@ We use it to store sub-matrices in our block-based LU factorization.
 It extends the initial data type \textit{parsec\_ddesc\_t} as for each data type used by PaRSEC.
 Listing \ref{lst:parsec_custom_datatype} shows how to extend \textit{parsec\_ddesc\_t} to create a data type called \textit{my\_datatype\_t}.
 
-This data distribution descriptor stores only one data block per MPI process in the field \textit{ptr}, of size \textit{size} bytes.
+This data distribution descriptor stores only one data block per MPI \cite{MPIForum} process in the field \textit{ptr}, of size \textit{size} bytes.
 However, the user's memory is not manipulated directly by PaRSEC.
 It uses \textit{parsec\_data\_t*} as well as \textit{parsec\_data\_copy\_t*}.
 \textit{parsec\_data\_t} is an abstract representation of user data.
