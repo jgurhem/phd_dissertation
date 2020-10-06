@@ -12,7 +12,9 @@
 	numberstyle=\color{gray},
 }
 
-This chapter contains description and examples of several languages and programming environment used to implement parallel and distributed applications.
+In Chapter \ref{chap:hpc}, we introduced most of the current task based programming models.
+In this chapter, we select a few of them in order to use them in our experiments and implement parallel and distributed applications based on the methods presented in Chapter \ref{chap:methods}.
+We also describe in greater details the selected task based programming models.
 
 \section{Message Passing Interface}
 The Message Passing Interface (MPI) \cite{MPIForum} is a standardized norm designed to work on a wide variety of parallel computers.
@@ -1134,3 +1136,11 @@ This process could be could be fully hidden from the user.
 Swift will not be studied further fo those reasons.
 
 \section{Application Deployment with Containers}
+
+
+% chapter transition
+\paragraph{}
+We introduced several task based programming models and how to use them to implement task, define dependencies, register distributed data and how to execute the graph of tasks.
+We also selected YML+XMP, PaRSEC and HPX to implement out applications and make out experiments.
+These programming models will be used in the following chapter to experiment on dense linear algebra.
+We will discuss our numerical experiments with the LU factorization and the solution of dense linear systems.

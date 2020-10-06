@@ -5,8 +5,10 @@
 \chapter{Task-Based, Parallel and Distributed Sparse Linear Algebra Applications \label{chap:exp_sparse}}
 \graphicspath{{chapters/exp_sparse/}}
 
-The sparse matrix vector product with several matrix storage format and matrix distribution across the computing resources is basic algorithm considered in this chapter.
+The sparse matrix vector product with several matrix storage format and matrix distribution across the computing resources is the basic algorithm considered in this chapter.
 The sparse operation $A(Ax+x)$ is also considered as it uses two times the sparse matrix vector product.
+We will implement these algorithms with the selected task based programming models and perform numerical experiments on several clusters and supercomputers.
+Finally, we will discuss the results obtained in the experiments.
 
 
 \section{Task-Based Methods for Parallel and Distributed Algorithms}
@@ -326,3 +328,11 @@ They are a division by blocks of rows, blocks of columns, rectangle blocks in th
 We also introduced the algorithms to implement the tasks for the sub-matrices with the different sparse matrix storage formats (COO, SCOO, ELL and CSR) as well as the task-based algorithms to perform the matrix vector product on the global matrix.
 These algorithms will be used to implement a task-based sparse matrix vector application and compare the performances obtained across different programming models, matrix storage format and data distribution in Section \ref{sec:sla:exp}.
 \section{Numerical Experiments \label{sec:sla:exp}}
+
+
+% chapter transition
+\paragraph{}
+In this chapter, we introduced the experiments we made with the parallel and distributed sparse matrix vector product we implemented using the selected task based programming models.
+We also discussed the numerical experiments we performed and the results we obtained.
+The selected task based programming models are also used to implement a parallel and distributed task based Kirchhoff seismic pre-stack depth migration application in the following chapter.
+We will also perform numerical experiments on supercomputers as well as discuss the results obtained from these experiments.
