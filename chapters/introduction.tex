@@ -42,8 +42,8 @@ Software will be developed using these programming models for each simplified ap
 As a result of this research, a methodology for parallel task programming will be proposed, optimizing data movements, in general, and for targeted scientific applications, in particular.
 A taxonomy of these languages and a strategy of evolution between the current codes and those respecting this methodology will be introduced in the dissertation.
 
-The first contribution of this dissertation is an in-depth study of several task based parallel and distributed programming models.
-These programming models are PaRSEC \cite{BBDHL2011}, Legion \cite{BaTSA2012}, Regent \cite{SLTBA2015}, TensorFlow \cite{AABBC2016}, HPX \cite{KHASF2014}, YML+XMP \cite{DelaP2004}, Pegasus \cite{DSSBG2005} and Swift \cite{ZHCFL2007}.
+The first contribution of this dissertation is an in-depth analyze of several task based parallel and distributed programming models.
+We compare and evaluate PaRSEC \cite{BBDHL2011}, Legion \cite{BaTSA2012}, Regent \cite{SLTBA2015}, TensorFlow \cite{AABBC2016}, HPX \cite{KHASF2014}, YML+XMP \cite{DelaP2004}, Pegasus \cite{DSSBG2005} and Swift \cite{ZHCFL2007}.
 TensorFlow is not a general purpose programming model since it mainly focuses on linear algebra and machine learning.
 However, it proposes tasks definition interfaces similar to the other task based programming models.
 PaRSEC, Legion, Regent and HPX are fine grained task based programming models where the tasks run on only one computing unit (a thread or a process) whereas YML+XMP, Pegasus and Swift are large grain task based programming model where the tasks can run on distributed resources (from one process to multiple processes on different nodes of a supercomputer).
@@ -57,10 +57,11 @@ Moreover, this application also supports multiple data distribution.
 Indeed, the matrix can distributed by block of rows, by block of columns and a rectangular block of rows and columns.
 The last considered application is a simplified version of the Kirchhoff seismic pre-stack depth migration which is implemented with MPI and HPX.
 
-Finally, the last contribution of this dissertation is a taxonomy of the task based programming models where the features are extracted from the study of the task based programming models.
-It also includes most of the task programming models encountered during thee work on this dissertation.
-% TODO : elaborate
-
+Finally, the last contribution of this dissertation is a taxonomy of the task based programming models where the features are extracted from the comparisons and analyzes of the task based programming models.
+This taxonomy summarizes the expertise gained on the task programming models encountered during the work on this dissertation.
+We analyze the introduced algorithms and task based programming models features in order to highlight the most suited features to use in implementing the applications.
+We conclude on which category of algorithms can be efficiently implemented into an application relying on parallel and distributed task based programming models.
+% TODO ; update when the chapters will be writen (taxo and after)
 
 \section{Outline}
 This dissertation is organized as follows. In Chapter \ref{chap:hpc}, we will present the start-of-the-art of the task based high performance computing including programming models currently used in order to achieve performances and a presentation of the recent task based programming models.
@@ -70,11 +71,11 @@ Finally, we will discuss the challenges the HPC community is facing for the exas
 Chapter \ref{chap:methods} covers the algorithms of the methods implemented as a benchmark for the task based programming models.
 The three considered methods are a block based dense linear solver, the block based task sparse matrix vector product and the Kirchhoff seismic pre-stack depth migration.
 
-In Chapter \ref{chap:languages}, we study some of the current task based programming models in detail.
+A selection of task based programming models are introduced with more detail in Chapter \ref{chap:languages}.
 We outline the main features of each programming models studied and how to use them to define task, the dependencies between them, how to register the data used in the tasks and how to execute the tasks to perform the intended computations.
 
-In Chapter \ref{chap:exp_dense}, we detail the implementation of the block LU factorization, the block Gaussian elimination and the block Gauss-Jordan elimination.
-We also present the experiments performed on the K computer and the Poincare cluster as well as the results obtained with our applications compared to our MPI scalar implementation as well as ScaLAPACK.
+Afterwards, we detail the implementation of the block LU factorization, the block Gaussian elimination and the block Gauss-Jordan elimination.
+Chapter \ref{chap:exp_dense} also presents the experiments performed on the K computer and the Poincare cluster as well as the results obtained with our applications compared to our MPI scalar implementation as well as ScaLAPACK.
 We also perform experiments with the block LU factorization on the Poincare cluster in which we compare our implementations of the block LU.
 We implemented it in Regent, HPX, YML+XM, PaRSEC, MPI and XMP.
 
@@ -83,14 +84,14 @@ We present how we distribute the matrix by block of rows, by block of columns an
 Then, we explain how the tasks are defined depending of the data distribution and the different sparse matrix storage we use.
 Finally, we present the numerical results we obtained on the supercomputers on which we ran experiments.
 
-In Chapter \ref{chap:exp_km}, the algorithm of the task based Kirchhoff seismic pre-stack depth migration are introduced.
-Its implementation is also detail in this chapter as well as the numerical experiments performed.
+Furthermore, the algorithm of the task based Kirchhoff seismic pre-stack depth migration are introduced in Chapter \ref{chap:exp_km}.
+Its implementation is also detailed in this chapter as well as the numerical experiments performed.
 
-Chapter \ref{chap:taxonomy} presents the taxonomy with the features we extracted from the study of the programming models in Chapter \ref{chap:languages} and we try to find these features in the other programming models.
+Chapter \ref{chap:taxonomy} presents the taxonomy with the features we extracted from the analyze of the programming models in the previous chapters and we highlight these features in the other programming models.
 % TODO : update depending on what will be written in the actual chapter \ref{chap:taxonomy}
 
 %Chapter \ref{chap:properties+extension}
 % TODO : update depending on what will be written in the actual chapter \ref{chap:properties+extension}
 
-In Chapter \ref{chap:ccl}, we summarize the key results obtained in this thesis and present our concluding remarks.
+To conclude, Chapter \ref{chap:ccl} summarizes the key results obtained in this thesis and present our concluding remarks.
 Finally, we suggest some possible paths to future research.
