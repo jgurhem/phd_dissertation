@@ -106,6 +106,18 @@ Cilk++ \cite{Leise2009}, similarly, extends the C++ programming language and int
 As for the C interface, removing the keywords produces a serial application.
 Cilk++ also supports parallel loops by adding the keyword \textit{cilk\_for} which allows the iterations of the loop to be executed in parallel.
 
+\subsubsection{TBB}
+Intel Threading Building Blocks (TBB) \cite{Reind2007} \cite{Pheat2008} is a C++ library for shared memory parallel programming.
+It is a library for task based parallelism which provides concurrent containers, a memory allocator, a work-stealing task scheduler and low-level synchronization primitives.
+In TBB, tasks are expressed through the Task Flow which is a set of classes to express parallelism as a graph of compute dependencies or data flows.
+The tasks can be implemented as C++ lambda expressions as they reduce the time and code needed to implement the tasks by removing the requirement for separate objects or classes.
+Its scheduler is based on a work-stealing engine.
+TBB provides tread safe scalable containers, timers and exception classes.
+It also provides synchronization primitives like atomic operations, mutexes and condition variables.
+TBB supports nested parallelism and allow building parallel components from smaller ones.
+It emphasizes data-parallel programming by enabling several threads to operate on different parts of a collection.
+TBB can address CPUs, GPUs and FPGAs.
+
 \subsubsection{TensorFlow}
 TensorFlow \cite{AABBC2016} is “open source software library for high performance numerical computation”.
 A TensorFlow program consist of a set of Operations arranged into a graph and run by a Session.
