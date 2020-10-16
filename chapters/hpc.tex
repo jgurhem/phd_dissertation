@@ -173,6 +173,7 @@ Each Uintah application specifies a list of tasks and their data dependencies in
 Each task is implemented as a C++ function which performs the actual computation, consumes the input and produces an output.
 Uintah analyzes the DAG to automatically enable load-balancing, data communication, parallel I/O, and check-pointing/restarting.
 MPI communication are automatically set up for data dependencies between MPI processes.
+Uintah provides fault tolerance mechanisms \cite{SahaB2019}.
 
 Kokkos \cite{CarTS2014} is used in Uintah to extend the code base to many-core architectures instead of adoption OpenMP \cite{HPHSD2019}.
 It also allows to extend Uintah to  GPU-based, many-core, and multi-core architectures although Uintah already supports  multi-core and GPU-based systems by directly using architecture specific programming models (for instance, CUDA) in the tasks.
