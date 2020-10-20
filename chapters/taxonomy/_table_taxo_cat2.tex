@@ -1,0 +1,31 @@
+\begin{tabular*}{\textwidth}{m{0.1111111111111111\textwidth}m{0.1111111111111111\textwidth}m{0.1111111111111111\textwidth}m{0.1111111111111111\textwidth}m{0.1111111111111111\textwidth}m{0.1111111111111111\textwidth}m{0.1111111111111111\textwidth}m{0.1111111111111111\textwidth}}
+\hline
+ & \rotatebox{90}{Task Granularity} & \rotatebox{90}{Nested Tasks} & \rotatebox{90}{Task Implementation} & \rotatebox{90}{Heterogeneity} & \rotatebox{90}{Architecture} & \rotatebox{90}{Data Handling} & \rotatebox{90}{Portability Accelerators}\\ \hline
+Chapel & s & yes & s & i & d & d & CUDA\\
+Charm++ & s & yes & s & i/e & d & d & CUDA\\
+Cilk & s & yes & s & e & s & d & user\\
+ClusterSs & s & no & s & e & d & d & user\\
+CnC & s & no & fp & e & s & d & user\\
+Cpp-TaskFlow & s & yes & fp & e & s & d & CUDA\\
+HPX & s & yes & fp & e & d & c & CUDA\\
+HTCondor DAGMan & p & no & pgm & e & d & d & user\\
+Kokkos & s & yes & fp & i & s & c & s\\
+Legion & s & yes & sf & e & d & c & CUDA\\
+OmpSs & s & yes & p & i & s & d & s\\
+OpenMP & s & yes & p & i & s & d & s\\
+PaRSEC (DTD) & s & no & fp & e & d & d & CUDA\\
+PaRSEC (PTG) & s & no & s & e & d & d & CUDA\\
+Pegasus & p & no & pgm & e & d & c & user\\
+PyGion & s & yes & fp & i & d & d & CUDA\\
+QUARK & p & no & fp & e & s & d & user\\
+Regent & s & yes & s & i & d & c & CUDA\\
+StarPU & s & no & fp & e & d & d & CUDA\\
+Swift & p & no & fp & e & d & c & user\\
+TBB & s & yes & fp & e & s & d & OpenCL\\
+TensorFlow & s & no & sf & i & s & c & CUDA\\
+Uintah & s & no & fp & i & d & d & m\\
+X10 & s & yes & s & i & d & d & CUDA\\
+YML & s & no & s & e & d & d & user\\
+YML+XMP & p & no & s & e & d & d & user\\
+\hline
+\end{tabular*}

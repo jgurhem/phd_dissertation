@@ -1,0 +1,31 @@
+\begin{tabular*}{\textwidth}{m{0.125\textwidth}m{0.125\textwidth}m{0.125\textwidth}m{0.125\textwidth}m{0.125\textwidth}m{0.125\textwidth}m{0.125\textwidth}}
+\hline
+ & \rotatebox{90}{Dependency Type} & \rotatebox{90}{Task Insertion} & \rotatebox{90}{Data Distribution} & \rotatebox{90}{Worker management} & \rotatebox{90}{Task Binding} & \rotatebox{90}{Interoperability}\\ \hline
+Chapel & b & yes & i & i & i & callee\\
+Charm++ & c & yes & i/e & i & i/e & caller\\
+Cilk & d & yes & n & i & i & callee\\
+ClusterSs & d & no & i & i/e & i & callee\\
+CnC & b & no & n & i & i & callee\\
+Cpp-TaskFlow & c & yes & n & i & i & callee\\
+HPX & d & yes & i/e & i/e & i/e & callee\\
+HTCondor DAGMan & c & yes & i & i & i & caller\\
+Kokkos & d & yes & n & i & i & callee\\
+Legion & d & yes & i & i & i & both\\
+OmpSs & b & yes & n & i & i & callee\\
+OpenMP & b & yes & n & i & i & callee\\
+PaRSEC (DTD) & c & yes & e & i & i/e & callee\\
+PaRSEC (PTG) & d & no & e & i & i/e & callee\\
+Pegasus & c & no & i & i & i & caller\\
+PyGion & d & yes & i & i & i & caller\\
+QUARK & d & yes & n & i & i/e & both\\
+Regent & d & no & i & i & i & both\\
+StarPU & b & no & i & i & i & callee\\
+Swift & d & yes & e & i & i & caller\\
+TBB & b & yes & n & i & i & callee\\
+TensorFlow & d & yes & n & e & i & callee\\
+Uintah & d & no & i & e & i & caller\\
+X10 & d & yes & i & i & i/e & callee\\
+YML & c & no & i & i & i & caller\\
+YML+XMP & c & no & i & i & i & caller\\
+\hline
+\end{tabular*}

@@ -1,0 +1,31 @@
+\begin{tabular*}{\textwidth}{m{0.125\textwidth}m{0.125\textwidth}m{0.125\textwidth}m{0.125\textwidth}m{0.125\textwidth}m{0.125\textwidth}m{0.125\textwidth}}
+\hline
+ & \rotatebox{90}{Dependency Expression} & \rotatebox{90}{Communication Model} & \rotatebox{90}{Fault Tolerance} & \rotatebox{90}{Implementation Type} & \rotatebox{90}{Data persistence} & \rotatebox{90}{Scheduler Location}\\ \hline
+Chapel & DAG & gas & no & lang & no & c\\
+Charm++ & SDAG & gas & yes & ext & yes & d\\
+Cilk & DAG & sm & no & rt & no & c\\
+ClusterSs & DAG & gas & no & ext & no & c\\
+CnC & Petri & sm & no & lang & no & c\\
+Cpp-TaskFlow & Graph & sm & no & lib & no & c\\
+HPX & DAG & gas & no & lib & no & d\\
+HTCondor DAGMan & DAG & fs & yes & lang & yes & c\\
+Kokkos & DAG & sm & no & lib & no & c\\
+Legion & Tree & gas & no & lib & no & d\\
+OmpSs & Graph & sm & no & ext & no & c\\
+OpenMP & Graph & sm & no & ext & no & c\\
+PaRSEC (DTD) & DAG & msg & no & lib & no & d\\
+PaRSEC (PTG) & DAG & msg & no & lib & no & d\\
+Pegasus & DAG & fs & yes & lang & yes & e\\
+PyGion & Tree & gas & no & ext & no & d\\
+QUARK & DAG & sm & no & rt & no & c\\
+Regent & Tree & gas & no & lang & no & d\\
+StarPU & Queue & msg & no & rt & no & d\\
+Swift & Graph & msg & no & lang & limited & c\\
+TBB & Graph & sm & no & lib & no & c\\
+TensorFlow & Graph & sm & no & lib & no & c\\
+Uintah & DAG & msg & yes & lang & no & d\\
+X10 & DAG & gas & yes & lang & yes & d\\
+YML & DAG & fs & no & lang & yes & c\\
+YML+XMP & DAG & fs & no & lang & yes & c\\
+\hline
+\end{tabular*}

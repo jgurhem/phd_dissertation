@@ -5,59 +5,196 @@ This chapter introduces the taxonomy of the languages and the criterion deduced 
 
 \section{Taxonomy}
 
-\subsection{Workflow type}
-It represents how the user has to input the dependencies between the tasks.
-The user may have to describe a directed acyclic graph (DAG) with the tasks and the associated dependencies.
-Another possibility is to use the provided interface of the programming paradigm which runtime system will represent the tasks and dependencies in its way.
+\subsection{Task Capabilities}
 
-\subsection{Granularity}
-The granularity of the tasks correspond to the size of the task compared to the whole application.
-Fine grained tasks are relatively small in term of code size and execution time.
-Coarse grain tasks are bigger.
-In the context of parallel and distributed applications, they can be a distributed and parallel sub-part of the whole application.
+\subsubsection{Architecture}
+This represent which kind of architecture is addressed by the considered programming model.
+With this property, we focus on \textit{shared memory} and \textit{distributed memory} architectures.
+\begin{table}[H]
+	\caption{Architecture}
+	\centering
+	\input{chapters/taxonomy/_table_taxo_Architecture.tex}
+\end{table}
 
-\subsection{Communications}
-In a distributed and parallel applications, there is two types of communications : inside a task and between tasks.
-We consider how the communications between tasks are managed.
-Does the user has to implement them and the programming paradigm use them to transfer the data between the task ?
-Is the user provided with data interface to store its data and has to ask the system to retrieve the needed data ?
 
-\subsection{Scheduling policy}
+\subsubsection{Heterogeneity}
+It indicates if the programming model supports accelerators (for instance, GPUs).
+\textit{Explicit} support means that the user has to provide the implementation of the task that will be run on the accelerator.
+\textit{Implicit} support means that the tasks can be run on different devices while the user has to provide only one implementation.
+\begin{table}[H]
+	\caption{Heterogeneity}
+	\centering
+	\input{chapters/taxonomy/_table_taxo_Heterogeneity.tex}
+\end{table}
+
+\subsubsection{Task Granularity}
+This represents the level of complexity of the task.
+The tasks can be run as a single \textit{thread} or process without multi-threading.
+They can also use multiple threads or processes up to one \textit{node} like OpenMP or MPI on shared memory.
+Another option can be \textit{multi-node} where distributed memory technologies are used inside a task like PGAS or MPI on several nodes.
+\begin{table}[H]
+	\caption{Task Granularity}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Task Granularity.tex"}
+\end{table}
+
+\subsubsection{Data Handling}
+Whether the data can be accessed \textit{directly} in the task or the user has to request them from a \textit{container}.
+For instance, the data can be retrieved through a future.
+\begin{table}[H]
+	\caption{Data Handling}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Data Handling.tex"}
+\end{table}
+
+\subsubsection{Task Implementation}
+This indicates what kind of interface the user has to fill in to create a task which will be executed by the runtime of the programming model.
+The tasks can use a \textit{program} where the user has to provide the parameters through the API.
+It can also use a \textit{function pointer} which the user has to pass to the API as well as its parameters.
+The programing paradigm can also be based on \textit{pragmas} which are used to delimit and describe the task.
+Another possibility is a custom interface like a \textit{function with specific parameters} or a \textit{custom syntax}.
+\begin{table}[H]
+	\caption{Task Implementation}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Task Implementation.tex"}
+\end{table}
+
+\subsubsection{Portability Accelerators}
+Whether the programming model is able to support multiple accelerators architectures.
+\begin{table}[H]
+	\caption{Portability Accelerators}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Portability Accelerators.tex"}
+\end{table}
+
+\subsection{Task and Data Management}
+\subsubsection{Dependency Type}
+Whether \textit{data} or \textit{control} dependencies are provided by the user.
+It can be \textit{both}.
+\begin{table}[H]
+	\caption{Dependency Type}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Dependency Type.tex"}
+\end{table}
+
+\subsubsection{Worker Management}
+Whether the worker thread or process which hosts the tasks has to be started and maintained by the user (\textit{explicit}) or is provided by the runtime (\textit{implicit}).
+\begin{table}[H]
+	\caption{Worker Management}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Worker management.tex"}
+\end{table}
+
+\subsubsection{Interoperability}
+Whether it can be integrated (\textit{callee}) into another language, can call other languages (\textit{caller}) or \textit{both}.
+\begin{table}[H]
+	\caption{Interoperability}
+	\centering
+	\input{chapters/taxonomy/_table_taxo_Interoperability.tex}
+\end{table}
+
+\subsubsection{Data Distribution}
+How the data distribution is handled in the programming model.
+\textit{Implicit} data distribution means that the runtime system decides where to place the data on the nodes whereas \textit{explicit} data distribution means that the user has to specify the distribution of the data across the nodes.
+\begin{table}[H]
+	\caption{Data Distribution}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Data Distribution.tex"}
+\end{table}
+
+\subsubsection{Task Binding}
+How the tasks are bind to the allocated hardware resources.
+The binding can be \textit{implicit} when the runtime does it or \textit{explicit} when the user has to provide the binding.
+\begin{table}[H]
+	\caption{Task Binding}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Task Binding.tex"}
+\end{table}
+
+\subsubsection{Task Insertion}
+Whether new tasks can be added to the task pool during the execution of the already scheduled tasks.
+\begin{table}[H]
+	\caption{Task Insertion}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Task Insertion.tex"}
+\end{table}
+
+\subsection{Programming Model Features}
+\subsubsection{Dependency Expression}
+This feature describes how the dependencies between the tasks are represented in the considered model.
+The possibilities include a \textit{graph}, a \textit{directed acyclic graph} or DAG, a \textit{tree} and a \textit{Petri Net}.
+\begin{table}[H]
+	\caption{Dependency Expression}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Dependency Expression.tex"}
+\end{table}
+
+
+\subsubsection{Communication Model}
+How data are sent from a task to another.
+The runtime system can use \textit{message passing} (msg), \textit{global address space} (gas) or the \textit{file system} (fs).
+\begin{table}[H]
+	\caption{Communication Model}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Communication Model.tex"}
+\end{table}
+
+\subsubsection{Fault Tolerance}
+Whether fault tolerance is supported.
+\begin{table}[H]
+	\caption{Fault Tolerance}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Fault Tolerance.tex"}
+\end{table}
+
+\subsubsection{Implementation Type}
+This describes how the programming model API is addressed.
+It can be done through a \textit{library}, a \textit{language extension} or a \textit{language}.
+\begin{table}[H]
+	\caption{Implementation Type}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Implementation Type.tex"}
+\end{table}
+
+\subsubsection{Data persistence}
+Support for data persistence.
+\begin{table}[H]
+	\caption{Data persistence}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Data persistence.tex"}
+\end{table}
+
+\subsubsection{Scheduler Location}
+Whether the scheduler is \textit{centralized} or \textit{distributed}.
+\begin{table}[H]
+	\caption{Scheduler Location}
+	\centering
+	\input{"chapters/taxonomy/_table_taxo_Scheduler Location.tex"}
+\end{table}
+
+%\subsubsection{}
+%\begin{table}[H]
+%	\caption{}
+%	\centering
+%	\input{"chapters/taxonomy/_table_taxo_.tex"}
+%\end{table}
+
+
+\subsection{Other ideas}
+\subsubsection{Scheduling policy}
 The scheduling policy is how the tasks are ordered during the execution of the task-based application.
 The dependencies between the tasks are respected by the scheduler.
-It can also be optimised to reduce the data migrations across the nodes and try to execute tasks on the node where the data are present.
+It can also be optimized to reduce the data migrations across the nodes and try to execute tasks on the node where the data are present.
 
-\subsection{Dynamic workflow}
+\subsubsection{Dynamic workflow}
 It represents the ability of the scheduler to adapt its policy during runtime depending on the results of the tasks.
 For instance, stop the application when the convergence is attained.
 
-\subsection{Type of task}
-It represents which code attribute is used as a task.
-For instance, it could be a piece of code, a function or a compiled application.
 
-\subsection{Parallel tasks}
-Are the tasks of the programming paradigm parallel ?
-Is it shared or distributed memory ?
-
-\subsection{Multi-backend}
+\subsubsection{Multi-backend}
 Is the programming paradigm able to use several backends ?
 Is it possible to use code in other languages as tasks ?
 
-\subsection{Control / Data flow graph}
-It represents how the programming paradigm interprets the dependencies between the tasks.
-It can use the data dependencies, the control dependencies or both of them.
-
-\subsection{Fault tolerant}
-Is the programming paradigm fault tolerant ?
-
-\subsection{Installation facilities}
-It represents the available facilities to install and use the programming paradigm.
-For instance, a Docker file can be provided to install it in a virtual environment or a Docker image can be available on the Docker hub so that it can be used directly.
-Moreover, the code can be pre-compiled for several architectures and the binaries provided to the users.
-
-\subsection{Code accessibility}
-How can the users access the source code ?
-The source code can be provided as a tar ball or in a public repository.
 
 %\subsection{Learnability}
 %\subsection{Understandability}
@@ -69,62 +206,20 @@ The source code can be provided as a tar ball or in a public repository.
 	\caption{Taxonomy I}
 	\centering
 	\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
-	\begin{tabular}{c|c|c|M{3.5cm}|M{3.5cm}|M{2cm}}
-		   Paradigm    &   Workflow    & Granularity & Communications                  & Scheduling policy         & Dynamic workflow \\ \hline
-		    PaRSEC     &      DAG      & Fine/Coarse & App (MPI)                       & Specialised rules         & Yes              \\
-		   YML/XMP     &     Graph     &   Coarse    & App (user defined, file system) & FIFO, changeable          & No               \\
-		    DAGMan     &      DAG      &    Fine     & User (file system)              & CONDOR                    & No               \\
-		    Swift      &    Worflow    &    Fine     & App (file system)               & Future task               & Yes              \\
-		   Swift/T     &    Worflow    & Fine/Coarse & App (MPI)                       & Future task               & Yes              \\
-		    Legion     & Tree of tasks &    Fine     & App (GASNet)                    & Differed until it is OK   & Yes              \\
-		    OmpSs      &               &   Middle    & User                            & Nanos++                   & No               \\
-		     CnC       &   Petri net   &   Middle    & App                             & Dedicated                 & No               \\
-		  TensorFlow   &      DAG      &    Fine     & App                             & Dedicated                 & Yes              \\
-		Apache Airflow &     Graph     &   Middle    &                                 &                           & No               \\
-		     HPX       & DAG(Futures)  &     Any     & App                             & Work-stealing scheduler   & Yes              \\
-		   Pegasus     &      DAG      &     Any     & User (file system)              & HTCondor Schedd (Default) & No
-	\end{tabular}
+	\input{chapters/taxonomy/_table_taxo_cat1.tex}
 \end{table}
 
 \begin{table}[H]
 	\caption{Taxonomy II}
 	\centering
 	\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
-	\begin{tabular}{c|c|c|c|M{3.5cm}|c}
-		   Paradigm    &   Type of task   & Parallel tasks & Multi-backend & Control / Data flow graph & Fault tolerant \\ \hline
-		    PaRSEC     &     function     &       No       &      No       & Data(PTG) / Control(DTD)  &       No       \\
-		   YML/XMP     &    Component     &      Yes       &      Yes      & Both                      &      Yes       \\
-		    DAGMan     &   Application    &       No       &      No       & Data                      &                \\
-		    Swift      &   Application    &       No       &      Yes      & Data                      &       No       \\
-		   Swift/T     & (//) func/script &      Yes       &      Yes      & Data                      &       No       \\
-		    Legion     &     Function     &       No       &      No       & Control                   &       No       \\
-		    OmpSs      &  Block of code   &       No       &      No       & Control                   &       No       \\
-		     CnC       &  Block of code   &       No       &      No       & Both                      &                \\
-		  TensorFlow   &     Function     &      Yes       &      No       & Data                      &      Yes       \\
-		Apache Airflow & Job on Services  &                &      Yes      & Control                   &                \\
-		     HPX       &     function     &       No       &      No       & Data                      &       No       \\
-		   Pegasus     &   Application    &      Yes       &      Yes      & Control                   &      Yes
-	\end{tabular}
+	\input{chapters/taxonomy/_table_taxo_cat2.tex}
 \end{table}
 
 \begin{table}[H]
 	\caption{Taxonomy III}
 	\centering
-	\begin{tabular}{c|c|c}
-		Paradigm       & Installation facilities        & Code accessibility         \\ \hline
-		PaRSEC         & Complex dependencies + Docker  & Public (bitbucket)         \\
-		YML/XMP        & Complex dependencies + VM      & Restrained access (gitlab) \\
-		DAGMan         & Binaries                       & Public (github)            \\
-		Swift          & Binaries + Building though ant & Public (github)            \\
-		Swift/T        & Binaries + Install script      & Public (github)            \\
-		Legion         & Simple dependencies + Docker   & Public (github)            \\
-		OmpSs          & Docker + VM                    & Public (github)            \\
-		CnC            & Binaries + Docker              & Public (github)            \\
-		TensorFlow     & Docker + pip + Google Colab    & Public (github)            \\
-		Apache Airflow & Docker + pip                   & Public (github)            \\
-		HPX            & Binaries + Docker              & Public (github)            \\
-		Pegasus        & Binaries + VM                  & Public (github)            \\
-	\end{tabular}
+	\input{chapters/taxonomy/_table_taxo_cat3.tex}
 \end{table}
 
 
