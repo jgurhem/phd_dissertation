@@ -1136,6 +1136,22 @@ This process could be could be fully hidden from the user.
 Swift will not be studied further fo those reasons.
 
 \section{Application Deployment with Containers}
+Applications which use an uncommon software stack may be difficult to deploy on supercomputers.
+YML+XMP is an example of such an application.
+It depends on libraries that are not commonly installed on supercomputers like \textit{Util}, a library implemented for YML or \textit{OmniRPC} and the \textit{omnicompiler} which are used to compile and launch parallel and distributed XMP based tasks.
+Moreover, XMP tasks are compiled into an application which is executed by YML scheduler through \textit{OmniRPC} with \textit{MPI\_Comm\_spawn}.
+Very few MPI implementations support \textit{MPI\_Comm\_spawn} as used by YML and \textit{OmniRPC} so installing the whole software stack with the right versions and support on a supercomputer is challenging.
+
+To address this deployment issue, we created containers which can hold the recipe to compile and install YML+XMP for a given architecture.
+These containers can be built on the supercomputers if the user has the rights to do so or build locally then sent on the supercomputer for execution.
+The build recipe are used to create a lightweight system image containing all the libraries needed to run the applications.
+The YML+XMP containers are made with Docker and Singularity which are lightweight virtualization systems.
+They allow to build and install applications in a controlled environment similar to virtual machines but lighter and with better performances.
+
+Moreover, the use of container images is not limited to deployment on supercomputers.
+They can also be used to easily access complex software stack on the developers machines without having to fully install it.
+Therefore, they can gain in productivity and use the same environment as the one used on the supercomputer to develop the application locally.
+Finally, containers can be used to replicate software stack and application development on other supercomputers and reproduce experiments on machine which support containers.
 
 
 % chapter transition
