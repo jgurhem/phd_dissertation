@@ -1778,3 +1778,87 @@ numpages = {1}
   year =      "2019",
   url =       "http://www.sci.utah.edu/publications/Sah2019a/00_Uintah_Resiliency.pdf",
 }
+
+@InProceedings{PetiW1992,
+author="Petiton, Serge
+and Weill-Duflos, Christine",
+editor="Boug{\'e}, Luc
+and Cosnard, Michel
+and Robert, Yves
+and Trystram, Denis",
+title="Massively parallel preconditioners for the sparse conjugate gradient method",
+booktitle="Parallel Processing: CONPAR 92---VAPP V",
+year="1992",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="373--378",
+abstract="We study the conjugate gradient method to solve large sparse linear systems with two ways of preconditioning: the polynomial and the ILU preconditionings. A parallel version is evaluated on the Connection Machine 2 (CM-2) with large sparse matrices. Results show that we must find a tradeoff between high performance (in terms of Mflops) and fast convergence. We first conclude that to find efficient methods on massively parallel computers, especially when irregular structures were used, parallelising usual algorithms is not always the most efficient way. Then, we introduce the new massively parallel hybrid polynomial-ILUTmp (l, $\epsilon$, d) preconditioning for distributed memory machines using a data parallel programming model.",
+isbn="978-3-540-47306-0"
+}
+
+@article{GeleC1992,
+author = {Gelernter, David and Carriero, Nicholas},
+title = {Coordination Languages and Their Significance},
+year = {1992},
+issue_date = {Feb. 1992},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {35},
+number = {2},
+issn = {0001-0782},
+url = {https://doi.org/10.1145/129630.129635},
+doi = {10.1145/129630.129635},
+journal = {Commun. ACM},
+month = feb,
+pages = {97–107},
+numpages = {11},
+keywords = {Linda, coordination languages}
+}
+
+@article{CaGMS1994,
+title = "The Linda alternative to message-passing systems",
+journal = "Parallel Computing",
+volume = "20",
+number = "4",
+pages = "633 - 655",
+year = "1994",
+note = "Message Passing Interfaces",
+issn = "0167-8191",
+doi = "https://doi.org/10.1016/0167-8191(94)90032-9",
+url = "http://www.sciencedirect.com/science/article/pii/0167819194900329",
+author = "Nicholas J Carriero and David Gelernter and Timothy G Mattson and Andrew H Sherman",
+keywords = "Message passing, LINDA, Virtual shared memory, Evaluation, Parallel programming paradigm",
+abstract = "The use of distributed data structures in a logically-shared memory is a natural, readily-understood approach to parallel programming. The principal argument against such an approach for portable software has always been that efficient implementations could not scale to massively-parallel, distributed memory machines. Now, however, there is growing evidence that it is possible to develop efficient and portable implementations of virtual shared memory models on scalable architectures. In this paper we discuss one particular example: Linda. After presenting an introduction to the Linda model, we focus on the expressiveness of the model, on techniques required to build efficient implementations, and on observed performance both on workstation networks and distributed-memory parallel machines. Finally, we conclude by briefly discussing the range of applications developed with Linda and Linda's suitability for the sorts of heterogeneous, dynamically-changing computational environments that are of growing significance."
+}
+
+@techreport{ButRL1992,
+  title={User's guide to the p4 parallel programming system},
+  author={Butler, Ralph and Lusk, Ewing},
+  year={1992},
+  institution={Technical Report ANL-92/17, Argonne National Laboratory}
+}
+
+@incollection{PGMLB2019,
+title = {PyTorch: An Imperative Style, High-Performance Deep Learning Library},
+author = {Paszke, Adam and Gross, Sam and Massa, Francisco and Lerer, Adam and Bradbury, James and Chanan, Gregory and Killeen, Trevor and Lin, Zeming and Gimelshein, Natalia and Antiga, Luca and Desmaison, Alban and Kopf, Andreas and Yang, Edward and DeVito, Zachary and Raison, Martin and Tejani, Alykhan and Chilamkurthy, Sasank and Steiner, Benoit and Fang, Lu and Bai, Junjie and Chintala, Soumith},
+booktitle = {Advances in Neural Information Processing Systems 32},
+editor = {H. Wallach and H. Larochelle and A. Beygelzimer and F. d\textquotesingle Alch\'{e}-Buc and E. Fox and R. Garnett},
+pages = {8024--8035},
+year = {2019},
+publisher = {Curran Associates, Inc.},
+url = {http://papers.neurips.cc/paper/9015-pytorch-an-imperative-style-high-performance-deep-learning-library.pdf}
+}
+
+@inproceedings{DeanG2004,
+author = {Dean, Jeffrey and Ghemawat, Sanjay},
+title = {MapReduce: Simplified Data Processing on Large Clusters},
+year = {2004},
+publisher = {USENIX Association},
+address = {USA},
+abstract = {MapReduce is a programming model and an associated implementation for processing and generating large data sets. Users specify a map function that processes a key/value pair to generate a set of intermediate key/value pairs, and a reduce function that merges all intermediate values associated with the same intermediate key. Many real world tasks are expressible in this model, as shown in the paper.Programs written in this functional style are automatically parallelized and executed on a large cluster of commodity machines. The run-time system takes care of the details of partitioning the input data, scheduling the program's execution across a set of machines, handling machine failures, and managing the required inter-machine communication. This allows programmers without any experience with parallel and distributed systems to easily utilize the resources of a large distributed system.Our implementation of MapReduce runs on a large cluster of commodity machines and is highly scalable: a typical MapReduce computation processes many terabytes of data on thousands of machines. Programmers find the system easy to use: hundreds of MapReduce programs have been implemented and upwards of one thousand MapReduce jobs are executed on Google's clusters every day.},
+booktitle = {Proceedings of the 6th Conference on Symposium on Operating Systems Design and Implementation - Volume 6},
+pages = {10},
+numpages = {1},
+location = {San Francisco, CA},
+series = {OSDI'04}
+}

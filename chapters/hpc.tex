@@ -1,5 +1,6 @@
-\chapter{Task Based High Performance Computing Chapter \label{chap:hpc}}
-High Performance Computing is one of the most active research area in computer science since it contributes to the solution of large scale problems in science, engineering and business.
+\chapter{Task Based High Performance Computing \label{chap:hpc}}
+High Performance Computing (HPC) is one of the most active research area in computer science since it contributes to the solution of large scale problems in science, engineering and business.
+HPC is more and more used with the arrival of Big Data applications and more recently to improve the increasing number of applications relying on Artificial Intelligence and Deep Learning.
 The improvement of HPC is due to the effort of several discipline including computer architecture design, parallel algorithms as well as programming models.
 This chapter gives a state-of-the-art of the task based programming models available to implement HPC applications and discuss the key challenges of the upcoming exascale.
 
@@ -8,6 +9,7 @@ This chapter gives a state-of-the-art of the task based programming models avail
 
 HPC or High Performance Computing is a computer science field which consists in aggregating computing power in order to obtain higher performances than a regular desktop computer.
 This power is currently achieved by connecting several computers to form a cluster for the small cases or a supercomputer for the very large cases.
+In the current machine, the computing resources are connected to allow mixing parallel computing (by taking advantage of multi-cores processors and large amount of processors) and distributed computing (the processor memory caches are not directly connected and must be accessed by performing communications through the network).
 Initially, the increase in performance of an application was obtained from the improvement of the processors used to run the application and especially from the increase of the frequency of the processors.
 Indeed, the processors were becoming faster with each new generation and thus, the applications ran faster on them.
 Then, the frequency became impossible to increase without the processors producing too much heat in the early 2000s \cite{KirkH2010}.
@@ -18,12 +20,13 @@ At this point, high performance application developers could not rely on the imp
 Instead of using one processing unit to run applications, several of them could be used at the same time to run multiple operations at the same time and create faster applications.
 This introduced the use of parallelism in order to achieve high performances on the HPC computing resources.
 Using multiple computing resources at the same time was not new since it was already researched in the 1980s with the Connection Machine \cite{Hilli1989phd} for instance.
+
 The change from the use of single core processors to the use of several multi-core processors also made a shift in the programming models used to run efficient applications on those architectures.
 Indeed, using several processors means that data from one processor has to be made available somehow to the other processors if they need this piece of data during their computation.
 Usually, this is done by sending message containing the data through the network connecting the processors between themselves.
 This greatly changed the way to implement applications for supercomputers since the developers also have to manage the data mapping on the different computing resources and the eventual data migrations to perform in order to obtain the intended results.
 
-Parallel and distributed programming models such as Message Passing Interface (MPI) \cite{MPIForum} and Parallel Virtual Machine (PVM) \cite{GBDJM1995} which are based on message-passing made their apparition in the early 1990s to address communications between several processors of supercomputers.
+Parallel and distributed programming models such as Message Passing Interface (MPI) \cite{MPIForum}, Parallel Virtual Machine (PVM) \cite{GBDJM1995}, Linda \cite{GeleC1992} \cite{CaGMS1994} and P4 \cite{ButRL1992}, which are based on message-passing, made their apparition in the early 1990s to address communications between several processors of supercomputers.
 In this programming model, the application uses several processes to make multiple computations at the same time on different cores and uses MPI or PVM to send data from one process to another one.
 They provide point-to-point and collective communication operations to help the developers to reorganize, migrate or perform operations on their distributed data.
 
@@ -31,9 +34,12 @@ However, developing a parallel high performance application with such a programm
 It takes time and may not be portable to other architectures without investing more time to make the structural modifications that may be necessary, for instance, to run on GPUs.
 An alternative that aims to reduce those costs and efficiently use the available hardware is task based programming models.
 Moreover, MPI may not be a solution efficient enough on exascale machines, especially in terms of fault tolerance and check-pointing \cite{SWAAB2014}.
+Besides, global operations like reductions, gathers and broadcasts are very expensive due to the high number of resources partaking in the operation and the cost of sending information to distant resources on the network connecting the nodes.
 Task-based approach can help in managing fault tolerance and check-pointing since the tasks could be restarted on another location and data from tasks saved at any moment.
-They allow to separate of the expression of the parallelism from its parallel implementation by letting the developer express the tasks and their dependencies while the runtime of the programming models tries to run as much tasks as possible at the same time, respects the dependencies and tries to obtain the best performances possible.
+Tasks allow to separate of the expression of the parallelism from its parallel implementation by letting the developer express the tasks and their dependencies while the runtime of the programming models tries to run as much tasks as possible at the same time, respects the dependencies and tries to obtain the best performances possible.
 This means that application experts can express algorithms through tasks without being required to understand the hardware in detail.
+Furthermore, the task-based approach can help to eliminate large scale global operations by encapsulating them inside tasks that run on a subset of the resources allocated to the application in which data can only be exchanged between tasks as their input and output parameters.
+Therefore the algorithms using global operations have to be redesigned in order to avoid them or express them as task operations.
 
 Several programming models which support the usage of tasks have appeared over the years.
 They implemented the task definition and management in different ways and have their unique features.
@@ -47,6 +53,14 @@ This section introduces programming models supporting the definition and the sch
 
 \subsection{Shared memory}
 First, task based programming models that are designed to work with shared memory architectures are introduced.
+Usually, the programming models are based on multi-threading where threads can be considered as workers which can execute the tasks.
+The scope of the task is limited to the thread although QUARK supports multi-threaded tasks.
+Some of the programming models introduced here can also offload data to accelerators like GPUs and execute tasks on them.
+
+TensorFlow is introduced in this dissertation since it based on tasks.
+However, tasks are limited to algebra and tensor operations implemented by the TensorFlow developer team since TensorFlow is Artificial Intelligence and Deep Learning oriented.
+PyTorch \cite{PGMLB2019} and MindSpore are alternative frameworks to TensorFlow with similar interfaces and functioning.
+They will not be covered in this dissertation since they have concepts similar to TensorFlow and are only providing Artificial Intelligence based tasks.
 
 \subsubsection{Cpp-Taskflow}
 Cpp-Taskflow \cite{LiHGW2019a} \cite{HuLGW2019} is a C++ parallel programming library based on the task dependency graph model.
@@ -162,6 +176,7 @@ CnC has a lot of explanations and possibilities but the development of an applic
 \subsection{Distributed memory}
 Then, task based programming models in which tasks are scheduled to run on distributed memory are introduced.
 In these programming models, the data dependencies are also taken into considerations to execute single thread (or process) tasks on multiple nodes.
+The data used by the tasks are described to the programming models so that the schedulers can execute the tasks where the data are stored to reduce data movement if it is supported or send the data where they will be consumed by tasks.
 
 \subsubsection{Uintah}
 Uintah \cite{GeCPJ2000} \cite{HumpB2019} is an open-source asynchronous many-task runtime system.
@@ -292,6 +307,8 @@ It uses third-party open-source packages under their own licenses.
 
 \subsection{Tasks with distributed memory}
 Finally, task based programming models in which tasks are parallel and distributed functions or applications capable of running on several nodes are introduced.
+In this case, data are not always managed by the scheduler.
+Indeed, some of the programming models with parallel and distributed tasks use the file system to transmit data from one task to another by explicitly writing and reading data from files.
 
 \subsubsection{YML+XMP}
 YML \cite{DelEP2006} is a development and execution environment for scientific workflow applications over various platforms, such as HPC, Cloud, P2P and Grid with multilevel of parallelism.
@@ -300,8 +317,9 @@ YML can be adapted to different middlewares by changing its back-end.
 Currently, the proposed back-end \cite{TsSHP2013} uses OmniRPC-MPI \cite{SaHTS2001}, a grid RPC which supports master-worker parallel and distributed programs based on multi SPMD programming paradigms.
 This back-end is developed for large scale clusters such as Japanese K-Computer \cite{TsSHP2013}.
 A back-end for peer to peer networks is also available.
+Moreover, YML also supports fault tolerance \cite{TsuPS2015}.
 
-For the experiments, we use XMP to develop the YML components as introduced in \cite{TsSHP2013}.
+XMP can be used to implement YML components as introduced in \cite{TsSHP2013}.
 This allows two levels programming.
 The higher level is the graph (YML) and the second level is the PGAS component (XMP).
 In the components, YML needs complementary information to manage the computational resources and the data at best : the number of XMP processes for a component and the distribution of the data in the processes (template).
@@ -363,6 +381,7 @@ The upcoming exascale supercomputers are raising both hardware and software chal
 On one side, computing power is now achieved with the multiplication of computing resources.
 This leads to highly hierarchical supercomputer with hundreds of high level computing nodes which are made of several multi-core processors and eventually one or more accelerators.
 In each node, there is also several levels of memory with the RAM and the different cache level of each processors and accelerators.
+These machines tends to be both massively parallel with the large amount of diverse cores available and massively distributed with their multiple memory levels only accessible directly by a few cores whereas the local memory can be remotely accessed through data communications.
 Furthermore, there is the network connecting the nodes between themselves.
 Each node cannot be directly connected to all the others since it would be very costly with the large amount of computing nodes available in the supercomputers.
 Therefore, the network is also becoming more complex in order to support the communications between nodes.
@@ -374,7 +393,13 @@ These different architectures require different approaches to implement applicat
 The first challenge is to an architecture among all the architectures available.
 
 As there is multiple programming models that address one or more of the available architecture, the second challenge will be to find a parallel programming model that can take advantage of the targeted architecture while being compatible with the application to execute on the supercomputer.
+As the current machines tend to become massively parallel and distributed, system faults will happen more frequently on large scale applications since, even with a small probability of an error occurring on one of the computing resource, the large number of resources used increase the probability of an error occurring during the execution of the application.
+To avoid losing the computations already performed, check pointing allow the save of predefined application variable state regularly on disk and thus recovering the last state saved if an error occur.
 This is the second challenge.
+Task based programming models can help to address these challenges by providing an easy way to regularly save the state of an application and recover the computations.
+Indeed, the data of task based applications are managed by the scheduler so it is easy for it to save the data.
+Moreover, the recovery of the application means restarting to execute the graph of task where the last data were saved.
+Therefore, task based programming models with scheduler optimizing data movement and managing fault tolerance as well check pointing, while avoiding global operation by encapsulating them into smaller tasks, seem well adapted for these machines.
 
 The third challenge concerns the kind of application that will be run on supercomputers and the efficiency of their parallel algorithm as well as its implementation.
 The algorithm having the most operation that can be executed in parallel while reducing the number of communications will most likely obtain the best performances on this kind of systems even if there more computations locally.

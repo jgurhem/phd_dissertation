@@ -15,6 +15,15 @@
 In Chapter \ref{chap:hpc}, we introduced most of the current task based programming models.
 In this chapter, we select a few of them in order to use them in our experiments and implement parallel and distributed applications based on the methods presented in Chapter \ref{chap:methods}.
 We also describe in greater details the selected task based programming models.
+A YML+XMP application for dense linear algebra was previously implemented and was promoted in our research group so it used in this dissertation.
+Swift and Pegasus were chosen for their ability to run distributed and parallel tasks which is close to what is available in YML.
+We used Legion and Regent which is a simpler language made to more easily access Legion capabilities since Total is interested in Legion.
+HPX is a distributed extension of the C++ standard and is closely following C++ standards.
+It could become a standard way of defining and executing tasks on parallel and distributed resources.
+Therefore, HPX has been selected to implement our applications.
+TensorFlow is considered for its task based approach for linear algebra.
+It is also a library which is increasingly used and popularx.
+Finally, PaRSEC is used due to its integration into the linear algebra library DPLASMA and its dependency model based on data.
 
 \section{Message Passing Interface}
 The Message Passing Interface (MPI) \cite{MPIForum} is a standardized norm designed to work on a wide variety of parallel computers.
@@ -52,7 +61,7 @@ Then, the runtime will compute dependencies out of data pointers used by the tas
 In a distributed system, the data movements among the nodes are completely implicit.
 
 
-\begin{figure*}
+\begin{figure*}[h]
 \lstinputlisting[style=customcode,language=C,
 caption=Task in PaRSEC\label{lst:parsec_task}]{chapters/languages/parsec_task.c}
 \end{figure*}
@@ -561,12 +570,13 @@ HPX also provides allocators which helps to manage memory on the device and copy
 % TODO Mention Docker
 
 \subsubsection{YML}
-YML \cite{DelaP2004} \cite{DelEP2006} is a development and execution environment for scientific workflow applications over various platforms, such as HPC, Cloud, P2P and Grid.
+YML \cite{DelaP2004} \cite{DelEP2006} is a development and execution environment started in 2000 for scientific workflow applications over various platforms, such as HPC, Cloud, P2P and Grid.
 YML defines an abstraction over the different middlewares, so the user can develop an application that can be executed on different middlewares without making changes related to the middleware used.
 YML can be adapted to different middlewares by changing its back-end (Figure \ref{fig:schema}).
-Currently, the proposed back-end \cite{TsSHP2013} \cite{TsuPS2015} uses OmniRPC-MPI \cite{SaHTS2001} \cite{SatBT2003}, a grid RPC which supports master-worker parallel programs based on multi SPMD programming paradigm.
+Currently, the proposed back-end \cite{TsSHP2013} uses OmniRPC-MPI \cite{SaHTS2001} \cite{SatBT2003}, a grid RPC which supports master-worker parallel programs based on multi SPMD programming paradigm.
 This back-end is developed for large scale clusters such as Japanese K-Computer and Poincar\'e, the cluster of the \textit{Maison de la Simulation}.
 A back-end for peer to peer networks is also available.
+Moreover, YML also supports fault tolerance \cite{TsuPS2015}.
 The Figure \ref{fig:schema} shows the internal structure of YML.
 
 \textbf{YML applications} are based on a graph and a component model.
@@ -1157,6 +1167,7 @@ Finally, containers can be used to replicate software stack and application deve
 % chapter transition
 \paragraph{}
 We introduced several task based programming models and how to use them to implement task, define dependencies, register distributed data and how to execute the graph of tasks.
+This classification and the informations on how to use the programming models to define tasks, express dependencies as well as register data are a contribution of this dissertation.
 We also selected YML+XMP, PaRSEC and HPX to implement out applications and make out experiments.
 These programming models will be used in the following chapter to experiment on dense linear algebra.
 We will discuss our numerical experiments with the LU factorization and the solution of dense linear systems.

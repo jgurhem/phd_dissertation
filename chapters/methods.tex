@@ -287,10 +287,13 @@ This also means that this algorithm may be able to run faster than the two other
 
 In this section, we introduced the different meaning of block algorithm : the algorithms where the scalar operations are generalized into matrix operations or algorithms where the operations are reorganized in order to perform matrix operations (usually matrix product) on subset of the initial matrix.
 Moreover, we introduced the scalar and block algorithms for the LU factorization, the Gaussian elimination and the Gauss-Jordan elimination.
+
 Dense linear system solution is widely used in solvers for simulations so it is important to create robust and efficient library providing these operation since it will save time and computational resources.
 Simulations can also create sparse matrices to represent the simulated environment.
-In this case, direct method to solve linear systems based on the Gaussian elimination are not suitable since the factorization modify the rows of the matrices and may introduce new values at places where there is zeros in the sparse matrix.
-Iterative methods do not modify the input matrix and are used to deal with the sparse matrices.
+In this case, direct method to solve linear systems based on the Gaussian elimination are not suitable since the factorization modify the matrices and may introduce new values at places where there is zeros in the sparse matrix.
+However, it exist methods to limit the filling of the zeros values in the direct methods to solve linear systems but these methods are difficult to set up and parallelize.
+Moreover, they are not in the scope of this dissertation and, thus, they will not be covered.
+An alternative to that are iterative methods, which usually, do not modify the input matrix and are used to deal with the sparse matrices.
 Most of these iterative methods are based on the sparse matrix vector product which will be discussed in the next section.
 
 
@@ -327,7 +330,7 @@ Those zeros will also be part of computations while making operations on the mat
 Therefore, storing the sparse matrices into a more adapted format will reduce memory footprint and save operations on zeros.
 Figure \ref{fig:methods:dense_ex} shows a $5 \times 5$ sparse matrix stored as a dense matrix.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \begin{tabular}{|ccccc|}
 \hline
@@ -360,7 +363,7 @@ It is a key-value storage type.
 The key is the coordinates of the value in the matrix.
 
 The COO format is used in TensorFlow to store sparse matrices into tensors.
-%used in MaP Reduce
+This format is also used in Big Data libraries and, in particular, MapReduce \cite{DeanG2004} where the index tuple is used as key.
 
 The COO format has several useful properties.
 The values can be easily split and distributed by dividing the three vectors while keeping the coordinates-values pairs.
@@ -371,7 +374,7 @@ Only, the row and the column vectors have to be exchanged.
 
 Figure \ref{fig:methods:coo_ex} shows an example of the storage of the example matrix in COO format.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 row
 \bigskip
@@ -412,16 +415,17 @@ val
 \end{algorithm}
 
 \subsubsection{Compressed Sparse Row - CSR}
-The Compressed Sparse Row format (CSR) \cite{HacBG1971} \cite{Gusta1972} is a derivation of the COO format where the vector containing the index of the rows is compressed.
+The Compressed Sparse Row format (CSR) \cite{HacBG1971} \cite{Gusta1972} is similar to the COO format in which the vector containing the index of the rows is compressed.
 The array giving the row index of the value at the same position in the array of values is replaced by an array which gives the position of the beginning of each row in the column array.
 In COO, the row array has NNZ values (the number of non zero values) whereas there is only $N+1$ values (N is the dimension of the matrix) where N is smaller than NNZ.
 Therefore, it saves space in memory.
+A column version of this format called Compressed Sparse Column (CSC) exists.
+In CSC, the index array for the columns is compressed.
 
 However, inserting new values in a matrix stored in the CSR format implies to move the values in the column and values arrays after the inserted value.
 
-Figure \ref{fig:methods:csr_ex} shows an example of the storage of the example matrix in CSR format.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 idx
 \bigskip
@@ -449,6 +453,11 @@ val
 \caption{Sparse matrix stored in CSR format \label{fig:methods:csr_ex}}
 \end{figure}
 
+CSR is the default format used in most of the HPC libraries performing operations on sparse matrices.
+For instance, Intel MKL and Nvidia CuSparse are using the CSR format as input for the sparse matrices used in their routines.
+
+Figure \ref{fig:methods:csr_ex} shows an example of the storage of the example matrix in CSR format.
+
 
 \begin{algorithm}[h]
 	\DontPrintSemicolon
@@ -469,11 +478,7 @@ It is composed of two arrays : a one dimensional array which represents the offs
 The values array needs to be padded with zeros where there no values from the initial matrix in order to be used in the algorithms.
 This format is designed for matrices where diagonals are very populated since it needs a column in the values array for each diagonal where there is values.
 
-Figure \ref{fig:methods:dia_ex} shows an example of the storage of the example matrix in diagonal format.
-However, this example is not adapted to the diagonal storage format since it leaves a lot of padding values in the values matrices.
-For this format, a matrix where is non-zero values are located on the same diagonals is more interesting.
-
-\begin{figure}
+\begin{figure}[h]
 \centering
 \begin{tabular}{c|cccccc|}
 	\cline{2-7}
@@ -486,6 +491,10 @@ For this format, a matrix where is non-zero values are located on the same diago
 \end{tabular}
 \caption{Sparse matrix stored in diagonal format \label{fig:methods:dia_ex}}
 \end{figure}
+
+Figure \ref{fig:methods:dia_ex} shows an example of the storage of the example matrix in diagonal format.
+However, this example is not adapted to the diagonal storage format since it leaves a lot of padding values in the values matrices.
+For this format, a matrix where is non-zero values are located on the same diagonals is more interesting.
 
 \begin{algorithm}[h]
 	\DontPrintSemicolon
@@ -506,10 +515,7 @@ It uses two arrays with two dimensions to store the position of the values in th
 Each row of those arrays store the values in the rows of the original matrix without zeros and the column array store the column index of the value in the original matrix.
 The values array needs to be padded with zeros where there no values from the initial matrix in order to be used in the algorithms.
 
-Figure \ref{fig:methods:ell_ex} shows an example of the storage of the example matrix in Ellpack-Itpack format.
-
-
-\begin{figure}
+\begin{figure}[h]
 \centering
 \begin{tabular}{c|ccc|}
 	\cline{2-4}
@@ -527,6 +533,14 @@ Figure \ref{fig:methods:ell_ex} shows an example of the storage of the example m
 \caption{Sparse matrix stored in Ellpack-Itpack format \label{fig:methods:ell_ex}}
 \end{figure}
 
+Figure \ref{fig:methods:ell_ex} shows an example of the storage of the example matrix in Ellpack-Itpack format.
+
+As for CSR and CSC, the Ellpack-Itpack format has also a column variant in which the row index is stored instead of the index of the column index.
+
+This format also supports a way to split very large rows or columns depending on the version considered.
+It allows to reduce the memory occupied by the values.
+However, these methods are not described in this dissertation.
+
 \begin{algorithm}[h]
 	\DontPrintSemicolon
 	\caption{Matrix vector multiplication - ELL\label{fig:methods:ell_algo}}
@@ -542,7 +556,7 @@ Figure \ref{fig:methods:ell_ex} shows an example of the storage of the example m
 \subsubsection{Sparse General Pattern - SGP}
 The Sparse General Pattern format (SGP) was introduced in \cite{Petit1991} and there is an example of such format in \cite{PetiE1996}.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \begin{tabular}{c|ccc|}
 	\cline{2-4}
@@ -566,7 +580,7 @@ The Sparse General Pattern format (SGP) was introduced in \cite{Petit1991} and t
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \begin{tabular}{c|ccccc|}
 	\cline{2-6}
@@ -633,7 +647,7 @@ Finally, the sparse matrix can be reordered by applying permutation on it as to 
 
 \subsection{Test Matrices}
 
-The test matrices we will use to compare the performances are the C-diagonal Q-perturbed matrices introduced in \cite{HuguP2010}.
+The test matrices we will use to compare the performances are the C-diagonal Q-perturbed matrices introduced in \cite{PetiW1992} \cite{HuguP2010}.
 These matrices consist in C values above the diagonal including the diagonal with a probability of Q to change the column position of the value.
 Figure \ref{fig:cqmat} represent a $30 \times 30$ C-diagonal Q-perturbed sparse matrix Q=0.05 and C=4 where each black square is a value.
 
@@ -789,7 +803,7 @@ Moreover, two granularities of grids are used.
 The values of $A$ and $\tau$ are computed for the coarse grid and they are interpolated from the computed values for the fine grid.
 
 
-\subsection{Analysis of the results}
+\subsection{Analysis of the output by the geophysicists}
 The resulting image is analysed by geophysicists.
 If they think that the velocity model is coherent with the image, the model can be exploited.
 Otherwise, the velocity model is modified and the process of the Kirchhoff migration is reused until the geophysicists judge that the velocity model corresponds to the data.

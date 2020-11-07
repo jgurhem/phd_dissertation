@@ -398,6 +398,7 @@ YML allows more local communications than XMP and MPI.
 In YML, the communications are only made on a subset of cores while, in XMP, communications are made across all the cores.
 Furthermore, YML has a scheduler that manage the tasks and the data migrations between the tasks in order to optimize them.
 They can optimized further with YML asynchronous communications between tasks.
+Finally, MPI applications are very well adapted to the current systems so the performances of these applications are great if the application is well implemented.
 
 
 
@@ -537,6 +538,7 @@ In the middle (bottom) chart, $t_F$ corresponds to 4 (8).
 It translates how efficiently we are managing the addition of more resources to solve the same problem.
 
 Our MPI regular LU factorization is scaling very well as we can see on the charts.
+These results are expected since the current systems are well optimized to work with MPI applications.
 It even exceeds the ideal speed-up with matrices of size $16384 \times 16384$ (Fig. \ref{fig:strong_scaling} top chart) and $32768 \times 32768$ (Fig. \ref{fig:strong_scaling} middle chart).
 We think that it may be due to processes not having enough computations to do on 32 and 64 nodes matrices of size $16384 \times 16384$.
 Indeed, when increasing the size of the matrix to $32768 \times 32768$, the strong scalability for our MPI application seems more reasonable.
@@ -555,6 +557,7 @@ We can also see that PaRSEC and HPX are very close with matrices of size $49512 
 It seems that HPX may have a better scalability than PaRSEC on more than 64 nodes with matrices of size $49512 \times 49512$ if more nodes were available.
 
 Finally, our YML+XMP application has the best strong scalability compared to the other task-based programming models.
+As YML+XMP rely on the file system to pass data from one task to another, the performances depends on the efficiency of the file system and its capacity to manage IOs.
 Therefore, we think that this programming model will be well adapted to larger machines with a distributed system and integrated schedulers.
 
 \subsection{Results summary}
