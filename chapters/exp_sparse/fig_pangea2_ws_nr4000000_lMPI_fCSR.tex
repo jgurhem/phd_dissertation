@@ -1,0 +1,45 @@
+\begin{tabular}{ccccccccccc}
+\hline
+Cases & Nodes& BGC& BGR& CPT& GC& GR& LGC& LGR& median & N & Ncase \\
+\hline
+\multirow{5}{*}{('MPI', 'CSR', 0.0)}& 1& None& None& None& 1& 24& None& None& 0.4265& 3& 8\\
+& 2& None& None& None& 3& 16& None& None& 0.3797& 2& 10\\
+& 4& None& None& None& 2& 48& None& None& 0.9882& 2& 8\\
+& 8& None& None& None& 1& 192& None& None& 1.7951& 1& 1\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('MPI', 'CSR', 0.2)}& 1& None& None& None& 24& 1& None& None& 0.5984& 6& 8\\
+& 2& None& None& None& 1& 48& None& None& 0.3737& 3& 10\\
+& 4& None& None& None& 1& 96& None& None& 1.4285& 2& 8\\
+& 8& None& None& None& 1& 192& None& None& 2.2491& 1& 1\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('MPI', 'CSR', 0.4)}& 1& None& None& None& 24& 1& None& None& 0.6914& 6& 8\\
+& 2& None& None& None& 3& 16& None& None& 0.3745& 2& 10\\
+& 4& None& None& None& 1& 96& None& None& 1.7015& 2& 8\\
+& 8& None& None& None& 1& 192& None& None& 2.5584& 1& 1\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('MPI', 'CSR', 0.6)}& 1& None& None& None& 24& 1& None& None& 0.7616& 6& 8\\
+& 2& None& None& None& 3& 16& None& None& 0.3653& 2& 10\\
+& 4& None& None& None& 2& 48& None& None& 1.9821& 2& 8\\
+& 8& None& None& None& 1& 192& None& None& 2.975& 1& 1\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('MPI', 'CSR', 0.8)}& 1& None& None& None& 24& 1& None& None& 0.7825& 6& 8\\
+& 2& None& None& None& 1& 48& None& None& 0.3733& 3& 10\\
+& 4& None& None& None& 4& 24& None& None& 2.1065& 1& 7\\
+& 8& None& None& None& 1& 192& None& None& 3.3689& 1& 1\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('MPI', 'CSR', 1.0)}& 1& None& None& None& 24& 1& None& None& 0.7823& 6& 8\\
+& 2& None& None& None& 3& 16& None& None& 0.3697& 2& 10\\
+& 4& None& None& None& 4& 24& None& None& 2.1819& 1& 6\\
+& 8& None& None& None& 1& 192& None& None& 3.7631& 1& 1\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\end{tabular}
+
+
+%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:MPI -l format:CSR -l Q -l C:300 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_ws_nr4000000_lMPI_fCSR.pdf -xlabel "Nodes (Cores)" -ylabel "Time (s)" -cpn 24
+

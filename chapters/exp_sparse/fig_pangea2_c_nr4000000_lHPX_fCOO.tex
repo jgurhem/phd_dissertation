@@ -1,0 +1,33 @@
+\begin{tabular}{ccccccccccc}
+\hline
+Cases & Nodes& BGC& BGR& CPT& GC& GR& LGC& LGR& median & N & Ncase \\
+\hline
+\multirow{5}{*}{('HPX', 'COO', 75)}& 1& None& None& None& 1& 24& None& None& 7.3892& 1& 3\\
+& 2& None& None& None& 24& 2& None& None& 10.0172& 2& 10\\
+& 4& None& None& None& 8& 12& None& None& 12.4707& 2& 12\\
+& 8& None& None& None& 2& 96& None& None& 15.974& 1& 14\\
+& 16& None& None& None& 12& 32& None& None& 20.6364& 1& 16\\
+\hline
+\multirow{5}{*}{('HPX', 'COO', 150)}& 1& None& None& None& 8& 3& None& None& 8.613& 1& 3\\
+& 2& None& None& None& 16& 3& None& None& 10.2884& 1& 10\\
+& 4& None& None& None& 12& 8& None& None& 12.3237& 2& 12\\
+& 8& None& None& None& 64& 3& None& None& 15.8146& 1& 14\\
+& 16& None& None& None& 48& 8& None& None& 21.2318& 1& 16\\
+\hline
+\multirow{5}{*}{('HPX', 'COO', 225)}& 1& None& None& None& 1& 24& None& None& 9.9667& 1& 3\\
+& 2& None& None& None& 3& 16& None& None& 10.2253& 2& 10\\
+& 4& None& None& None& 6& 16& None& None& 12.1427& 2& 12\\
+& 8& None& None& None& 1& 192& None& None& 16.1701& 1& 14\\
+& 16& None& None& None& 6& 64& None& None& 21.0236& 1& 16\\
+\hline
+\multirow{5}{*}{('HPX', 'COO', 300)}& 1& None& None& None& 1& 24& None& None& 11.2856& 1& 8\\
+& 2& None& None& None& 12& 4& None& None& 11.2702& 3& 4\\
+& 4& None& None& None& 8& 12& None& None& 13.3681& 3& 3\\
+& 8& None& None& None& 192& 1& None& None& 16.6326& 2& 5\\
+& 16& None& None& None& 48& 8& None& None& 22.4555& 3& 4\\
+\hline
+\end{tabular}
+
+
+%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:HPX -l format:COO -l C -l NR:4000000 -l Q:0.4 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_c_nr4000000_lHPX_fCOO.pdf -xlabel "Nodes (Cores)" -ylabel "Time (s)" -cpn 24
+

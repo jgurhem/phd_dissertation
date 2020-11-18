@@ -1,0 +1,45 @@
+\begin{tabular}{ccccccccccc}
+\hline
+Cases & Nodes& BGC& BGR& CPT& GC& GR& LGC& LGR& median & N & Ncase \\
+\hline
+\multirow{5}{*}{('HPX', 'COO', 0.0)}& 1& None& None& None& 6& 4& None& None& 10.5814& 3& 8\\
+& 2& None& None& None& 3& 16& None& None& 18.7277& 1& 3\\
+& 4& None& None& None& 16& 6& None& None& 46.3712& 1& 12\\
+& 8& None& None& None& 48& 4& None& None& 118.6897& 1& 2\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('HPX', 'COO', 0.2)}& 1& None& None& None& 1& 24& None& None& 10.8874& 1& 8\\
+& 2& None& None& None& None& None& None& None& None& 0& 0\\
+& 4& None& None& None& 24& 4& None& None& 45.56& 1& 12\\
+& 8& None& None& None& 192& 1& None& None& 121.8814& 1& 2\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('HPX', 'COO', 0.4)}& 1& None& None& None& 1& 24& None& None& 11.2856& 1& 8\\
+& 2& None& None& None& None& None& None& None& None& 0& 0\\
+& 4& None& None& None& 48& 2& None& None& 45.365& 1& 12\\
+& 8& None& None& None& 192& 1& None& None& 115.4951& 1& 2\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('HPX', 'COO', 0.6)}& 1& None& None& None& 8& 3& None& None& 11.4685& 1& 8\\
+& 2& None& None& None& None& None& None& None& None& 0& 0\\
+& 4& None& None& None& 16& 6& None& None& 47.5753& 1& 12\\
+& 8& None& None& None& 48& 4& None& None& 122.1982& 1& 2\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('HPX', 'COO', 0.8)}& 1& None& None& None& 4& 6& None& None& 12.1933& 4& 8\\
+& 2& None& None& None& None& None& None& None& None& 0& 0\\
+& 4& None& None& None& 48& 2& None& None& 46.9856& 1& 12\\
+& 8& None& None& None& 192& 1& None& None& 121.3291& 1& 2\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('HPX', 'COO', 1.0)}& 1& None& None& None& 6& 4& None& None& 12.4809& 3& 8\\
+& 2& None& None& None& None& None& None& None& None& 0& 0\\
+& 4& None& None& None& 32& 3& None& None& 46.1019& 1& 12\\
+& 8& None& None& None& 192& 1& None& None& 118.6333& 1& 2\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\end{tabular}
+
+
+%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:HPX -l format:COO -l Q -l C:300 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_ws_nr4000000_lHPX_fCOO.pdf -xlabel "Nodes (Cores)" -ylabel "Time (s)" -cpn 24
+

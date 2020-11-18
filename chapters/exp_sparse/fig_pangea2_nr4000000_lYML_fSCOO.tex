@@ -1,0 +1,45 @@
+\begin{tabular}{ccccccccccc}
+\hline
+Cases & Nodes& BGC& BGR& CPT& GC& GR& LGC& LGR& median & N & Ncase \\
+\hline
+\multirow{5}{*}{('YML', 'SCOO', 0.0)}& 1& 1& 2& 24& 1& 48& 1& 24& 9.8943& 3& 3\\
+& 2& 1& 2& 24& 24& 2& 24& 1& 4.8819& 2& 4\\
+& 4& 2& 1& 48& 96& 1& 48& 1& 7.8062& 3& 4\\
+& 8& 4& 1& 48& 16& 12& 4& 12& 14.3977& 2& 4\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('YML', 'SCOO', 0.2)}& 1& 1& 2& 24& 1& 48& 1& 24& 10.0592& 3& 3\\
+& 2& 1& 2& 24& 24& 2& 24& 1& 4.769& 2& 4\\
+& 4& 2& 1& 48& 96& 1& 48& 1& 5.5962& 3& 4\\
+& 8& 4& 1& 48& 12& 16& 3& 16& 13.0276& 3& 4\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('YML', 'SCOO', 0.4)}& 1& 1& 2& 24& 1& 48& 1& 24& 11.3914& 3& 3\\
+& 2& 1& 2& 24& 24& 2& 24& 1& 4.9113& 2& 4\\
+& 4& 2& 1& 48& 96& 1& 48& 1& 4.9627& 3& 4\\
+& 8& 4& 1& 48& 16& 12& 4& 12& 14.7391& 2& 4\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('YML', 'SCOO', 0.6)}& 1& 1& 2& 24& 1& 48& 1& 24& 10.4709& 3& 3\\
+& 2& 1& 2& 24& 24& 2& 24& 1& 4.9965& 2& 4\\
+& 4& 2& 1& 48& 96& 1& 48& 1& 5.8494& 3& 4\\
+& 8& 4& 1& 48& 16& 12& 4& 12& 14.489& 2& 4\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('YML', 'SCOO', 0.8)}& 1& 1& 2& 24& 1& 48& 1& 24& 11.1206& 3& 3\\
+& 2& 1& 2& 24& 24& 2& 24& 1& 4.8926& 2& 4\\
+& 4& 2& 1& 48& 96& 1& 48& 1& 5.285& 3& 4\\
+& 8& 4& 1& 48& 16& 12& 4& 12& 16.2152& 2& 4\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('YML', 'SCOO', 1.0)}& 1& 1& 2& 24& 1& 48& 1& 24& 11.1136& 3& 3\\
+& 2& 1& 2& 24& 24& 2& 24& 1& 5.0853& 2& 4\\
+& 4& 2& 1& 48& 96& 1& 48& 1& 7.3527& 3& 4\\
+& 8& 4& 1& 48& 16& 12& 4& 12& 16.2479& 2& 4\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\end{tabular}
+
+
+%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:YML -l format:SCOO -l Q -l NR:4000000 -l C:300 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_nr4000000_lYML_fSCOO.pdf -xlabel "Nodes (Cores)" -ylabel "Time (s)" -cpn 24
+

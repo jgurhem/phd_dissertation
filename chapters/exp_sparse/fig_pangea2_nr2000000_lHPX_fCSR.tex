@@ -1,0 +1,45 @@
+\begin{tabular}{ccccccccccc}
+\hline
+Cases & Nodes& BGC& BGR& CPT& GC& GR& LGC& LGR& median & N & Ncase \\
+\hline
+\multirow{5}{*}{('HPX', 'CSR', 0.0)}& 1& None& None& None& 1& 24& None& None& 2.7713& 3& 8\\
+& 2& None& None& None& 3& 16& None& None& 2.3553& 5& 8\\
+& 4& None& None& None& 3& 32& None& None& 1.7328& 5& 10\\
+& 8& None& None& None& 3& 64& None& None& 1.4099& 5& 14\\
+& 16& None& None& None& 6& 64& None& None& 1.3998& 5& 16\\
+\hline
+\multirow{5}{*}{('HPX', 'CSR', 0.2)}& 1& None& None& None& 1& 24& None& None& 3.1207& 3& 8\\
+& 2& None& None& None& 3& 16& None& None& 2.4732& 5& 8\\
+& 4& None& None& None& 3& 32& None& None& 1.6813& 5& 10\\
+& 8& None& None& None& 6& 32& None& None& 1.3919& 5& 14\\
+& 16& None& None& None& 6& 64& None& None& 1.3499& 5& 16\\
+\hline
+\multirow{5}{*}{('HPX', 'CSR', 0.4)}& 1& None& None& None& 2& 12& None& None& 3.2306& 5& 8\\
+& 2& None& None& None& 3& 16& None& None& 2.3914& 5& 8\\
+& 4& None& None& None& 3& 32& None& None& 1.6135& 5& 9\\
+& 8& None& None& None& 6& 32& None& None& 1.3646& 5& 14\\
+& 16& None& None& None& 8& 48& None& None& 1.2747& 5& 16\\
+\hline
+\multirow{5}{*}{('HPX', 'CSR', 0.6)}& 1& None& None& None& 2& 12& None& None& 2.9762& 5& 7\\
+& 2& None& None& None& 3& 16& None& None& 2.3215& 5& 8\\
+& 4& None& None& None& 3& 32& None& None& 1.6727& 5& 8\\
+& 8& None& None& None& 6& 32& None& None& 1.3905& 5& 14\\
+& 16& None& None& None& 24& 16& None& None& 1.344& 1& 16\\
+\hline
+\multirow{5}{*}{('HPX', 'CSR', 0.8)}& 1& None& None& None& 3& 8& None& None& 2.9165& 4& 7\\
+& 2& None& None& None& 3& 16& None& None& 2.2717& 5& 7\\
+& 4& None& None& None& 6& 16& None& None& 1.6427& 5& 8\\
+& 8& None& None& None& 6& 32& None& None& 1.3239& 5& 14\\
+& 16& None& None& None& 12& 32& None& None& 1.2116& 5& 16\\
+\hline
+\multirow{5}{*}{('HPX', 'CSR', 1.0)}& 1& None& None& None& 6& 4& None& None& 2.9215& 1& 6\\
+& 2& None& None& None& 6& 8& None& None& 2.0581& 1& 6\\
+& 4& None& None& None& 6& 16& None& None& 1.5335& 5& 6\\
+& 8& None& None& None& 12& 16& None& None& 1.2943& 1& 14\\
+& 16& None& None& None& 24& 16& None& None& 1.1825& 1& 16\\
+\hline
+\end{tabular}
+
+
+%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:HPX -l format:CSR -l Q -l NR:2000000 -l C:300 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_nr2000000_lHPX_fCSR.pdf -xlabel "Nodes (Cores)" -ylabel "Time (s)" -cpn 24
+

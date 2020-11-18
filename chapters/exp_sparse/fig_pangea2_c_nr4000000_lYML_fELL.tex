@@ -1,0 +1,33 @@
+\begin{tabular}{ccccccccccc}
+\hline
+Cases & Nodes& BGC& BGR& CPT& GC& GR& LGC& LGR& median & N & Ncase \\
+\hline
+\multirow{5}{*}{('YML', 'ELL', 75)}& 1& 1& 2& 24& 2& 24& 2& 12& 3.6036& 1& 2\\
+& 2& 2& 1& 48& 4& 24& 2& 24& 4.2961& 1& 2\\
+& 4& 2& 1& 48& 2& 48& 1& 48& 4.1189& 1& 2\\
+& 8& 1& 2& 192& 1& 384& 1& 192& 8.8528& 1& 2\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('YML', 'ELL', 150)}& 1& 1& 2& 24& 2& 24& 2& 12& 4.8159& 1& 2\\
+& 2& 2& 1& 48& 4& 24& 2& 24& 5.3378& 1& 2\\
+& 4& 2& 1& 48& 2& 48& 1& 48& 5.0541& 1& 2\\
+& 8& 1& 2& 192& 1& 384& 1& 192& 5.0007& 1& 2\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('YML', 'ELL', 225)}& 1& 1& 2& 24& 2& 24& 2& 12& 5.1348& 1& 2\\
+& 2& 2& 1& 48& 4& 24& 2& 24& 5.9499& 1& 2\\
+& 4& 2& 1& 48& 2& 48& 1& 48& 5.6531& 1& 2\\
+& 8& 1& 2& 192& 1& 384& 1& 192& 4.8241& 1& 2\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\multirow{5}{*}{('YML', 'ELL', 300)}& 1& 1& 2& 24& 2& 24& 2& 12& 7.3023& 2& 2\\
+& 2& 2& 1& 48& 4& 24& 2& 24& 8.1968& 2& 2\\
+& 4& 2& 1& 48& 2& 48& 1& 48& 5.1656& 2& 2\\
+& 8& 1& 2& 192& 1& 384& 1& 192& 9.2894& 2& 2\\
+& 16& None& None& None& None& None& None& None& None& 0& 0\\
+\hline
+\end{tabular}
+
+
+%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:YML -l format:ELL -l C -l NR:4000000 -l Q:0.4 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_c_nr4000000_lYML_fELL.pdf -xlabel "Nodes (Cores)" -ylabel "Time (s)" -cpn 24
+
