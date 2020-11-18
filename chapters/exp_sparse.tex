@@ -19,21 +19,26 @@ In the sparse matrix vector product case, the distributed and parallel algorithm
 There is several way of distributing the matrix : either by splitting the columns or the rows.
 A combination of the two previous way of distribution, the block distribution is also considered here.
 They are the main way of distributing a matrix although other ways exist like a cyclic distribution where the consecutive values are put alternatively on a distributed resource.
+The sub-matrices are stored in memory with a sparse storage format.
 
 
 \subsection{Data Distribution \label{sec:sla:data_distribution}}
 
 We consider three ways of distributing the data : a distribution by rows, by columns and by blocks.
 The distribution by rows and by columns are special cases of the distribution by blocks where the is only distribution across one row for the distribution by columns and where the is only distribution across one column for the distribution by rows.
+The blocks are sub-matrices kept on memory with a sparse storage format.
+In this section, we are considering different ways of distributing sparse matrices.
+However, we are not looking into the load balancing issues that may arise if some blocks are more populated than others.
 
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.5\textwidth]{pmv_c}
-	\caption{Distribution of the matrix by columns \label{fig:sparse:pmv_c}}
+	\caption{Distribution of the matrix by columns in which the sub-columns are compressed \label{fig:sparse:pmv_c}}
 \end{figure}
 
 The distribution by columns consists in splitting the rows and keeping the values of the same column in the same computing resource.
+These columns are stored in a sparse storage format locally.
 The input vector can also be split since only the rows of the vector corresponding to the columns stored in a computing resource are necessary for the matrix vector product.
 The Figure \ref{fig:sparse:pmv_c} shows a matrix distributed by rows to make a matrix product vector as well as the necessary input vector and the result vector.
 The result vector has the same size as the number of rows in the sub-matrices.
@@ -45,10 +50,11 @@ To obtain the global result, all the distributed results have to be summed.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.5\textwidth]{pmv_r}
-	\caption{Distribution of the matrix by rows\label{fig:sparse:pmv_r}}
+	\caption{Distribution of the matrix by rows in which the sub-rows are compressed \label{fig:sparse:pmv_r}}
 \end{figure}
 
 The distribution by rows consists in splitting the columns and keeping the values of the same row in the same computing resource.
+These rows are stored in a sparse storage format locally.
 In this case, the input vector cannot be split since a complete row of the matrix may be stored in each computing resource.
 In the sparse case, the rows may not be complete on each process but it can not be known in advance.
 The input vector will be duplicated in each computing resource.
@@ -61,12 +67,13 @@ To obtain the global result, all the distributed results have to be gathered (wh
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.5\textwidth]{pmv_2D}
-	\caption{Distribution of the matrix by rows and columns\label{fig:sparse:pmv_2D}}
+	\caption{Distribution of the matrix by rows and columns in which the blocks are compressed matrices \label{fig:sparse:pmv_2D}}
 \end{figure}
 
 The block distribution consists in both a distribution by rows and distribution by columns.
 The matrix in split in a 2D grid way.
 The $Nx \times Ny$ matrix is split in $Ngx \times Ngy$ sub-matrices.
+The sub-matrices are stored in a sparse storage format locally.
 In this case, the input vector is split across the columns of the matrix and the sub-vectors are duplicated on the sub-rows of the same column.
 The Figure \ref{fig:sparse:pmv_r} shows a matrix distributed by blocks to perform a matrix product vector as well as the necessary input vector and the result vector with $Ngx = 4$ and $Ngy = 4$.
 The result vector has the same size as the number of rows in the sub-matrices of the corresponding row.
@@ -330,7 +337,7 @@ These algorithms will be used to implement a task-based sparse matrix vector app
 
 \section{Numerical Experiments \label{sec:sla:exp}}
 In this section, a sparse matrix vector product using task based, distributed and parallel programming models as well as the numerical experiments performed.
-Three classes of programming models where chosen to implement the sparse matrix vector product.
+Three classes of programming models were chosen to implement the sparse matrix vector product.
 First, MPI, a message passing library was chosen since it is the main stream library used to perform communications and global operation across multiple nodes on supercomputers.
 Secondly, we chose to use a fine grain task based programming model in which dependencies between tasks are data oriented.
 HPX, Legion and PaRSEC are such programming models and we chose to use only HPX since they cover the same kind of properties.
