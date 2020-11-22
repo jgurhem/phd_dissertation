@@ -1,0 +1,24 @@
+\begin{tabular}{ccccc}
+\hline
+Cases & Nodes& median & N & Ncase \\
+\hline
+\multirow{4}{*}{('HPX',)}& 1& 24.8072& 16& 1\\
+& 2& 40.3836& 10& 1\\
+& 4& 45.0123& 9& 1\\
+& 8& 48.5345& 7& 1\\
+\hline
+\multirow{4}{*}{('MPI',)}& 1& 2.109& 18& 1\\
+& 2& 1.0453& 10& 1\\
+& 4& 0.5294& 10& 1\\
+& 8& 0.2675& 7& 1\\
+\hline
+\multirow{4}{*}{('MPIOMP',)}& 1& 6.4005& 15& 2\\
+& 2& 3.2214& 9& 2\\
+& 4& 5.2968& 1& 2\\
+& 8& 0.8418& 7& 1\\
+\hline
+\end{tabular}
+
+
+%python create_figure.py pangea2_km_results.json -f app:km_dgrid_gen_all -f success:true -f machine:Pangea2 -l lang -l nx:15000 -l ny:15000 -coi nodes -voi time_mig_max -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_kirchhoff/fig_pangea2_ss_nx15000_ny15000.pdf -xlabel "Nodes (Cores)" -ylabel "Time (s)" -cpn 24
+

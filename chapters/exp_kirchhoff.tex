@@ -7,12 +7,16 @@ The definition of the tasks is also introduced in this chapter.
 Moreover, we will also perform numerical experiments on supercomputers as well as discuss the results obtained from these experiments.
 
 \section{Algorithms}
+In this section, the algorithms for the  Kirchhoff seismic pre-stack depth migration will be introduced.
+To begin with, the basic algorithm of the method will be presented.
+Then, multi-grid algorithms will be introduced.
+Finally, parallelism in the method will be discussed and task based algorithms will be shown.
 
-\subsection{Algorithm of the method}
+\subsection{Basic Algorithm}
 
-The Algorithm \ref{alg:first_look} is raw.
-There is no optimisation but it is quite simple.
+Algorithm \ref{alg:first_look} is the basic and most simple algorithm of the Kirchhoff seismic pre-stack depth migration.
 It is a basis on which the other algorithms are founded.
+
 
 \begin{algorithm}[h]
 	\DontPrintSemicolon
@@ -145,7 +149,7 @@ In Algorithm \ref{alg:kirchhoff_task}, the tasks on the blocks of the coarse gri
 			B.FG(i, j, k).TS(s) = interpolateTime(i, j, k, B.TS(s), TSu, TSb, TSr, TSl, TSf, TSh)\;
 			B.FG(i, j, k).TR(r) = interpolateTime(i, j, k, B.TR(r), TRu, TRb, TRr, TRl, TRf, TRh)\;
 			B.FG(i, j, k).A(s,r) = interpolateAmplitude(i, j, k, B.A(s,r), TSu, TSb, TSr, TSl, TSf, TSh)\;
-			B.FG(i, j, k).v += B.FG(i, j, k).A(s, r) x ts,r(B.FG(i, j, k).TS(s) + B.FG(i, j, k).TR(r))\;
+			B.FG(i, j, k).v += B.FG(i, j, k).A(s, r) $\times$ ts,r(B.FG(i, j, k).TS(s) + B.FG(i, j, k).TR(r))\;
 		}
 	}
 \end{algorithm}
@@ -155,7 +159,7 @@ There is at least two level of parallelism.
 
 
 \subsection{Use of GPUs}
-This section aims to add the use of GPUs in the Kirchhoff migration.
+This section aims to add the use of GPUs in the Kirchhoff seismic pre-stack depth migration.
 GPUs are slower than CPUs but there a lot more computing unit in GPUs.
 They are used to process huge amount of parallel operations and they are very useful to perform simple operations on huge amount of data.
 Therefore, most of the operations inside the fine grid can be performed on GPU since the operations are the same on all the data.
@@ -175,134 +179,155 @@ It will reduce the communications to the file system containing the Green functi
 
 To go further, a computing node of the super-computer may be able to store some of the Green functions even if it does not use them in order to provide them to the other nodes as long as possible.
 
-\section{2D Implementations}
+\section{2D Implementation}
 
-At the moment, the application will be simplified with $A=1$.
-This application is available at \url{https://bitbucket.org/jgurhem/kirchhoffmigration/src/master/}.
+For this implementation, we simplified the Kirchhoff seismic pre-stack depth migration by considering the absorption to be equal to 1 and by only studying the 2D case.
+This application is available at \url{https://github.com/jgurhem/KirchhoffMigration}.
 
-\subsection{C, A=1}
+\subsection{C Kernel Description}
+The kernel performing the main operations for this method is implemented in C and provide functions to manage traces, Green functions and images.
+There is three kind of functions implemented in this kernel.
+The first type is IOs to read and write traces, images and Green functions from files.
+The second type of function is used to associate propagation time precomputed with Green functions to the trace that will be used to create the image.
+Then, the last type is the actual migration.
 
-The application is divided in several parts.
-An application generates a trace, another one adds the propagation time to a trace by interpolating the travel times generated from a third one.
-The last application make the migration from the trace with the travel time by interpolating the travel time at a finer grain than the one given in input.
-It can take a trace file as input or a text file containing a list of trace files.
+The migration function expect a fine grain image to update and a trace with the propagation times to make the round trip from the source of the trace to the receiver passing by every point of the large grain image.
+It performs an interpolation to compute the propagation time needed to travel from the source to the receiver for each point of the fine grain image by using the propagation times shipped with the trace.
+So, with the knowledge of the time it would take to make the round trip to the considered image point, we scale it to the trace time scale in order to retrieve the amplitude of the sound wave at this time in the trace.
+Then, the amplitude is added to the value at the corresponding point in the fine grain image.
+This amplitude could be scaled with the absorption at this point but we set the absorption to 1 for this implementation so this is not necessary here.
+The migration function has OpenMP directives to parallelize the work on the image.
+They can be activated by compiling the library with OpenMP.
 
-Figure \ref{fig:kirchhoff_trace} gives an example of a generated trace used to test the 2D application with these simplifications.
-Figure \ref{fig:kirchhoff_pt} is a plot of the propagation times to make the round trip from the source point located at (1000,0), each point of the figure and the receiver located at (1000, 0) in a uniform middle.
-Figure \ref{fig:kirchhoff_image} is the migrated image produced by the Kirchhoff migration with the trace of Figure \ref{fig:kirchhoff_trace} taken at several different source locations (the source and the receiver are located at the same place).
+For our experiments, we use a use constant velocity model to generate the initial propagation times.
+Therefore, we implemented a function to interpolate propagation times on a large grain grid from the constant velocity model.
+A function to generate simple traces has also been implemented to use in our experiments.
 
-
-\begin{figure}[H]
+\begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.65]{trace}
+	\includegraphics[width=.7\textwidth]{trace}
 	\caption{Trace example\label{fig:kirchhoff_trace}}
 \end{figure}
 
+Figure \ref{fig:kirchhoff_trace} gives an example of a generated trace used to test the 2D application with these simplifications.
+This trace used as test and is not used in our experiments.
+
 \begin{figure}[H]
 	\centering
-	\includegraphics{trace1000ppt.pdf}
+	\includegraphics[width=.7\textwidth]{trace1000ppt.pdf}
 	\caption{Propagation times for a source and receiver at the same place\label{fig:kirchhoff_pt}}
 \end{figure}
 
+Figure \ref{fig:kirchhoff_pt} is a plot of the propagation times to make the round trip from the source point located at (1000,0), each point of the figure and the receiver located at (1000, 0) in a uniform middle.
+
 \begin{figure}[H]
 	\centering
-	\includegraphics{img.pdf}
+	\includegraphics[width=.7\textwidth]{img.pdf}
 	\caption{Image obtained from a migrated trace\label{fig:kirchhoff_image}}
 \end{figure}
+Figure \ref{fig:kirchhoff_image} is the migrated image produced by the Kirchhoff migration with the trace of Figure \ref{fig:kirchhoff_trace} taken at several different source locations (the source and the receiver are located at the same place).
 
-\subsection{YML}
-Here is examples of what the YML graph of the Kirchhoff migration would look like.
-It shows the main application and the abstract of the Image component.
+\subsection{Distributed and Parallel Applications}
+Distributed and parallel applications were implemented on top of the C kernel in MPI and HPX.
 
-\begin{lstlisting}[tabsize=3, frame=single, basicstyle=\small\ttfamily, title=YML application]
-<?xml version="1.0"?>
-<application name="Kirchhoff">
-<description> Kirchhoff method
-</description>
-<graph>
+The MPI application uses the C functions to generate the traces and propagation time associated on the distributed processes.
+The image is distributed across the processes allocated to the application.
+The traces are duplicated on each process since they will be accessed depending on the travel time extracted from the propagation time shipped with the trace.
+The propagation times are generated with the trace and only the part that will be used in the migration is selected.
+Then, the migration can be executed on the local image with the local trace and propagation times.
 
-T:=100; #number of traces
-X:=10; Y:=5; Z:=10; Xp:=10; Yp:=10; Zp:=10;
+The HPX application is based on same principles.
+The image is split and managed by tasks.
+A task calling the migration available in the kernel has been implemented as well as tasks to generate the traces and the propagation times.
+There is also tasks to associate the trace with the appropriate propagation times.
 
-par(t:=1;T)
-do
-	compute Read(t,R,S)
-	par(x:=1;X)(y:=1;Y)(z:=1;Z)
-	do
-		compute Load(S,Gs,R,Gr,B[x][y][z],Tb,Tt)
-		if(|Tb-Ts|<0.01) then
-			par(xp:=1;Xp)(yp:=1;Yp)(zp:=1;Zp)
-			do
-				compute Image(t,S,Gs,R,Gr,B[x][y][z],img[xp][yp][zp])
-			enddo
-		endif
-
-	enddo
-enddo
-</graph>
-</application>
-\end{lstlisting}
-
-The application contains the calls for the components, then they will make the different tasks on the data : loading, computing and generation of the image.
-
-\begin{lstlisting}[tabsize=5, frame=single, basicstyle=\small\ttfamily, title=Abstract of Image task]
-<?xml version="1.0" ?>
-<component
-	type="abstract"
-	name="Image"
-	description="Abstract of the Image task" >
-<params>
-	<param name="t" type="Trace" mode="in" />
-	<param name="S" type="Source" mode="in" />
-	<param name="Gs" type="Green" mode="in" />
-	<param name="R" type="Receiver" mode="in" />
-	<param name="Gs" type="Green" mode="in" />
-	<param name="B" type="Block" mode="in" />
-	<param name="img" type="Image" mode="inout" />
-</params>
-</component>
-\end{lstlisting}
-
-\begin{lstlisting}[tabsize=5, frame=single, basicstyle=\small\ttfamily, title=Abstract of Read task]
-<?xml version="1.0" ?>
-<component
-	type="abstract"
-	name="Read"
-	description="Abstract of the Read task" >
-<params>
-	<param name="t" type="Trace" mode="in" />
-	<param name="S" type="Source" mode="out" />
-	<param name="R" type="Receiver" mode="out" />
-</params>
-</component>
-\end{lstlisting}
-
-\begin{lstlisting}[tabsize=5, frame=single, basicstyle=\small\ttfamily, title=Abstract of Load task]
-<?xml version="1.0" ?>
-<component
-	type="abstract"
-	name="Load"
-	description="Abstract of the Load task" >
-<params>
-	<param name="S" type="Source" mode="in" />
-	<param name="Gs" type="Green" mode="out" />
-	<param name="R" type="Receiver" mode="in" />
-	<param name="Gs" type="Green" mode="out" />
-	<param name="B" type="Block" mode="in" />
-	<param name="Tb" type="float" mode="in" />
-	<param name="Tt" type="float" mode="in" />
-</params>
-</component>
-\end{lstlisting}
-
-The abstract components contain all the informations about the data transfer and define the parameters of the component.
-With these data, YML is able to manage efficiently the data movements through the network and optimize the communications.
-
-The implementation components contain the code executed during the call of the component.
-There is no component implemented to make the Kirchhoff migration since the purpose is not to make a new program but propose new algorithms.
-
+These applications support the generation and processing of several traces.
+They were designed to perform scaling experiments on the migration with a distributed image.
 
 \section{2D Numerical Experiments}
+In this section, we perform numerical experiments on the Kirchhoff seismic pre-stack depth migration implemented in MPI, MPI+OpenMP and HPX on Pangea II.
+We perform strong scaling and weak scaling experiments as well as we study the influence of the number of OpenMP threads on our kernel.
+
+\subsection{Strong Scaling}
+Strong scaling experiments were performed on a 15000 $\times$ 15000 points image.
+We executed our Kirchhoff seismic pre-stack depth migration MPI, MPI+OpenMP and HPX applications on 10 generated traces with propagation times.
+We study the performances improvement of the migration while the number of nodes (cores) increases and the size of the image is kept constant.
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ss_nx15000_ny15000}}}
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ss2_nx15000_ny15000}}}
+
+        \caption{Strong scaling considering HPX, MPI and MPI+OpenMP for a 15000 $\times$ 15000 points image on Pangea II. Legend is (model). \label{fig:km:pangea2_ss}}
+\end{figure}
+
+Figure \ref{fig:km:pangea2_ss} shows the results of our strong scaling experiments on the Kirchhoff seismic pre-stack depth migration for a image of size of 15000 $\times$ 15000 and 10 traces.
+HPX execution times are increasing with the increase of computing resources which should not be the case.
+This may be due to the internal management of the memory in HPX as we have to convert the C data structures in C++ data structures that HPX can work with since the applications use the same kernel to perform the computations but the performances are different than MPI's.
+Moreover, HPX may induce image migration between nodes that are not necessary.
+MPI+OpenMP has issues when scaling from 2 to 4 nodes but scales well from 4 to 8.
+It has performances close to MPI, especially for 8 nodes.
+MPI has the best performances and also scales well.
+The applications use the same kernel but the management of the memory is up to the programming model used to implement the application.
+This explain the difference of performances between MPI and HPX.
+As for the differences between MPI and MPI+OpenMP, the OpenMP directives introduced in the kernel does not seem to take advantage of the cores available on the nodes since we use 4 processes per nodes and 6 OpenMP threads per process.
+
+\subsection{Weak Scaling}
+Weak scaling experiments were performed on a image which number of points increases with the number of nodes used.
+The base image size is 15000 $\times$ 15000 and the first dimension is multiplied by the number of nodes.
+For instance, the image used for 4 nodes is 60000 $\times$ 15000.
+We executed our Kirchhoff seismic pre-stack depth migration MPI, MPI+OpenMP and HPX applications on 10 generated traces with propagation times.
+We study the performances improvement of the migration while the number of nodes (cores) and the size of the image increases.
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nx15000_ny15000}}}
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws2_nx15000_ny15000}}}
+
+        \caption{Weak scaling considering HPX, MPI and MPI+OpenMP for a 15000 $\times$ 15000 points image on Pangea II. Legend is (model). \label{fig:km:pangea2_ws}}
+\end{figure}
+
+Figure \ref{fig:km:pangea2_ws} shows the results of our weak scaling experiments on the Kirchhoff seismic pre-stack depth migration for a image of base size of 15000 $\times$ 15000 which grows with the number of nodes (cores) and 10 traces.
+The ideal weak scaling is a constant execution time when the computing resources allocated to the application are increasing in the same proportions as the data.
+This is not the case for HPX.
+This may be due to HPX memory management and unexpected image and trace migrations between nodes which we are not able to control.
+MPI+OpenMP weak scaling the almost perfect until 8 nodes where there is a issue and the execution time is abnormally high.
+The MPI application has a weak scaling almost perfect.
+
+\subsection{Variation of the Number of OpenMP Threads}
+Experimentations on the MPI+OpenMP Kirchhoff seismic pre-stack depth migration application with different number of OpenMP threads allocated to the application have been performed for an image of 15000 $\times$ 15000 points.
+On one hand, we used only one process and changed the number of OpenMP threads allocated to the application until all the cores of the node are used.
+On the other hand, we used all the cores of the node but we changed the number of processes allocated to the MPI+OpenMP as well as the number of OpenMP threads allocated per process in order to keep one thread per core.
+
+\begin{table}[H]
+	\centering
+	\input{chapters/exp_kirchhoff/fig_pangea2_omp_testp1.tex}
+	\caption{Execution time for a pure OpenMP application while increasing the number of OpenMP threads allocated to the application for a 15000 $\times$ 15000 point image on Pangea II. \label{tab:km:omp_testp1}}
+\end{table}
+
+Table \ref{tab:km:omp_testp1} shows the execution times depending on the number of threads allocated to the pure OpenMP application on one node of Pangea II.
+We can see that the execution time does not change while increasing the number of threads except for 24 threads where it is very high.
+This shows that the OpenMP directives introduced in the kernel does not produce multi-threaded code that takes advantage of the available cores.
+
+\begin{table}[H]
+	\centering
+	\input{chapters/exp_kirchhoff/fig_pangea2_omp_testpm.tex}
+	\caption{Execution time for a hybrid MPI+OpenMP application while increasing the number of MPI process while keeping 24 OpenMP threads allocated to the application for a 15000 $\times$ 15000 point image. \label{tab:km:omp_testpm}}
+\end{table}
+
+Table \ref{tab:km:omp_testpm} shows the execution times for the MPI+OpenMP executed on one node of Pangea II where all the cores run an OpenMP thread and the number of MPI processes changes.
+The number of thread allocated for each MPI process is the number of cores (24) divided by the number of MPI processes allocated to the application.
+We can clearly see that the pure MPI application (24 processes and 1 thread per process) is the fastest case.
+There is also two unexpected values ; for 4 processes with 6 threads per process and for 12 processes with 2 threads per process.
+These values does not line up with the rest.
+Especially the value for 12 processes with 2 threads per process that should reasonably be between the value for 6 and 24 processes.
+
+In conclusion of our scaling experiments on the implementations of the Kirchhoff seismic pre-stack depth migration, our HPX application does not scale very well both in term of weak and strong scaling compared to our MPI application.
+In the MPI application, the location of each piece of data can be exactly controlled and there are no communications during the migration.
+On the contrary, the data migrations in our HPX application are up to the runtime of the programming model.
+Therefore, there may be migration of the images and the traces across the nodes which reduce the performances.
+Moreover, there is a conversion between the C data structures used in the C kernel and the C++ data structure used in HPX that may also decrease the performances of the application since the data are not converted in the C based MPI application.
+Finally, the introduction of OpenMP directives in the kernel is not successful since the performances are not improved with an hybrid MPI+OpenMP implementation compared to a pure MPI implementation.
 
 % chapter transition
 \paragraph{}
