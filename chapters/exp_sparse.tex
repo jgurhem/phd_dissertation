@@ -703,7 +703,7 @@ Q induces variation for MPI in which the communications are very efficient and m
 Finally, CSR is clearly the storage format that have the best performances for MPI while it CSR obtains good performances with the other programming models, the other storage formats are also having interesting performances.
 Similarly to what happens with Q, the time spent out of the kernel smooths the performance differences due to the storage formats in HPX and YML+XMP.
 
-\subsubsection{Weak Scaling}
+\subsubsection{Weak Scaling 4 000 000 $\times$ 4 000 000 per node}
 %https://www.colorado.edu/rc/sites/default/files/attached-files/scaling_analysis.pdf
 %https://www.cse-lab.ethz.ch/wp-content/uploads/2018/11/amdahl_gustafson.pdf
 
@@ -726,11 +726,11 @@ Moreover, the size of the input and output vectors will increase depending on th
 Figure \ref{fig:sla:pangea2_ws_nr4000000_lHPX} summarizes the results obtained from the weak scaling experiments with HPX in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
 This figure shows the execution time for the different sparse storage formats depending on the number of nodes (cores) as well as the size of the matrix that increase with the number of nodes.
 The ideal weak scaling would be obtaining same execution time while increasing the data size and the number of computing resources in the same proportions.
-In this case, we observe a decrease of the execution time for COO, CSR and ELL which is strange since it should stay almost constant due to the increase of the workload per node.
 % todo update with results
-Then, the execution time almost triples from 2 nodes to 4 nodes and doubles from 4 to 8.
-This is very high for weak scaling performances since the ideal execution time would be to stay constant.
-We think that the increase of the vector size increased the time spent in the inefficient reduction and therefore produces a large overhead in weak scaling experiments for HPX.
+The execution times increase while they should be staying constant.
+This shows the impact of the reduction and/or gather, depending on the data distribution, on the global execution time since the tasks process sub-matrices of an equivalent size.
+As for the strong scaling experiments, the application takes more time with the COO storage format due to the reductions on a larger vector.
+
 
 \begin{figure}[H]
         \centering
@@ -745,9 +745,8 @@ We think that the increase of the vector size increased the time spent in the in
 Figure \ref{fig:sla:pangea2_ws_nr4000000_lMPI} summarizes the results obtained from the weak scaling experiments with HPX in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
 This figure shows the execution time for the different sparse storage formats depending on the number of nodes (cores) as well as the size of the matrix that increase with the number of nodes.
 % todo update with results
-In these weak scaling experiments, the values for 2 nodes are strange since the ideal weak scaling performances would be a constant execution time.
-For MPI, the weak scaling seems better than for HPX.
-Indeed, the increase from 4 to 8 nodes is less than 2 times the execution time on the previous number of nodes.
+The execution times are also increasing with MPI although the execution times are not as high.
+This shows that the reduction and/or gather, depending on the data distribution, has less impact on the MPI application than on the HPX application.
 
 
 \begin{figure}[H]
@@ -763,18 +762,62 @@ Indeed, the increase from 4 to 8 nodes is less than 2 times the execution time o
 Figure \ref{fig:sla:pangea2_ws_nr4000000_lYML} summarizes the results obtained from the weak scaling experiments with HPX in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
 This figure shows the execution time for the different sparse storage formats depending on the number of nodes (cores) as well as the size of the matrix that increase with the number of nodes.
 % todo update with results
-Similarly to HPX and MPI, the execution time for 2 node seems too low since it should be close or superior to the execution time on 1 node.
+Similarly to HPX and MPI, the execution time are increasing.
+They are increasing faster for YML that for HPX and MPI since YML also makes IOs to transmit data between tasks in addition to the reduction and/or gather depending on the data distribution.
 
 % todo update ccl
 We performed weak scaling experiments on the operation $A(Ax+x)$ with a sparse C-diagonal Q-perturbed matrices of size 4 000 000 $\times$ 4 000 000 per node with C = 3.
 We multiplied the base size of the matrix (4 000 000 $\times$ 4 000 000) by the number of nodes that were used to execute the applications.
-Our reduction implemented in HPX does not scale as well as the one available in MPI.
-Moreover, we did not perform enough experiments with YML+XMP to be affirmative.
-However, we can be relatively sure that there is an issue with the experiments on 2 nodes.
-A memory error may have occurred.
-Furthermore, there is more failed run for this weak scaling experiment than for the other experiments.
-Therefore, the fact that there was an issue is high.
-This issue may be too large matrices to fit in memory properly.
+The expected result is a constant execution time when the computing resources and the data increase in the same proportions.
+This the kind of experiments performed in this section.
+However, the results obtained differ from the ones expected.
+This is due to the communications (reductions and/or gathers depending on the data distribution) used to create the output vector and reuse it in the second sparse matrix vector.
+Moreover, the implementation of the reduction / gather in the HPX and YML applications is less efficient since they take more time than the MPI application while executing the same kernel on the same data.
+Finally, YML also uses the file system to transfer data between tasks which take more time.
+
+
+\subsubsection{Weak Scaling 3 000 000 $\times$ 3 000 000 per node}
+Weak scaling experiments have also been performed with a base matrix of size 3 000 000 $\times$ 3 000 000 per node with the same conditions as for 4 000 000 $\times$ 4 000 000.
+They were made to try to understand issues with the weak scaling experiments we did previously.
+It turned out to be an issue with \textit{int} data type overflowing due to the large amount of values used on more than 2 nodes.
+With 8 000 000 rows on 2 nodes and C = 300 values per row, there was 2 400 000 000 values which exceeds 2 147 483 647, the maximum integer possible to store in an \textit{int}.
+Once this issue was fixed, the weak scaling experiments were behaving more like what was expected.
+Therefore, these experiments were not strictly necessary anymore.
+We still performed them to confirm the results obtained with the 4 000 000 $\times$ 4 000 000 matrices as base.
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lHPX_fCSR}}}
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lHPX_fELL}}}
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lHPX_fCOO}}}
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lHPX_fSCOO}}}
+
+        \caption{Weak scaling considering HPX and several storage format for a 3 000 000 $\times$ 3 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr3000000_lHPX}}
+\end{figure}
+
+Figure \ref{fig:sla:pangea2_ws_nr3000000_lHPX} summarizes the results obtained from the weak scaling experiments with HPX in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
+This figure shows the execution time for the different sparse storage formats depending on the number of nodes (cores) as well as the size of the matrix that increase with the number of nodes.
+The execution times are similar to the ones obtain in Figure \ref{fig:sla:pangea2_ws_nr4000000_lHPX}.
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lMPI_fCSR}}}
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lMPI_fELL}}}
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lMPI_fCOO}}}
+        \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lMPI_fSCOO}}}
+
+        \caption{Weak scaling considering MPI and several storage format for a 3 000 000 $\times$ 3 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr3000000_lMPI}}
+\end{figure}
+
+Figure \ref{fig:sla:pangea2_ws_nr3000000_lMPI} summarizes the results obtained from the weak scaling experiments with HPX in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
+This figure shows the execution time for the different sparse storage formats depending on the number of nodes (cores) as well as the size of the matrix that increase with the number of nodes.
+In this case, we obtain the same kind of results as obtained with the 4 000 000 $\times$ 4 000 000 in Figure \ref{fig:sla:pangea2_ws_nr4000000_lMPI} although the execution times are lower due to the smaller output vectors.
+
+We performed weak scaling experiments on the operation $A(Ax+x)$ with a sparse C-diagonal Q-perturbed matrices of size 3 000 000 $\times$ 3 000 000 per node with C = 3.
+We multiplied the base size of the matrix (3 000 000 $\times$ 3 000 000) by the number of nodes that were used to execute the applications.
+These experiments were similar to the weak scaling experiments performed previously with a 4 000 000 $\times$ 4 000 000 base matrix.
+Similar execution times were obtained.
+This confirms the previous results and conclusions.
 
 \subsubsection{Influence of the Number of Values per Row}
 In this section, we perform strong scaling experiments on the operation $A(Ax+x)$ with a sparse C-diagonal Q-perturbed matrices of size 4 000 000 $\times$ 4 000 000 with several values of C.

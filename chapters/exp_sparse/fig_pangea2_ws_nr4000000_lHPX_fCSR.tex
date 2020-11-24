@@ -3,43 +3,43 @@
 Cases & Nodes& BGC& BGR& CPT& GC& GR& LGC& LGR& median & N & Ncase \\
 \hline
 \multirow{5}{*}{('HPX', 'CSR', 0.0)}& 1& None& None& None& 1& 24& None& None& 6.02& 1& 8\\
-& 2& None& None& None& 4& 12& None& None& 4.6412& 2& 9\\
-& 4& None& None& None& 3& 32& None& None& 14.4133& 1& 6\\
-& 8& None& None& None& 4& 48& None& None& 29.0781& 1& 2\\
+& 2& None& None& None& 3& 16& None& None& 10.5113& 2& 5\\
+& 4& None& None& None& 3& 32& None& None& 17.7907& 2& 5\\
+& 8& None& None& None& 4& 48& None& None& 30.5106& 2& 2\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \multirow{5}{*}{('HPX', 'CSR', 0.2)}& 1& None& None& None& 1& 24& None& None& 6.5434& 1& 8\\
-& 2& None& None& None& 3& 16& None& None& 4.5015& 2& 8\\
-& 4& None& None& None& 4& 24& None& None& 15.2702& 1& 6\\
-& 8& None& None& None& 6& 32& None& None& 28.5631& 1& 2\\
+& 2& None& None& None& 12& 4& None& None& 11.9426& 3& 6\\
+& 4& None& None& None& 3& 32& None& None& 16.7933& 2& 7\\
+& 8& None& None& None& 6& 32& None& None& 29.8528& 2& 3\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \multirow{5}{*}{('HPX', 'CSR', 0.4)}& 1& None& None& None& 4& 6& None& None& 6.8814& 3& 8\\
-& 2& None& None& None& 4& 12& None& None& 4.722& 2& 9\\
-& 4& None& None& None& 3& 32& None& None& 15.379& 1& 6\\
-& 8& None& None& None& 6& 32& None& None& 28.4273& 1& 2\\
+& 2& None& None& None& 3& 16& None& None& 11.4625& 2& 6\\
+& 4& None& None& None& 3& 32& None& None& 17.4156& 2& 8\\
+& 8& None& None& None& 6& 32& None& None& 30.1866& 2& 4\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \multirow{5}{*}{('HPX', 'CSR', 0.6)}& 1& None& None& None& 4& 6& None& None& 6.4473& 3& 8\\
-& 2& None& None& None& 3& 16& None& None& 4.6068& 2& 8\\
-& 4& None& None& None& 3& 32& None& None& 14.9363& 1& 5\\
-& 8& None& None& None& 6& 32& None& None& 27.5795& 1& 2\\
+& 2& None& None& None& 3& 16& None& None& 11.0398& 2& 6\\
+& 4& None& None& None& 6& 16& None& None& 16.2708& 2& 7\\
+& 8& None& None& None& 6& 32& None& None& 27.8486& 2& 4\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \multirow{5}{*}{('HPX', 'CSR', 0.8)}& 1& None& None& None& 3& 8& None& None& 6.6464& 5& 8\\
-& 2& None& None& None& 3& 16& None& None& 4.5802& 2& 7\\
-& 4& None& None& None& 4& 24& None& None& 13.3578& 1& 5\\
-& 8& None& None& None& 6& 32& None& None& 26.6901& 1& 2\\
+& 2& None& None& None& 3& 16& None& None& 10.268& 2& 6\\
+& 4& None& None& None& 6& 16& None& None& 15.5339& 2& 7\\
+& 8& None& None& None& 6& 32& None& None& 27.7093& 2& 3\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \multirow{5}{*}{('HPX', 'CSR', 1.0)}& 1& None& None& None& 4& 6& None& None& 6.7341& 3& 8\\
-& 2& None& None& None& 3& 16& None& None& 4.5177& 2& 5\\
-& 4& None& None& None& 4& 24& None& None& 13.9709& 1& 4\\
-& 8& None& None& None& 4& 48& None& None& 29.261& 1& 1\\
+& 2& None& None& None& 6& 8& None& None& 9.8908& 1& 6\\
+& 4& None& None& None& 6& 16& None& None& 15.5798& 2& 6\\
+& 8& None& None& None& 6& 32& None& None& 28.8134& 2& 1\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \end{tabular}
 
 
-%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:HPX -l format:CSR -l Q -l C:300 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_ws_nr4000000_lHPX_fCSR.pdf -xlabel "Nodes (Cores)" -ylabel "Time (s)" -cpn 24
+%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:HPX -l format:CSR -l Q -l C:300 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_ws_nr4000000_lHPX_fCSR.pdf -xlabel "Nodes (Cores)" -ylabel "Log Time (s)" -cpn 24
 

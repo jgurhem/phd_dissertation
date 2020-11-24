@@ -1,0 +1,39 @@
+\begin{tabular}{cccccccccccc}
+\hline
+Cases & Nodes& BGC& BGR& CPT& GC& GR& LGC& LGR& median & N & Ncase \\
+\hline
+\multirow{4}{*}{('HPX', 'CSR', 0.0)}& 1& None& None& None& 1& 24& None& None& 4.4098& 2& 8\\
+& 2& None& None& None& 3& 16& None& None& 8.2101& 2& 6\\
+& 4& None& None& None& 3& 32& None& None& 12.209& 2& 5\\
+& 8& None& None& None& 6& 32& None& None& 20.5497& 2& 4\\
+\hline
+\multirow{4}{*}{('HPX', 'CSR', 0.2)}& 1& None& None& None& 1& 24& None& None& 4.7741& 2& 8\\
+& 2& None& None& None& 3& 16& None& None& 8.2633& 2& 6\\
+& 4& None& None& None& 3& 32& None& None& 13.064& 2& 6\\
+& 8& None& None& None& 6& 32& None& None& 21.9433& 2& 6\\
+\hline
+\multirow{4}{*}{('HPX', 'CSR', 0.4)}& 1& None& None& None& 2& 12& None& None& 5.0289& 4& 8\\
+& 2& None& None& None& 3& 16& None& None& 7.8967& 2& 6\\
+& 4& None& None& None& 6& 16& None& None& 12.3311& 2& 6\\
+& 8& None& None& None& 6& 32& None& None& 21.9057& 2& 6\\
+\hline
+\multirow{4}{*}{('HPX', 'CSR', 0.6)}& 1& None& None& None& 6& 4& None& None& 4.8867& 3& 8\\
+& 2& None& None& None& 3& 16& None& None& 7.7696& 2& 6\\
+& 4& None& None& None& 3& 32& None& None& 12.3992& 2& 6\\
+& 8& None& None& None& 6& 32& None& None& 20.7131& 2& 6\\
+\hline
+\multirow{4}{*}{('HPX', 'CSR', 0.8)}& 1& None& None& None& 6& 4& None& None& 4.659& 3& 8\\
+& 2& None& None& None& 4& 12& None& None& 7.7635& 2& 6\\
+& 4& None& None& None& 6& 16& None& None& 11.2853& 2& 6\\
+& 8& None& None& None& 6& 32& None& None& 20.1725& 2& 5\\
+\hline
+\multirow{4}{*}{('HPX', 'CSR', 1.0)}& 1& None& None& None& 4& 6& None& None& 4.6213& 2& 8\\
+& 2& None& None& None& 3& 16& None& None& 7.9622& 2& 6\\
+& 4& None& None& None& 6& 16& None& None& 11.6942& 2& 6\\
+& 8& None& None& None& 6& 32& None& None& 20.4316& 2& 4\\
+\hline
+\end{tabular}
+
+
+%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:HPX -l format:CSR -l Q -l C:300 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_ws_nr3000000_lHPX_fCSR.pdf -xlabel "Nodes (Cores)" -ylabel "Time (s)" -cpn 24
+

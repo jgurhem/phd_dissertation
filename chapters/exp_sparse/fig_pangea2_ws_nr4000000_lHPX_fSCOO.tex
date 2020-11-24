@@ -3,43 +3,43 @@
 Cases & Nodes& BGC& BGR& CPT& GC& GR& LGC& LGR& median & N & Ncase \\
 \hline
 \multirow{5}{*}{('HPX', 'SCOO', 0.0)}& 1& None& None& None& 1& 24& None& None& 7.5368& 5& 8\\
-& 2& None& None& None& 4& 12& None& None& 4.6471& 2& 9\\
-& 4& None& None& None& 2& 48& None& None& 16.0094& 1& 6\\
-& 8& None& None& None& 6& 32& None& None& 30.5133& 1& 2\\
+& 2& None& None& None& 3& 16& None& None& 12.3895& 2& 5\\
+& 4& None& None& None& 2& 48& None& None& 19.1863& 2& 5\\
+& 8& None& None& None& 4& 48& None& None& 31.6138& 2& 1\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \multirow{5}{*}{('HPX', 'SCOO', 0.2)}& 1& None& None& None& 1& 24& None& None& 8.2093& 5& 8\\
-& 2& None& None& None& 3& 16& None& None& 4.546& 2& 8\\
-& 4& None& None& None& 3& 32& None& None& 16.0405& 1& 6\\
-& 8& None& None& None& 4& 48& None& None& 32.0786& 1& 2\\
+& 2& None& None& None& 3& 16& None& None& 12.9192& 2& 6\\
+& 4& None& None& None& 3& 32& None& None& 19.4965& 2& 7\\
+& 8& None& None& None& 6& 32& None& None& 32.3998& 2& 2\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \multirow{5}{*}{('HPX', 'SCOO', 0.4)}& 1& None& None& None& 1& 24& None& None& 8.2436& 5& 8\\
-& 2& None& None& None& 3& 16& None& None& 4.6304& 2& 7\\
-& 4& None& None& None& 3& 32& None& None& 15.8925& 1& 5\\
-& 8& None& None& None& 4& 48& None& None& 29.711& 1& 2\\
+& 2& None& None& None& 3& 16& None& None& 13.4967& 2& 6\\
+& 4& None& None& None& 3& 32& None& None& 18.5743& 2& 7\\
+& 8& None& None& None& 6& 32& None& None& 31.8552& 2& 3\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \multirow{5}{*}{('HPX', 'SCOO', 0.6)}& 1& None& None& None& 3& 8& None& None& 8.2124& 5& 8\\
-& 2& None& None& None& 3& 16& None& None& 4.6849& 2& 8\\
-& 4& None& None& None& 2& 48& None& None& 15.8994& 1& 6\\
-& 8& None& None& None& 6& 32& None& None& 31.1714& 1& 2\\
+& 2& None& None& None& 3& 16& None& None& 12.0683& 2& 6\\
+& 4& None& None& None& 3& 32& None& None& 18.3084& 2& 6\\
+& 8& None& None& None& 6& 32& None& None& 31.2298& 2& 2\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \multirow{5}{*}{('HPX', 'SCOO', 0.8)}& 1& None& None& None& 4& 6& None& None& 7.8412& 1& 8\\
-& 2& None& None& None& 3& 16& None& None& 4.5583& 2& 7\\
-& 4& None& None& None& 4& 24& None& None& 13.6534& 1& 5\\
-& 8& None& None& None& 6& 32& None& None& 29.7923& 1& 2\\
+& 2& None& None& None& 3& 16& None& None& 11.3408& 2& 6\\
+& 4& None& None& None& 4& 24& None& None& 17.8643& 2& 5\\
+& 8& None& None& None& 6& 32& None& None& 29.4913& 2& 1\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \multirow{5}{*}{('HPX', 'SCOO', 1.0)}& 1& None& None& None& 3& 8& None& None& 8.2126& 5& 8\\
-& 2& None& None& None& 4& 12& None& None& 4.5743& 2& 6\\
-& 4& None& None& None& 3& 32& None& None& 14.9609& 1& 4\\
-& 8& None& None& None& 4& 48& None& None& 30.1564& 1& 1\\
+& 2& None& None& None& 6& 8& None& None& 10.8763& 1& 6\\
+& 4& None& None& None& 16& 6& None& None& 17.8971& 1& 4\\
+& 8& None& None& None& None& None& None& None& None& 0& 0\\
 & 16& None& None& None& None& None& None& None& None& 0& 0\\
 \hline
 \end{tabular}
 
 
-%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:HPX -l format:SCOO -l Q -l C:300 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_ws_nr4000000_lHPX_fSCOO.pdf -xlabel "Nodes (Cores)" -ylabel "Time (s)" -cpn 24
+%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:HPX -l format:SCOO -l Q -l C:300 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_ws_nr4000000_lHPX_fSCOO.pdf -xlabel "Nodes (Cores)" -ylabel "Log Time (s)" -cpn 24
 

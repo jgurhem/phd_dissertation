@@ -1,0 +1,39 @@
+\begin{tabular}{cccccccccccc}
+\hline
+Cases & Nodes& BGC& BGR& CPT& GC& GR& LGC& LGR& median & N & Ncase \\
+\hline
+\multirow{4}{*}{('MPI', 'SCOO', 0.0)}& 1& None& None& None& 1& 24& None& None& 0.39& 8& 8\\
+& 2& None& None& None& 1& 48& None& None& 0.5262& 5& 5\\
+& 4& None& None& None& 1& 96& None& None& 0.782& 3& 6\\
+& 8& None& None& None& 1& 192& None& None& 1.2741& 3& 7\\
+\hline
+\multirow{4}{*}{('MPI', 'SCOO', 0.2)}& 1& None& None& None& 24& 1& None& None& 0.5066& 9& 8\\
+& 2& None& None& None& 48& 1& None& None& 0.6638& 3& 5\\
+& 4& None& None& None& 96& 1& None& None& 1.0533& 3& 6\\
+& 8& None& None& None& 192& 1& None& None& 1.8023& 2& 7\\
+\hline
+\multirow{4}{*}{('MPI', 'SCOO', 0.4)}& 1& None& None& None& 24& 1& None& None& 0.5806& 9& 8\\
+& 2& None& None& None& 48& 1& None& None& 0.7273& 3& 5\\
+& 4& None& None& None& 96& 1& None& None& 1.08& 3& 6\\
+& 8& None& None& None& 192& 1& None& None& 1.8438& 2& 7\\
+\hline
+\multirow{4}{*}{('MPI', 'SCOO', 0.6)}& 1& None& None& None& 24& 1& None& None& 0.6196& 9& 8\\
+& 2& None& None& None& 48& 1& None& None& 0.7915& 3& 5\\
+& 4& None& None& None& 96& 1& None& None& 1.1287& 3& 6\\
+& 8& None& None& None& 192& 1& None& None& 1.8804& 2& 7\\
+\hline
+\multirow{4}{*}{('MPI', 'SCOO', 0.8)}& 1& None& None& None& 24& 1& None& None& 0.6312& 9& 8\\
+& 2& None& None& None& 48& 1& None& None& 0.822& 3& 5\\
+& 4& None& None& None& 96& 1& None& None& 1.1873& 3& 6\\
+& 8& None& None& None& 3& 64& None& None& 2.4283& 3& 6\\
+\hline
+\multirow{4}{*}{('MPI', 'SCOO', 1.0)}& 1& None& None& None& 24& 1& None& None& 0.6378& 9& 8\\
+& 2& None& None& None& 48& 1& None& None& 0.8519& 3& 5\\
+& 4& None& None& None& 96& 1& None& None& 1.2375& 3& 6\\
+& 8& None& None& None& 3& 64& None& None& 2.5318& 3& 6\\
+\hline
+\end{tabular}
+
+
+%python create_figure.py pangea2_tbsla_YML1x1.json -f op:a_axpx -f success:true -f matrixtype:cqmat -f machine:Pangea2 -l lang:MPI -l format:SCOO -l Q -l C:300 -s GR -s GC -s LGR -s LGC -s BGR -s BGC -s CPT -coi nodes -voi time_op -o /Users/administrateur/Desktop/work/Thesis/phd_dissertation/chapters/exp_sparse/fig_pangea2_ws_nr3000000_lMPI_fSCOO.pdf -xlabel "Nodes (Cores)" -ylabel "Time (s)" -cpn 24
+
