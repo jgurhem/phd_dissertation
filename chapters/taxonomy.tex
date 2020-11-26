@@ -13,7 +13,11 @@ With this property, we focus on \textit{shared memory} and \textit{distributed m
 \begin{table}[H]
 	\caption{Architecture}
 	\centering
-	\input{chapters/taxonomy/_table_taxo_Architecture.tex}
+	\begin{multicols}{2}
+		\input{chapters/taxonomy/_table_taxo_Architecture_p1.tex}
+
+		\input{chapters/taxonomy/_table_taxo_Architecture_p2.tex}
+	\end{multicols}
 \end{table}
 
 
@@ -24,7 +28,11 @@ It indicates if the programming model supports accelerators (for instance, GPUs)
 \begin{table}[H]
 	\caption{Heterogeneity}
 	\centering
-	\input{chapters/taxonomy/_table_taxo_Heterogeneity.tex}
+	\begin{multicols}{2}
+		\input{chapters/taxonomy/_table_taxo_Heterogeneity_p1.tex}
+
+		\input{chapters/taxonomy/_table_taxo_Heterogeneity_p2.tex}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Task Granularity}
@@ -35,7 +43,11 @@ Another option can be \textit{multi-node} where distributed memory technologies 
 \begin{table}[H]
 	\caption{Task Granularity}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Task Granularity.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Task Granularity_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Task Granularity_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Data Handling}
@@ -44,7 +56,11 @@ For instance, the data can be retrieved through a future.
 \begin{table}[H]
 	\caption{Data Handling}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Data Handling.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Data Handling_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Data Handling_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Task Implementation}
@@ -56,7 +72,11 @@ Another possibility is a custom interface like a \textit{function with specific 
 \begin{table}[H]
 	\caption{Task Implementation}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Task Implementation.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Implementation Type_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Implementation Type_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Portability Accelerators}
@@ -64,7 +84,11 @@ Whether the programming model is able to support multiple accelerators architect
 \begin{table}[H]
 	\caption{Portability Accelerators}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Portability Accelerators.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Portability Accelerators_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Portability Accelerators_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsection{Task and Data Management}
@@ -74,7 +98,11 @@ It can be \textit{both}.
 \begin{table}[H]
 	\caption{Dependency Type}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Dependency Type.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Dependency Type_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Dependency Type_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Worker Management}
@@ -82,7 +110,11 @@ Whether the worker thread or process which hosts the tasks has to be started and
 \begin{table}[H]
 	\caption{Worker Management}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Worker management.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Worker Management_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Worker Management_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Interoperability}
@@ -90,7 +122,11 @@ Whether it can be integrated (\textit{callee}) into another language, can call o
 \begin{table}[H]
 	\caption{Interoperability}
 	\centering
-	\input{chapters/taxonomy/_table_taxo_Interoperability.tex}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Interoperability_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Interoperability_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Data Distribution}
@@ -99,7 +135,11 @@ How the data distribution is handled in the programming model.
 \begin{table}[H]
 	\caption{Data Distribution}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Data Distribution.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Data Distribution_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Data Distribution_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Task Binding}
@@ -108,7 +148,11 @@ The binding can be \textit{implicit} when the runtime does it or \textit{explici
 \begin{table}[H]
 	\caption{Task Binding}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Task Binding.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Task Binding_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Task Binding_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Task Insertion}
@@ -116,7 +160,11 @@ Whether new tasks can be added to the task pool during the execution of the alre
 \begin{table}[H]
 	\caption{Task Insertion}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Task Insertion.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Task Insertion_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Task Insertion_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsection{Programming Model Features}
@@ -126,7 +174,11 @@ The possibilities include a \textit{graph}, a \textit{directed acyclic graph} or
 \begin{table}[H]
 	\caption{Dependency Expression}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Dependency Expression.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Dependency Expression_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Dependency Expression_p2.tex"}
+	\end{multicols}
 \end{table}
 
 
@@ -136,7 +188,11 @@ The runtime system can use \textit{message passing} (msg), \textit{global addres
 \begin{table}[H]
 	\caption{Communication Model}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Communication Model.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Communication Model_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Communication Model_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Fault Tolerance}
@@ -144,7 +200,11 @@ Whether fault tolerance is supported.
 \begin{table}[H]
 	\caption{Fault Tolerance}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Fault Tolerance.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Fault Tolerance_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Fault Tolerance_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Implementation Type}
@@ -153,15 +213,23 @@ It can be done through a \textit{library}, a \textit{language extension} or a \t
 \begin{table}[H]
 	\caption{Implementation Type}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Implementation Type.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Implementation Type_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Implementation Type_p2.tex"}
+	\end{multicols}
 \end{table}
 
-\subsubsection{Data persistence}
+\subsubsection{Data Persistence}
 Support for data persistence.
 \begin{table}[H]
-	\caption{Data persistence}
+	\caption{Data Persistence}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Data persistence.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Data Persistence_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Data Persistence_p2.tex"}
+	\end{multicols}
 \end{table}
 
 \subsubsection{Scheduler Location}
@@ -169,7 +237,11 @@ Whether the scheduler is \textit{centralized} or \textit{distributed}.
 \begin{table}[H]
 	\caption{Scheduler Location}
 	\centering
-	\input{"chapters/taxonomy/_table_taxo_Scheduler Location.tex"}
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Scheduler Location_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Scheduler Location_p2.tex"}
+	\end{multicols}
 \end{table}
 
 %\subsubsection{}
