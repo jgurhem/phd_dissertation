@@ -1,17 +1,22 @@
-\chapter{Taxonomy of Task-Based Languages}
+\chapter{Taxonomy of Task-Based Programming Models}
 \label{chap:taxonomy}
 
-This chapter introduces the taxonomy of the languages and the criterion deduced from the usage of the different languages.
+In this chapter, the taxonomy and the properties deduced from the usage of several task based programming models is introduced.
+This taxonomy also presents how each property is expressed in the different tasks programming models.
 
 \section{Taxonomy}
+The taxonomy of the task based programming models introduced in the previous chapter is detailed in this section.
 
 \subsection{Task Capabilities}
-
 \subsubsection{Architecture}
-This represent which kind of architecture is addressed by the considered programming model.
-With this property, we focus on \textit{shared memory} and \textit{distributed memory} architectures.
+The architecture supported by the task based programming models is an important property to take into consideration since it will impact the scale at which the task based programming models can be used.
+There is two main scale used in high performance computing : the shared memory and the distributed memory.
+Therefore, the two values considered for this property are the \textit{shared memory} and the \textit{distributed memory} architectures.
+
+In Table \ref{tab:taxo:prop_architecture}, the architecture which is supported by the considered task based programming models is introduced.
+
 \begin{table}[H]
-	\caption{Architecture}
+	\caption{Architecture property for each task based programming model \label{tab:taxo:prop_architecture}}
 	\centering
 	\begin{multicols}{2}
 		\input{chapters/taxonomy/_table_taxo_Architecture_p1.tex}
@@ -20,13 +25,15 @@ With this property, we focus on \textit{shared memory} and \textit{distributed m
 	\end{multicols}
 \end{table}
 
-
 \subsubsection{Heterogeneity}
-It indicates if the programming model supports accelerators (for instance, GPUs).
+This property indicates if the programming model supports accelerators (for instance, GPUs).
 \textit{Explicit} support means that the user has to provide the implementation of the task that will be run on the accelerator.
 \textit{Implicit} support means that the tasks can be run on different devices while the user has to provide only one implementation.
+
+In Table \ref{tab:taxo:prop_heterogeneity}, it is shown if the accelerator support is explicit or implicit for the considered task based programming models.
+
 \begin{table}[H]
-	\caption{Heterogeneity}
+	\caption{Heterogeneity property for each task based programming model \label{tab:taxo:prop_heterogeneity}}
 	\centering
 	\begin{multicols}{2}
 		\input{chapters/taxonomy/_table_taxo_Heterogeneity_p1.tex}
@@ -36,12 +43,17 @@ It indicates if the programming model supports accelerators (for instance, GPUs)
 \end{table}
 
 \subsubsection{Task Granularity}
-This represents the level of complexity of the task.
-The tasks can be run as a single \textit{thread} or process without multi-threading.
-They can also use multiple threads or processes up to one \textit{node} like OpenMP or MPI on shared memory.
-Another option can be \textit{multi-node} where distributed memory technologies are used inside a task like PGAS or MPI on several nodes.
+This property represents the amount of resources on which a task can be executed.
+For this study, we consider that either \textit{sequential}, \textit{parallel} or \textit{parallel and distributed} code can be executed as task.
+Usually, a sequential task is run as a lightweight thread, a thread or a single process without multi-threading.
+A parallel task can also use multiple threads or processes up to one node like OpenMP or MPI on shared memory.
+Finally, distributed and parallel resources like multiple nodes from a cluster can be allocated to parallel and distributed tasks.
+These tasks could be able to execute MPI or PGAS based code on their allocated resources.
+
+In Table \ref{tab:taxo:prop_task_granularity}, the granularity of the tasks of the considered task based programming models is presented.
+
 \begin{table}[H]
-	\caption{Task Granularity}
+	\caption{Task Granularity property for each task based programming model \label{tab:taxo:prop_task_granularity}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Task Granularity_p1.tex"}
@@ -51,10 +63,15 @@ Another option can be \textit{multi-node} where distributed memory technologies 
 \end{table}
 
 \subsubsection{Data Handling}
-Whether the data can be accessed \textit{directly} in the task or the user has to request them from a \textit{container}.
+This property describes how the data are accessed in a task.
+The data can be accessed \textit{directly}.
+For instance, the data can be accessed through function parameters.
+The data can also be requested or retrieved from a \textit{container}.
 For instance, the data can be retrieved through a future.
+
+In Table \ref{tab:taxo:prop_data_handling}, how to access the data from the tasks is described.
 \begin{table}[H]
-	\caption{Data Handling}
+	\caption{Data Handling property for each task based programming model \label{tab:taxo:prop_data_handling}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Data Handling_p1.tex"}
@@ -64,25 +81,33 @@ For instance, the data can be retrieved through a future.
 \end{table}
 
 \subsubsection{Task Implementation}
-This indicates what kind of interface the user has to fill in to create a task which will be executed by the runtime of the programming model.
+This property indicates what kind of interface the user has to fill in to create a task which will be executed by the runtime of the programming model.
 The tasks can use a \textit{program} where the user has to provide the parameters through the API.
 It can also use a \textit{function pointer} which the user has to pass to the API as well as its parameters.
 The programing paradigm can also be based on \textit{pragmas} which are used to delimit and describe the task.
 Another possibility is a custom interface like a \textit{function with specific parameters} or a \textit{custom syntax}.
+
+In Table \ref{tab:taxo:prop_task_implementation}, how the tasks are implemented is detailed.
 \begin{table}[H]
-	\caption{Task Implementation}
+	\caption{Task Implementation property for each task based programming model \label{tab:taxo:prop_task_implementation}}
 	\centering
 	\begin{multicols}{2}
-		\input{"chapters/taxonomy/_table_taxo_Implementation Type_p1.tex"}
+		\input{"chapters/taxonomy/_table_taxo_Task Implementation_p1.tex"}
 
-		\input{"chapters/taxonomy/_table_taxo_Implementation Type_p2.tex"}
+		\input{"chapters/taxonomy/_table_taxo_Task Implementation_p2.tex"}
 	\end{multicols}
 \end{table}
 
 \subsubsection{Portability Accelerators}
-Whether the programming model is able to support multiple accelerators architectures.
+This property indicates what kind of accelerators are supported by the task based programming models.
+They can support or generate \textit{CUDA} code and execute it on NVIDIA GPUs.
+There is also the possibility of supporting \textit{multiple} accelerator architectures.
+This may be achieved by having a suitable backend for each supported accelerator architecture.
+Another possibility is to let the \textit{user} chose how and which type of accelerator to use by interfacing with an accelerator programming language.
+
+In Table \ref{tab:taxo:prop_portability_accelerators}, the accelerators supported by the different task based programming models are shown.
 \begin{table}[H]
-	\caption{Portability Accelerators}
+	\caption{Portability Accelerators property for each task based programming model \label{tab:taxo:prop_portability_accelerators}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Portability Accelerators_p1.tex"}
@@ -93,10 +118,16 @@ Whether the programming model is able to support multiple accelerators architect
 
 \subsection{Task and Data Management}
 \subsubsection{Dependency Type}
-Whether \textit{data} or \textit{control} dependencies are provided by the user.
-It can be \textit{both}.
+This property describes how the dependencies between the tasks are provided by the user of the task based programming models.
+The user may have to provide \textit{control} dependencies between the tasks.
+They describe in which order the tasks can be executed and which tasks can be executed at the time.
+\textit{Data} dependencies can also be provided.
+This approach is used to infer the dependencies and the parallelism between the tasks by studying how the data are used by the tasks and how they flow from one task to the other.
+The user may have to provide \textit{both} dependency type although it is possible to convert a dependency graph type into the other with the appropriate informations.
+
+In Table \ref{tab:taxo:prop_dependency_type}, the dependency type used to describe the dependencies between the tasks in task based programming models is introduced.
 \begin{table}[H]
-	\caption{Dependency Type}
+	\caption{Dependency Type property for each task based programming model \label{tab:taxo:prop_dependency_type}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Dependency Type_p1.tex"}
@@ -106,9 +137,11 @@ It can be \textit{both}.
 \end{table}
 
 \subsubsection{Worker Management}
-Whether the worker thread or process which hosts the tasks has to be started and maintained by the user (\textit{explicit}) or is provided by the runtime (\textit{implicit}).
+This property indicates whether the worker thread or process which hosts the tasks in the task based programming models has to be started and maintained by the user (\textit{explicit}) or is provided by the runtime (\textit{implicit}).
+
+In Table \ref{tab:taxo:prop_worker_management}, the worker management is shown for each task based programming model.
 \begin{table}[H]
-	\caption{Worker Management}
+	\caption{Worker Management property for each task based programming model \label{tab:taxo:prop_worker_management}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Worker Management_p1.tex"}
@@ -118,9 +151,11 @@ Whether the worker thread or process which hosts the tasks has to be started and
 \end{table}
 
 \subsubsection{Interoperability}
-Whether it can be integrated (\textit{callee}) into another language, can call other languages (\textit{caller}) or \textit{both}.
+This property shows whether task based programming models can be integrated (\textit{callee}) into another language, can call other languages (\textit{caller}) or \textit{both}.
+
+In Table \ref{tab:taxo:prop_interoperability}, the interoperability of each task based programming model is detailed.
 \begin{table}[H]
-	\caption{Interoperability}
+	\caption{Interoperability property for each task based programming model \label{tab:taxo:prop_interoperability}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Interoperability_p1.tex"}
@@ -130,10 +165,12 @@ Whether it can be integrated (\textit{callee}) into another language, can call o
 \end{table}
 
 \subsubsection{Data Distribution}
-How the data distribution is handled in the programming model.
+This property describes how the data distribution is handled in the programming model.
 \textit{Implicit} data distribution means that the runtime system decides where to place the data on the nodes whereas \textit{explicit} data distribution means that the user has to specify the distribution of the data across the nodes.
+
+In Table \ref{tab:taxo:prop_data_distribution}, the data distribution management in the task based programming models is introduced.
 \begin{table}[H]
-	\caption{Data Distribution}
+	\caption{Data Distribution property for each task based programming model \label{tab:taxo:prop_data_distribution}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Data Distribution_p1.tex"}
@@ -143,10 +180,12 @@ How the data distribution is handled in the programming model.
 \end{table}
 
 \subsubsection{Task Binding}
-How the tasks are bind to the allocated hardware resources.
-The binding can be \textit{implicit} when the runtime does it or \textit{explicit} when the user has to provide the binding.
+This property describes how the tasks are bound to the allocated hardware resources.
+The binding can be \textit{implicit} when automatically determined by the task based programming runtime or \textit{explicit} when the user has to provide a binding map.
+
+In Table \ref{tab:taxo:prop_task_binding}, the task binding management of the task based programming models is highlighted.
 \begin{table}[H]
-	\caption{Task Binding}
+	\caption{Task Binding property for each task based programming model \label{tab:taxo:prop_task_binding}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Task Binding_p1.tex"}
@@ -156,9 +195,11 @@ The binding can be \textit{implicit} when the runtime does it or \textit{explici
 \end{table}
 
 \subsubsection{Task Insertion}
-Whether new tasks can be added to the task pool during the execution of the already scheduled tasks.
+This property indicates if new tasks can be added to the task pool during the execution of the already scheduled tasks.
+
+In Table \ref{tab:taxo:prop_task_insertion}, the insertion of new tasks during the execution of the tasks is described.
 \begin{table}[H]
-	\caption{Task Insertion}
+	\caption{Task Insertion property for each task based programming model \label{tab:taxo:prop_task_insertion}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Task Insertion_p1.tex"}
@@ -169,10 +210,12 @@ Whether new tasks can be added to the task pool during the execution of the alre
 
 \subsection{Programming Model Features}
 \subsubsection{Dependency Expression}
-This feature describes how the dependencies between the tasks are represented in the considered model.
+This property describes how the dependencies between the tasks are represented in the considered model.
 The possibilities include a \textit{graph}, a \textit{directed acyclic graph} or DAG, a \textit{tree} and a \textit{Petri Net}.
+
+In Table \ref{tab:taxo:prop_dependency_expression}, how the dependency are expressed in each task based programming model is detailed.
 \begin{table}[H]
-	\caption{Dependency Expression}
+	\caption{Dependency Expression property for each task based programming model \label{tab:taxo:prop_dependency_expression}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Dependency Expression_p1.tex"}
@@ -183,10 +226,12 @@ The possibilities include a \textit{graph}, a \textit{directed acyclic graph} or
 
 
 \subsubsection{Communication Model}
-How data are sent from a task to another.
+This property describes how data are sent from a task to another.
 The runtime system can use \textit{message passing} (msg), \textit{global address space} (gas) or the \textit{file system} (fs).
+
+In Table \ref{tab:taxo:prop_communication_model}, the communication model used in each task based programming model is shown.
 \begin{table}[H]
-	\caption{Communication Model}
+	\caption{Communication Model property for each task based programming model \label{tab:taxo:prop_communication_model}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Communication Model_p1.tex"}
@@ -196,9 +241,11 @@ The runtime system can use \textit{message passing} (msg), \textit{global addres
 \end{table}
 
 \subsubsection{Fault Tolerance}
-Whether fault tolerance is supported.
+This property indicates if the task based programming models support fault tolerance.
+
+In Table \ref{tab:taxo:prop_fault_tolerance}, the fault tolerance support is given for each task based programming model.
 \begin{table}[H]
-	\caption{Fault Tolerance}
+	\caption{Fault Tolerance property for each task based programming model \label{tab:taxo:prop_fault_tolerance}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Fault Tolerance_p1.tex"}
@@ -208,10 +255,12 @@ Whether fault tolerance is supported.
 \end{table}
 
 \subsubsection{Implementation Type}
-This describes how the programming model API is addressed.
+This property describes how the programming model API is included in an application.
 It can be done through a \textit{library}, a \textit{language extension} or a \textit{language}.
+
+In Table \ref{tab:taxo:prop_implementation_type}, the API access is introduced.
 \begin{table}[H]
-	\caption{Implementation Type}
+	\caption{Implementation Type property for each task based programming model \label{tab:taxo:prop_implementation_type}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Implementation Type_p1.tex"}
@@ -221,9 +270,11 @@ It can be done through a \textit{library}, a \textit{language extension} or a \t
 \end{table}
 
 \subsubsection{Data Persistence}
-Support for data persistence.
+This property indicates if the task based programming model supports data persistence.
+
+The support for data persistence is given in Table \ref{tab:taxo:prop_data_persistence}.
 \begin{table}[H]
-	\caption{Data Persistence}
+	\caption{Data Persistence property for each task based programming model \label{tab:taxo:prop_data_persistence}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Data Persistence_p1.tex"}
@@ -233,9 +284,13 @@ Support for data persistence.
 \end{table}
 
 \subsubsection{Scheduler Location}
-Whether the scheduler is \textit{centralized} or \textit{distributed}.
+This property describes where the scheduler instances of the task based programming models are located.
+It can be \textit{centralized} where there only one scheduler instance that manages all the tasks.
+The tasks can also be managed at the local level in the workers in a \textit{distributed} way.
+
+In Table \ref{tab:taxo:prop_scheduler_location}, the location of the scheduler is shown for each task based programming model.
 \begin{table}[H]
-	\caption{Scheduler Location}
+	\caption{Scheduler Location property for each task based programming model \label{tab:taxo:prop_scheduler_location}}
 	\centering
 	\begin{multicols}{2}
 		\input{"chapters/taxonomy/_table_taxo_Scheduler Location_p1.tex"}
@@ -252,20 +307,20 @@ Whether the scheduler is \textit{centralized} or \textit{distributed}.
 %\end{table}
 
 
-\subsection{Other ideas}
-\subsubsection{Scheduling policy}
-The scheduling policy is how the tasks are ordered during the execution of the task-based application.
-The dependencies between the tasks are respected by the scheduler.
-It can also be optimized to reduce the data migrations across the nodes and try to execute tasks on the node where the data are present.
-
-\subsubsection{Dynamic workflow}
-It represents the ability of the scheduler to adapt its policy during runtime depending on the results of the tasks.
-For instance, stop the application when the convergence is attained.
-
-
-\subsubsection{Multi-backend}
-Is the programming paradigm able to use several backends ?
-Is it possible to use code in other languages as tasks ?
+%\subsection{Other ideas}
+%\subsubsection{Scheduling policy}
+%The scheduling policy is how the tasks are ordered during the execution of the task-based application.
+%The dependencies between the tasks are respected by the scheduler.
+%It can also be optimized to reduce the data migrations across the nodes and try to execute tasks on the node where the data are present.
+%
+%\subsubsection{Dynamic workflow}
+%It represents the ability of the scheduler to adapt its policy during runtime depending on the results of the tasks.
+%For instance, stop the application when the convergence is attained.
+%
+%
+%\subsubsection{Multi-backend}
+%Is the programming paradigm able to use several backends ?
+%Is it possible to use code in other languages as tasks ?
 
 
 %\subsection{Learnability}
