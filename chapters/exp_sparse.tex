@@ -304,7 +304,7 @@ In this case, the reconstruction of the full output vector is made by summing al
 	}
 \end{algorithm}
 
-Algorithm \ref{alg:sparse:task_spmv_2D} performs the matrix vector product on the global matrix when it is distributed by columns as shown in Figure \ref{fig:sparse:pmv_2D}.
+Algorithm \ref{alg:sparse:task_spmv_2D} performs the matrix vector product on the global matrix when it is distributed as shown in Figure \ref{fig:sparse:pmv_2D}.
 With the 2D data distribution, each column of sub-matrices needs the corresponding sub-part of the input vector.
 Then, the \textit{SPMV} tasks can be run on each sub-matrix.
 In this case, the reconstruction of the full output vector is made by summing all the vectors which are results of the \textit{SPMV} task from the same row of sub-matrices then gathering the result of the sum in a complete vector.
@@ -357,11 +357,11 @@ The $N_r \times N_c$ matrix is divided into an $N_{gr} \times N_{gc}$ grid.
 This kernel is called in the MPI processes to perform the sparse matrix vector product on the local matrices.
 In MPI, $N_{gr} \times N_{gc}$ is equal to the number of avail processes in the application.
 This allow each process to manage its sub-matrix.
-It is also called in HPX tasks to perform the sparse matrix vector product on the sub-matrix managed into a tasks.
+The kernel is also called in HPX tasks to perform the sparse matrix vector product on the sub-matrix managed into a tasks.
 For HPX, there is no particular restrictions on $N_{gr}$ and $N_{gc}$ since there is no obligations to execute tasks on each worker process, even though, these workers could be idling due to the lack of tasks.
-Finally, it is also used in YML+XMP components (tasks) to perform the sparse matrix vector product in each processes allocated to each sparse matrix vector product task.
+Finally, the kernel is also used in YML+XMP components (tasks) to perform the sparse matrix vector product in each processes allocated to each sparse matrix vector product task.
 Afterwards, the output vector is combined inside the tasks then combined at the level of the graph of tasks.
-Since XMP is based on MPI, YML tasks have an allocated number of processes for each one of them.
+Each YML tasks have an allocated number of processes.
 Therefore, in order to make sure that each process works on a sub-matrix, the number of sub-matrices ($N_{tr} \times N_{tc}$) in the grid of sub-matrices in the tasks have to match the number of processes allocated to the tasks.
 In our application, each task has the same number of processes allocated, which means that, in order to fill each processes of the tasks, the number of rows (resp. columns) in the division of the global matrix has to match the number of rows (resp. columns) in the division of the matrix in the tasks multiplied by the number of rows (resp. columns) in the division of the matrix at the task level (see Figure \ref{fig:sparse:yml_matrix_div}).
 
@@ -772,7 +772,7 @@ The expected result is a constant execution time when the computing resources an
 This the kind of experiments performed in this section.
 However, the results obtained differ from the ones expected.
 This is due to the communications (reductions and/or gathers depending on the data distribution) used to create the output vector and reuse it in the second sparse matrix vector.
-Moreover, the implementation of the reduction / gather in the HPX and YML applications is less efficient since they take more time than the MPI application while executing the same kernel on the same data.
+Moreover, the implementation of the sum / gather in the HPX and YML applications is less efficient since they take more time than the MPI application while executing the same kernel on the same data.
 Finally, YML also uses the file system to transfer data between tasks which take more time.
 
 
