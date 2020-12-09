@@ -68,11 +68,11 @@ The travel time for each point of the fine grid is interpolated from the travel 
 	\SetAlgoVlined
 	\caption{Kirchhoff Migration with multi-grids and loading precomputed Green functions \label{alg:kirchhoff_mg+load}}
 	\ForEach{trace t}{
+		r = extractR(t)\;
+		s = extractS(t)\;
+		Gs = loadPrecomputedGreenFunc(s)\;
+		Gr = loadPrecomputedGreenFunc(r)\;
 		\ForEach{(x, y, z) in the coarse grid CG}{
-			r = extractR(t)\;
-			s = extractS(t)\;
-			Gs = loadPrecomputedGreenFunc(s)\;
-			Gr = loadPrecomputedGreenFunc(r)\;
 			CG(x, y, z).TS(s) = computeTravelTimeFromGreenFunc(Gs, x, y, z)\;
 			CG(x, y, z).TR(r) = computeTravelTimeFromGreenFunc(Gr, x, y, z)\;
 			CG(x, y, z).A(s,r) = computeAmplitude(s, r, x, y, z)\;
@@ -86,7 +86,7 @@ The travel time for each point of the fine grid is interpolated from the travel 
 	}
 \end{algorithm}
 
-Algorithm \ref{alg:kirchhoff_mg+load} shows the use of the two optimisations.
+Algorithm \ref{alg:kirchhoff_mg+load} shows the use of the two optimizations.
 The two grids are used and the Green functions are loaded from the file system.
 
 \subsection{Parallelism}
@@ -120,7 +120,11 @@ The task algorithm is the Algorithm \ref{alg:kirchhoff_task} and the function as
 	\SetAlgoVlined
 	\caption{Task Kirchhoff Migration \label{alg:kirchhoff_task}}
 	\ForEach{trace t}{
-		\ForEach{(x, y, z) in the coarse grid CG}{
+		r = extractR(t)\;
+		s = extractS(t)\;
+		Gs = loadPrecomputedGreenFunc(s)\;
+		Gr = loadPrecomputedGreenFunc(r)\;
+		\ForEach{(x, y, z) sub-block of the coarse grid CG}{
 			r = extractR(t)\;
 			s = extractS(t)\;
 			Gs = loadPrecomputedGreenFunc(s)\;
@@ -182,6 +186,7 @@ To go further, a computing node of the super-computer may be able to store some 
 \section{2D Implementation}
 
 For this implementation, we simplified the Kirchhoff seismic pre-stack depth migration by considering the absorption to be equal to 1 and by only studying the 2D case.
+This implementation is a very basic and simplified version of the Kirchhoff seismic pre-stack depth migration which keeps a similar high level algorithm while simplifying the computations needed to perform the migration on the image points.
 This application is available at \url{https://github.com/jgurhem/KirchhoffMigration}.
 
 \subsection{C Kernel Description}
@@ -205,20 +210,20 @@ A function to generate simple traces has also been implemented to use in our exp
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=.7\textwidth]{trace}
+	\includegraphics[width=.7\textwidth]{trace.pdf}
 	\caption{Trace example\label{fig:kirchhoff_trace}}
 \end{figure}
 
 Figure \ref{fig:kirchhoff_trace} gives an example of a generated trace used to test the 2D application with these simplifications.
-This trace used as test and is not used in our experiments.
+This trace is a sample used in our experiments.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.7\textwidth]{trace1000ppt.pdf}
+	\includegraphics[width=.7\textwidth]{traceppt.pdf}
 	\caption{Propagation times for a source and receiver at the same place\label{fig:kirchhoff_pt}}
 \end{figure}
 
-Figure \ref{fig:kirchhoff_pt} is a plot of the propagation times to make the round trip from the source point located at (1000,0), each point of the figure and the receiver located at (1000, 0) in a uniform middle.
+Figure \ref{fig:kirchhoff_pt} is a plot of the propagation times to make the round trip from the source point located at (500,0), each point of the figure and the receiver located at (500, 0) in a uniform middle.
 
 \begin{figure}[H]
 	\centering
