@@ -1,5 +1,5 @@
 \chapter{Task Based High Performance Computing \label{chap:hpc}}
-High Performance Computing (HPC) is one of the most active research area in computer science since it contributes to the solution of large scale problems in science, engineering and business.
+High Performance Computing (HPC) is one of the most active research areas in computer science since it contributes to solving of large scale problems in science, engineering and business.
 HPC is more and more used with the arrival of Big Data applications and more recently to improve the increasing number of applications relying on Artificial Intelligence and Deep Learning.
 The improvement of HPC is due to the effort of several discipline including computer architecture design, parallel algorithms as well as programming models.
 This chapter gives a state-of-the-art of the task based programming models available to implement HPC applications and discuss the key challenges of the upcoming exascale.
@@ -9,7 +9,7 @@ This chapter gives a state-of-the-art of the task based programming models avail
 
 HPC or High Performance Computing is a computer science field which consists in aggregating computing power in order to obtain higher performances than a regular desktop computer.
 This power is currently achieved by connecting several computers to form a cluster for the small cases or a supercomputer for the very large cases.
-In the current machine, the computing resources are connected to allow mixing parallel computing (by taking advantage of multi-cores processors and large amount of processors) and distributed computing (the processor memory caches are not directly connected and must be accessed by performing communications through the network).
+In the current supercomputers, the computing resources are connected to allow mixing parallel computing (by taking advantage of multi-cores processors and large amount of processors) and distributed computing (the processor memory caches are not directly connected and must be accessed by performing communications through the network).
 Initially, the increase in performance of an application was obtained from the improvement of the processors used to run the application and especially from the increase of the frequency of the processors.
 Indeed, the processors were becoming faster with each new generation and thus, the applications ran faster on them.
 Then, the frequency became impossible to increase without the processors producing too much heat in the early 2000s \cite{KirkH2010}.
@@ -30,16 +30,24 @@ Parallel and distributed programming models such as Message Passing Interface (M
 In this programming model, the application uses several processes to make multiple computations at the same time on different cores and uses MPI or PVM to send data from one process to another one.
 They provide point-to-point and collective communication operations to help the developers to reorganize, migrate or perform operations on their distributed data.
 
-However, developing a parallel high performance application with such a programming model require the knowledge of parallel and distributed programming as well as the specificities of the targeted hardware.
+However, developing a parallel high performance application with such a programming model requires the knowledge of parallel and distributed programming as well as the specificities of the targeted hardware.
 It takes time and may not be portable to other architectures without investing more time to make the structural modifications that may be necessary, for instance, to run on GPUs.
 An alternative that aims to reduce those costs and efficiently use the available hardware is task based programming models.
 Moreover, MPI may not be a solution efficient enough on exascale machines, especially in terms of fault tolerance and check-pointing \cite{SWAAB2014}.
+Fault tolerance allows applications to manage hardware or software errors on computing resources either by continuing to run the application without this resource if possible or by cleanly stopping the application.
+Check pointing consists in saving a snapshot of the application a regular interval, so that applications can restart from the last snapshot in case of failure or stop.
+They are commonly used in long running applications to avoid re-running the application from the start in case something happens.
+It can also be used to see the evolution of data during the run of the application.
+For instance, this could be used to check the evolution of a simulation.
+
 Besides, global operations like reductions, gathers and broadcasts are very expensive due to the high number of resources partaking in the operation and the cost of sending information to distant resources on the network connecting the nodes.
 Task-based approach can help in managing fault tolerance and check-pointing since the tasks could be restarted on another location and data from tasks saved at any moment.
-Tasks allow to separate of the expression of the parallelism from its parallel implementation by letting the developer express the tasks and their dependencies while the runtime of the programming models tries to run as much tasks as possible at the same time, respects the dependencies and tries to obtain the best performances possible.
+Tasks allow to separate the expression of the parallelism from its parallel implementation by letting the developer express the tasks and their dependencies while the runtime of the programming models tries to run as much tasks as possible at the same time, respects the dependencies and tries to obtain the best performances possible.
 This means that application experts can express algorithms through tasks without being required to understand the hardware in detail.
-Furthermore, the task-based approach can help to eliminate large scale global operations by encapsulating them inside tasks that run on a subset of the resources allocated to the application in which data can only be exchanged between tasks as their input and output parameters.
-Therefore the algorithms using global operations have to be redesigned in order to avoid them or express them as task operations.
+Furthermore, the task-based approach can help to eliminate large scale collective communications by encapsulating them inside tasks.
+Then, these tasks can run on a subset of the resources allocated to the application and execute collective communications on a smaller scale.
+In task based programming models, data can only be exchanged between tasks as their input and output parameters as opposed to exchanging data during the execution of the task.
+Therefore the algorithms using collective communications have to be redesigned in order to avoid them or rewrite them as task operations.
 
 Several programming models which support the usage of tasks have appeared over the years.
 They implemented the task definition and management in different ways and have their unique features.
@@ -48,7 +56,7 @@ Some of them will be introduced in the following section.
 %\section{Modern Computing Architectures}
 
 \section{Current Task Based Programming Models}
-A task can be defined as an atomic set of operations with precise data in input and output which can be asynchronously executed while enforcing data and/or control dependencies.
+A task can be defined as an atomic set of operations, with a defined set of data as input and output, which can be asynchronously executed while enforcing data and/or control dependencies.
 This section introduces programming models supporting the definition and the scheduled execution of tasks.
 
 \subsection{Shared memory}
@@ -68,6 +76,7 @@ In Cpp-Taskflow, a tasks is an instance of the C++ \textit{Callable} object on w
 Then, they can be declared into a taskflow object from the class \textit{tf::Taskflow} which allow to create a task dependency graph and schedule them for execution.
 The user can express task dependency with the method \textit{precede} applied on the task handler returned from the task creation.
 Tasks are executed through \textit{tf::Executor} which runs the taskflow and executes the tasks on threads through a work-stealing algorithm.
+With work-stealing algorithms, workers without tasks to execute can steal tasks scheduled in other worker queues which respects dependencies in order to execute as much tasks in parallel as possible.
 
 Cpp-Taskflow has the feature of dependency graph composition.
 It allows the user to create dependency graphs and reuse them to compose larger graphs.
@@ -134,7 +143,7 @@ TBB can address CPUs, GPUs and FPGAs.
 
 \subsubsection{TensorFlow}
 TensorFlow \cite{AABBC2016} is “open source software library for high performance numerical computation”.
-A TensorFlow program consist of a set of Operations arranged into a graph and run by a Session.
+A TensorFlow program consists of a set of Operations arranged into a graph and run by a Session.
 The Tensors contain the data and are used by the Operations.
 A Tensor is a set of primitive values shaped into a multidimensional array.
 An Operation runs computations on the provided Tensors.
@@ -143,10 +152,6 @@ It provides a lot of built-in Operations in its Low Level API.
 It also provides a higher-level API which can be used to implement Machine Learning and AI algorithms.
 Most of the algorithms are related to model training and layers of neural networks.
 Thus, the high-level API cannot be used to implement non-AI based applications.
-
-The Python package of TensorFlow is easy to install through pip.
-For the other languages (C, Java, Go, \dots), binaries can be downloaded and have to be linked in the program.
-There is also the possibility to build it from sources.
 
 By itself, TensorFlow does not support distributed architecture as it is designed to run on GPU and shared memory.
 A solution to use TensorFlow across multiple nodes is to use Dask \cite{Dask2016}, a library for parallel computing in Python.
@@ -160,7 +165,6 @@ OmpSs uses the Mercurium source-to-source compiler and the Nanos++ Runtime Libra
 Mercurium provides the support to transform the high-level directives into a parallelized version of the application.
 Nanos++ manages the parallelism in the application, including task creation, synchronization and data movement.
 The tasks are expressed through the task construct with the in, out, inout clauses to express data dependencies.
-The control graph is never specified so there is the same kind of problem to find optimizations in the data flow graph than for PaRSEC.
 A mix with the OpenMP directives may give the information on the control graph but we didn't find any example of that.
 OmpSs stays close to the sequential code but a higher level language and more software engineering may be required to face the challenges of the exascale.
 
@@ -169,13 +173,14 @@ OmpSs stays close to the sequential code but a higher level language and more so
 CnC \cite{ChaKV2010} \cite{BBCKL2010} (Current Collections) is a graph parallel programming model.
 A CnC graph uses three types of nodes : the step collections is a computation task, the data collections stores the data needed in the computations, and the control collections creates instances of one or more step collections.
 With this structure, it is possible to represent both the control and data flow graphs.
+The control flow graph represents the dependencies between the computing operations whereas the data flow graph represents the data dependencies between the operations.
 In CnC, there are two ordering requirements : producer/consumer linked to data dependencies and controller/controlee linked to computation dependencies.
 It allows important scheduling optimizations with the two graphs directly available.
-CnC has a lot of explanations and possibilities but the development of an application becomes complex very fast.
+CnC has a lot of explanations and possibilities but the development of an application becomes complex very quickly.
 
 \subsection{Distributed memory}
-Then, task based programming models in which tasks are scheduled to run on distributed memory are introduced.
-In these programming models, the data dependencies are also taken into considerations to execute single thread (or process) tasks on multiple nodes.
+We now present some task based programming models in which tasks are scheduled to run on distributed memory.
+In these programming models, the data dependencies are also taken into consideration to execute single thread (or process) tasks on multiple nodes.
 The data used by the tasks are described to the programming models so that the schedulers can execute the tasks where the data are stored to reduce data movement if it is supported or send the data where they will be consumed by tasks.
 
 \subsubsection{Uintah}
@@ -190,7 +195,7 @@ Uintah analyzes the DAG to automatically enable load-balancing, data communicati
 MPI communication are automatically set up for data dependencies between MPI processes.
 Uintah provides fault tolerance mechanisms \cite{SahaB2019}.
 
-Kokkos \cite{CarTS2014} is used in Uintah to extend the code base to many-core architectures instead of adoption OpenMP \cite{HPHSD2019}.
+Kokkos \cite{CarTS2014} is used in Uintah to extend the code base to many-core architectures instead of adopting OpenMP \cite{HPHSD2019}.
 It also allows to extend Uintah to  GPU-based, many-core, and multi-core architectures although Uintah already supports  multi-core and GPU-based systems by directly using architecture specific programming models (for instance, CUDA) in the tasks.
 
 \subsubsection{Charm++}
@@ -275,7 +280,7 @@ StarPU uses auto-tuning to predict execution time and data transfer overhead.
 It allows StarPU's dynamic scheduler to avoid load imbalance.
 
 Data has to be registered into StarPU so that it can transfer them.
-The algorithm as to be described as a set of tasks (usually kernels).
+The algorithm has to be described as a set of tasks (usually kernels).
 A task is defined by a codelet, the data used by the task and their access mode.
 The dependencies between the tasks can be given explicitly or inferred from the data dependencies.
 
@@ -285,7 +290,7 @@ In ClusterSs, tasks are asynchronously created and spawned on the worker nodes a
 ClusterSs runtime is built on IBM APGAS runtime.
 APGAS is used to handle the inter-nodes communications and its Active Message paradigm allows to spawn tasks on remote nodes efficiently.
 The user is required to identify the methods that can be executed in parallel whereas the parallel execution and the data placement is managed by the runtime.
-Thee global data is automatically distributed according to computation needs.
+The global data is automatically distributed according to computation needs.
 The execution model is based on one main node that generates tasks and workers that execute the tasks.
 The main node runs the user application and the selected functions marked by the user are replaced by a call to the ClusterSs runtime.
 Then, the runtime creates a task which is added to a DAG of dependency.
@@ -299,7 +304,7 @@ It is also designed to be portable and run from multicore desktop to large super
 It was created from principles rather than being an extension of another language.
 It is a object-oriented programming model with type inference and features for generic programming.
 Chapel offers high-level abstractions for data parallelism, task parallelism, concurrency, and nested parallelism.
-It supplies a locale type which enables users to specify and reason about the placement of data and tasks.
+It supplies a type called \textit{locale} which enables users to specify and reason about the placement of data and tasks.
 Finally, Chapel provides interoperability features to integrate other languages into Chapel or vice-versa.
 
 Chapel is an open-source project hosted on GitHub under the Apache v2.0 license.
@@ -322,7 +327,7 @@ Moreover, YML also supports fault tolerance \cite{TsuPS2015}.
 XMP can be used to implement YML components as introduced in \cite{TsSHP2013}.
 This allows two levels programming.
 The higher level is the graph (YML) and the second level is the PGAS component (XMP).
-In the components, YML needs complementary information to manage the computational resources and the data at best : the number of XMP processes for a component and the distribution of the data in the processes (template).
+In the components, YML needs complementary information to optimize the management of the computational resources and the data : the number of XMP processes for a component and the distribution of the data in the processes (template).
 With this information, the scheduler can anticipate the resource allocation and the data movements.
 The scheduler creates the processes that the XMP components need to run the component.
 Then each process will get the piece of data which will be used in the process from the data repository.
@@ -343,7 +348,7 @@ Swift/T has two main level of programming : the Swift script and the Leaf functi
 
 The extension functions are the first type of leaf functions.
 They consist in Tcl or native code functions like C, C++, Fortran or MPI which operate on in-memory data, and are appropriate for high-performance computing.
-There is also application functions.
+There are also application functions.
 They are used to call a command-line program which process files, and are appropriate for ordinary workflows.
 Finally, external scripting functions are used to call an in-memory interpreter in another scripting language, such as Python, R or Julia.
 
@@ -370,7 +375,7 @@ Pegasus enables scientists to construct workflows in abstract terms.
 It can be linked with several middlewares (Condor, Globus, or Amazon EC2).
 
 Pegasus is fault tolerant.
-Indeed, when there is errors, it can retry the tasks, retry the entire workflow, checkpoint its execution, re-map part of the workflow, try alternative data sources and as last resort, provide a list of the remaining tasks.
+Indeed, when there are errors, it can retry the tasks, retry the entire workflow, checkpoint its execution, re-map part of the workflow, try alternative data sources and as last resort, provide a list of the remaining tasks.
 Storage is cleaned up during the execution of the workflow.
 Thus, data-intensive workflows can get enough space to run their tasks on resources with low-capability storage.
 Pegasus also keeps track of what has been done, where, which software was used and their parameters.
@@ -380,19 +385,19 @@ Pegasus also keeps track of what has been done, where, which software was used a
 The upcoming exascale supercomputers are raising both hardware and software challenges.
 On one side, computing power is now achieved with the multiplication of computing resources.
 This leads to highly hierarchical supercomputer with hundreds of high level computing nodes which are made of several multi-core processors and eventually one or more accelerators.
-In each node, there is also several levels of memory with the RAM and the different cache level of each processors and accelerators.
-These machines tends to be both massively parallel with the large amount of diverse cores available and massively distributed with their multiple memory levels only accessible directly by a few cores whereas the local memory can be remotely accessed through data communications.
+In each node, there are also several levels of memory with the RAM and the different cache level of each processors and accelerators.
+These machines tend to be both massively parallel with the large amount of diverse cores available and massively distributed with their multiple memory levels only accessible directly by a few cores whereas the local memory can be remotely accessed through data communications.
 Furthermore, there is the network connecting the nodes between themselves.
 Each node cannot be directly connected to all the others since it would be very costly with the large amount of computing nodes available in the supercomputers.
 Therefore, the network is also becoming more complex in order to support the communications between nodes.
 This increases the distance between the furthest nodes on the network and the cost of sending message to far away nodes.
 
-Finally, there is multiple variant of processors, accelerators and networks available on the market.
+Finally, there are multiple variant of processors, accelerators and networks available on the market.
 Thus, a lot of different combinations of these components are now incorporated on the current supercomputers.
 These different architectures require different approaches to implement applications that can use the components available on the nodes efficiently.
-The first challenge is to an architecture among all the architectures available.
+The first challenge is to select a fitting architecture among all the architectures available.
 
-As there is multiple programming models that address one or more of the available architecture, the second challenge will be to find a parallel programming model that can take advantage of the targeted architecture while being compatible with the application to execute on the supercomputer.
+As there are multiple programming models that address one or more of the available architecture, the second challenge will be to find a parallel programming model that can take advantage of the targeted architecture while being compatible with the application to execute on the supercomputer.
 As the current machines tend to become massively parallel and distributed, system faults will happen more frequently on large scale applications since, even with a small probability of an error occurring on one of the computing resource, the large number of resources used increase the probability of an error occurring during the execution of the application.
 To avoid losing the computations already performed, check pointing allow the save of predefined application variable state regularly on disk and thus recovering the last state saved if an error occur.
 This is the second challenge.
