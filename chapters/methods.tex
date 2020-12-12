@@ -112,7 +112,7 @@ Algorithm \ref{alg:lufact_block} introduces a non-recursive algorithm for the bl
 
 The goal here is to solve the linear system $Ax = b$ by replacing $A$ by its LU factorization.
 Therefore, the problem becomes solving the system $LUx=b$.
-There is two triangular linear systems to solve : $Ly=b$ then $Ux=y$.
+There are two triangular linear systems to solve : $Ly=b$ then $Ux=y$.
 Algorithm \ref{alg:lufact_sls} solves the linear system $Ax = b$ to obtain $x$ given the LU factorization of $A$ stored in one matrix and $b$.
 
 \begin{algorithm}[h]
@@ -198,7 +198,7 @@ These two algorithms are used to solve a linear system and include the back subs
 	}
 \end{algorithm}
 
-The Gaussian elimination has a similar number of block operations as the block LU factorization but the critical path of the graph of operations is significantly shorter than the one in the block LU factorization since there is only one solution of a triangular system after the operations on the matrix whereas there is two in the block LU factorization.
+The Gaussian elimination has a similar number of block operations as the block LU factorization but the critical path of the graph of operations is significantly shorter than the one in the block LU factorization since there is only one solution of a triangular system after the operations on the matrix whereas there are two in the block LU factorization.
 This means that the block LU factorization and the block Gaussian elimination have different performances.
 
 \begin{algorithm}[h]
@@ -259,8 +259,8 @@ This algorithm is also converted into a generalized block Gauss-Jordan eliminati
 \end{algorithm}
 
 The Gauss-Jordan elimination has more block operations than the block Gaussian elimination and the block LU factorization but the critical path of the block operations is even shorter than the Gaussian Elimination since there is no solution of triangular systems.
-Although, there is more block operations than the two other block algorithms but the critical path is shorter.
-This means that there is more block operations that can be performed in parallel during the elimination.
+Although, there are more block operations than the two other block algorithms but the critical path is shorter.
+This means that there are more block operations that can be performed in parallel during the elimination.
 This also means that this algorithm may be able to run faster than the two other block algorithms on a parallel machine.
 
 \begin{algorithm}[h]
@@ -290,7 +290,7 @@ Moreover, we introduced the scalar and block algorithms for the LU factorization
 
 Dense linear system solution is widely used in solvers for simulations so it is important to create robust and efficient library providing these operation since it will save time and computational resources.
 Simulations can also create sparse matrices to represent the simulated environment.
-In this case, direct method to solve linear systems based on the Gaussian elimination are not suitable since the factorization modify the matrices and may introduce new values at places where there is zeros in the sparse matrix.
+In this case, direct method to solve linear systems based on the Gaussian elimination are not suitable since the factorization modify the matrices and may introduce new values at places where there are zeros in the sparse matrix.
 However, it exist methods to limit the filling of the zeros values in the direct methods to solve linear systems but these methods are difficult to set up and parallelize.
 Moreover, they are not in the scope of this dissertation and, thus, they will not be covered.
 An alternative to that are iterative methods, which usually, do not modify the input matrix and are used to deal with the sparse matrices.
@@ -302,15 +302,16 @@ Most of these iterative methods are based on the sparse matrix vector product wh
 Discretization of partial differential equation in numerical simulations often leads to the creation of a linear system which has to be resolved in order to solve the equation.
 The linear system is most of the time stored as a matrix.
 When the matrix is dense, direct methods can be used to solve the linear system as seen in the previous section.
-However, the discretization of the partial differential equation can produce linear system where the matrix contains a lot of zero.
+However, the discretization of the partial differential equation can produce linear system where the matrix contains a large amount of zero.
+A matrix can be considered sparse when storing the matrix in a sparse storage format is less expensive than using the dense storage format.
 In this case, the matrix is considered sparse and is stored using sparse storage formats.
 Some of the most commonly used sparse matrix storage formats are discussed in this section.
-Moreover, the direct methods are not suitable to solve sparse linear systems since it introduce new values in the matrix during the Gaussian elimination.
+Moreover, the direct methods are not suitable to solve sparse linear systems since they introduce new values in the matrix during the Gaussian elimination.
 Modifying a sparse matrix is difficult since depending on the storage format the row or the columns are compressed (the zero are removed from the arrays) so inserting new values means creating a new array and copying the previous values while adding the new one.
 Therefore, avoiding insertion in sparse matrix improves the performances greatly since the copy is very expensive.
 This leads to the use of iterative sparse methods to solve linear systems.
 These methods heavily rely on sparse matrix vector product.
-There is also several other methods that rely on sparse matrix vector product like the conjugate gradient, the Lanczos methods, the Krylov subspaces \cite{Saad1989} \cite{Saad2003}, Page Rank \cite{RidiS2002} and an essential part of many graph kernels \cite{KepnG2011}.
+There are also several other methods that rely on sparse matrix vector product like the conjugate gradient, the Lanczos methods, the Krylov subspaces \cite{Saad1989} \cite{Saad2003}, Page Rank \cite{RidiS2002} and an essential part of many graph kernels \cite{KepnG2011}.
 Even hardware prototypes \cite{SoGLK2016} have been designed to improve the graph computational throughput compared to conventional hardware.
 
 In this section, we will focus on the different sparse matrix storage and their corresponding matrix vector product implementation.
@@ -318,13 +319,13 @@ In this section, we will focus on the different sparse matrix storage and their 
 \subsection{Sparse Matrix Storage and Sparse Matrix-Vector Multiplication}
 
 Sparse matrix format are used to store and process sparse matrices in a wide range of domains and libraries.
-SPARSKIT \cite{Saad1990} is a library which provides routines to convert matrices in one sparse format to another one.
+For instance, SPARSKIT \cite{Saad1990} is a library which provides routines to convert matrices in one sparse format to another one.
 It also provides a set of routines to make operation on sparse matrices like matrix vector product, eigenvalues computations and linear system solving.
-The following sections will describe several widely used sparse matrices formats and give the algorithm to compute a matrix vector product with those formats.
+The following sections will describe several widely used sparse matrices formats introduced in SPARSKIT and give the algorithm to compute a matrix vector product with those formats.
 
 \subsubsection{Dense}
 Dense is the classical and most straightforward format used to store matrices.
-It is usually used for matrices with a few number of null values.
+It is usually used for matrices with a small number of null values.
 In the case of sparse matrices, it is not efficient since it stores a large amount of unused values (the zeros).
 Those zeros will also be part of computations while making operations on the matrix.
 Therefore, storing the sparse matrices into a more adapted format will reduce memory footprint and save operations on zeros.
@@ -358,7 +359,7 @@ Figure \ref{fig:methods:dense_ex} shows a $5 \times 5$ sparse matrix stored as a
 
 \subsubsection{Coordinates - COO}
 COO are the first letters of the word coordinates which summarize how the sparse matrices will be stored in this format.
-It uses two two vectors to store the two dimensional coordinates of the value in the matrix and another vector which contains the values.
+It uses two vectors to store the two dimensional coordinates of the value in the matrix and another vector which contains the values.
 It is a key-value storage type.
 The key is the coordinates of the value in the matrix.
 
@@ -417,7 +418,7 @@ val
 \subsubsection{Compressed Sparse Row - CSR}
 The Compressed Sparse Row format (CSR) \cite{HacBG1971} \cite{Gusta1972} is similar to the COO format in which the vector containing the index of the rows is compressed.
 The array giving the row index of the value at the same position in the array of values is replaced by an array which gives the position of the beginning of each row in the column array.
-In COO, the row array has NNZ values (the number of non zero values) whereas there is only $N+1$ values (N is the dimension of the matrix) where N is smaller than NNZ.
+In COO, the row array has NNZ values (the number of non zero values) whereas there are only $N+1$ values in the CSR row array (N is the dimension of the matrix) where N is smaller than NNZ.
 Therefore, it saves space in memory.
 A column version of this format called Compressed Sparse Column (CSC) exists.
 In CSC, the index array for the columns is compressed.
@@ -475,8 +476,8 @@ Figure \ref{fig:methods:csr_ex} shows an example of the storage of the example m
 \subsubsection{Diagonal - DIA}
 The diagonal format (DIA) is very useful in the case of matrices which have a pattern where the non-zero are located in a small amount of diagonals.
 It is composed of two arrays : a one dimensional array which represents the offsets from the diagonal of the values in the associated column and a two dimensional array with the values in each row in the column associated to their offset from the diagonal.
-The values array needs to be padded with zeros where there no values from the initial matrix in order to be used in the algorithms.
-This format is designed for matrices where diagonals are very populated since it needs a column in the values array for each diagonal where there is values.
+The values array needs to be padded with zeros where there are no values from the initial matrix in order to be used in the algorithms.
+This format is designed for matrices where diagonals are very populated since it needs a column in the values array for each diagonal where there are values.
 
 \begin{figure}[h]
 \centering
@@ -626,7 +627,7 @@ In this subsection, we will mention most of the common optimizations implemented
 One of the main optimization used is to properly take advantage of the hardware.
 For instance, some processors support vectorization instructions which allow the processors to apply operations on a array of elements instead of only one element.
 With  the random memory access necessary to access elements in sparse matrices, it is hardly possible to find contiguous data in the matrix to match the contiguous data of the vector and use vectorization on them.
-A solution to this issue is using block compressed sparse row storage (BCSR) \cite{PinaH1999} which consist in creating a sparse matrix of dense blocks and adding zero where there is missing value in order to increase locality \cite{Toledo1997} and allow the usage of vectorization.
+A solution to this issue is using block compressed sparse row storage (BCSR) \cite{PinaH1999} which consists in creating a sparse matrix of dense blocks and adding zero where there are missing values in order to increase locality \cite{Toledo1997} and allow the usage of vectorization.
 Moreover, AVX-512 instructions and a bit mask can be used to encode the zero \cite{BramK2018} and thus avoiding to put zero in the blocks.
 
 Another solution is to use cache and register blocking as well as multiplication by multiple vectors \cite{Vuduc2003phd} \cite{Im2000phd} in order to reuse the data stored in the cache and the registers to the maximum.
@@ -704,7 +705,7 @@ Data are produced during an acquisition campaign.
 A campaign contains several shots.
 A shot is a seismic impulsion launched through the ground.
 It is the source (see Figure \ref{fig:shot}).
-There is several receiver.
+There are several receivers.
 They are seismograms placed on a 2D grid on the ground (see Figure \ref{fig:source-receiver}).
 The source is moved on the 2D grid and produces shots.
 So a trace is the result for a given shot (source) and a given seismogram (receiver).
