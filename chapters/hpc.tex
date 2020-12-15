@@ -318,7 +318,7 @@ Indeed, some of the programming models with parallel and distributed tasks use t
 \subsubsection{YML+XMP}
 YML \cite{DelEP2006} is a development and execution environment for scientific workflow applications over various platforms, such as HPC, Cloud, P2P and Grid with multilevel of parallelism.
 YML defines an abstraction over the different middlewares, so the user can develop an application that can be executed on different middlewares without making changes related to the middleware used.
-YML can be adapted to different middlewares by changing its back-end.
+YML can be adapted to use different programming models to implement tasks.
 Currently, the proposed back-end \cite{TsSHP2013} uses OmniRPC-MPI \cite{SaHTS2001}, a grid RPC which supports master-worker parallel and distributed programs based on multi SPMD programming paradigms.
 This back-end is developed for large scale clusters such as Japanese K-Computer \cite{TsSHP2013}.
 A back-end for peer to peer networks is also available.

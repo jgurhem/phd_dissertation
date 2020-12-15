@@ -180,7 +180,7 @@ Algorithm \ref{alg:sparse:spmv_csr} defines a data structure to store the sub-ma
 It also shows the algorithm to make a matrix vector product on the sub-matrix given the proper input vector.
 The data structure contains the three arrays necessary to store the matrix in the CSR storage format as well as useful informations about the position of the sub-matrix in the global matrix.
 These informations are the first column (\textit{fc}) possibles in the sub-matrix.
-As for the COO storage format, the ranges of position for the input and output vectors can be computed.
+As for the SCOO storage format, the ranges of position for the input and output vectors can be computed.
 
 
 \begin{algorithm}[h]
@@ -208,7 +208,7 @@ As for the COO storage format, the ranges of position for the input and output v
 Algorithm \ref{alg:sparse:spmv_ell} defines a data structure to store the sub-matrices stored in the ELL format in which we expect a given range of coordinates for the values.
 It also shows the algorithm to make a matrix vector product on the sub-matrix given the proper input vector.
 The data structure contains the number of columns needed in the arrays and the two arrays necessary to store the matrix in the ELL storage format as well the first column (\textit{fc}) possibles in the sub-matrix which is used in this algorithm.
-As for the COO and CSR storage formats, the ranges of position for the input and output vectors can be computed.
+As for the SCOO and CSR storage formats, the ranges of position for the input and output vectors can be computed.
 
 In this section, we presented the algorithms used to perform the matrix vector product on the sub-matrices in the tasks with the COO, SCOO, ELL and CSR sparse storage formats.
 They will be used to perform the matrix vector product on the global matrix.
@@ -405,20 +405,19 @@ The nodes are connected with Infiniband FDR interconnects.
 It performs at 5 283.11 TFlop/s for Linpack and 162.692 TFlop/s for HPCG.
 
 \subsubsection{Best Results Selection}
-These experiments depends on several parameters.
+These experiments depend on several parameters.
 The programming model is the first of them.
 There are also the parameters related to the test matrices used, C and Q as well as the size of the matrix.
-Moreover, the data distribution which can be represented by the 2D grid used to divide the matrix.
-This adds two more parameters, $N_{gr}$ and $N_{gc}$.
+Moreover, the data distribution which can be represented by the 2D grid used to divide the matrix adds two more parameters, $N_{gr}$ and $N_{gc}$.
 Finally, YML+XMP also adds several parameters to tune the two levels of parallelism it offers.
 These parameters are the number of processes allocated per task, the grid used to divide the matrix in the tasks and the higher level grid used to determine which part of the matrix is used in tasks.
-Even if these parameters are related, which reduces the range of values to try, there is a lot of possibilities to try.
+Even if these parameters are related, which reduces the range of values to try, there is a large amount of possibilities to try.
 
-Therefore, after running the applications, despite using only a subset of the possible cases to try, a large number of execution time for the different parameters is produced.
+Therefore, after running the applications, despite using only a subset of the possible cases to try, a large number of runs for the different parameters is produced.
 Then, we have to select the case that produces the best execution time depending on which case we want to display.
 For instance, if we want the best case for MPI for a given matrix size, storage format, C, Q and a 2 nodes, the results will change depending on the data distribution.
 Thus, we have to select which data distribution has made the best performances.
-So, if the application was run multiple time for a given data distribution, we take the median execution time as metric to compare the different data distributions.
+The application is run multiple time for a given data distribution so we take the median execution time as metric to compare the different data distributions.
 Then, we chose the case that has the best median (usually the smallest since we want the fastest execution time).
 
 \subsubsection{Strong scaling with a 2 000 000 $\times$ 2 000 000 sparse matrix}
@@ -434,7 +433,7 @@ We use a dense vector with fixed values that is generated during the execution o
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr2000000_lHPX_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr2000000_lHPX_fSCOO}}}
 
-        \caption{Strong scaling considering HPX and several storage format for a 2 000 000 $\times$ 2 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_nr2000000_lHPX}}
+        \caption{Strong scaling considering HPX and several storage formats for a 2 000 000 $\times$ 2 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_nr2000000_lHPX}}
 \end{figure}
 
 Figure \ref{fig:sla:pangea2_nr2000000_lHPX} summarizes the results obtained from the experiments with HPX in which the operation $A(Ax+x)$ is applied on a 2 000 000 $\times$ 2 000 000 sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
@@ -461,7 +460,7 @@ The best data distribution is similar for SCOO, CSR and ELL since they use the s
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr2000000_lMPI_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr2000000_lMPI_fSCOO}}}
 
-        \caption{Strong scaling considering MPI and several storage format for a 2 000 000 $\times$ 2 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_nr2000000_lMPI}}
+        \caption{Strong scaling considering MPI and several storage formats for a 2 000 000 $\times$ 2 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_nr2000000_lMPI}}
 \end{figure}
 
 Figure \ref{fig:sla:pangea2_nr2000000_lMPI} summarizes the results obtained from the experiments with MPI in which the operation $A(Ax+x)$ is applied on a 2 000 000 $\times$ 2 000 000 sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
@@ -487,7 +486,7 @@ It is interesting to notice that, SCOO and CSR obtain the best performances with
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr2000000_lYML_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr2000000_lYML_fSCOO}}}
 
-        \caption{Strong scaling considering YML and several storage format for a 2 000 000 $\times$ 2 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q).  \label{fig:sla:pangea2_nr2000000_lYML}}
+        \caption{Strong scaling considering YML and several storage formats for a 2 000 000 $\times$ 2 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q).  \label{fig:sla:pangea2_nr2000000_lYML}}
 \end{figure}
 
 Figure \ref{fig:sla:pangea2_nr2000000_lYML} summarizes the results obtained from the experiments with YML in which the operation $A(Ax+x)$ is applied on a 2 000 000 $\times$ 2 000 000 sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
@@ -558,7 +557,7 @@ This is why there is no difference between ELL, SCOO and CSR on one side and COO
 Finally, in YML+XMP the performances heavily rely on the capabilities of the file system due to the fact that the data going from one task to another are written then read from files.
 This appears when the application is executed on 8 nodes and the number of cores used increases from 96 to 192.
 Indeed, at this point, the application is taking a few more times to run on 8 nodes than to run on 4 nodes.
-Current file systems are not adapted to this kind of heavy use during the execution of an application.
+Current file systems are not adapted to this kind of heavy use during the execution of an application and IOs duration varies with the number of IOs operations.
 Due to this, there is a lot of variability between the results.
 With the parameters tried in these experiments with YML+XMP, there is no clear data distribution that stands out and performs better than the others.
 CSR is leading in most of the case but the other storage formats also have cases where they perform better than CSR.
@@ -569,7 +568,7 @@ However, its influences is clear for MPI and HPX since, most of the cases, the e
 Moreover, each application uses the same kernel to execute the sparse matrix vector product on their smallest sub-matrices.
 Therefore, the differences in performances between the programming models is due to the management of the data and the implementation of the reduction to combine the output results of the sparse matrix vector product.
 As such, the influence of Q is the clearest for MPI since their communications are very efficient.
-For HPX and YML, the influence of Q is absorbed by the our implementation of the reduction in HPX and YML+XMP as well as the IOs for YML+XMP.
+For HPX and YML, the influence of Q is absorbed by our implementation of the reduction in HPX and YML+XMP as well as the IOs for YML+XMP.
 In C-diagonal Q-perturbed matrices, C represents the number of values per row above the diagonal and Q is the probability to perturb the fact that all the values are packed above the diagonal.
 When Q increases, the values on the row will be more dispersed on this row instead of being grouped above the diagonal.
 Hence, the data access pattern of the input vector will change with the different values of Q.
@@ -594,7 +593,7 @@ The CSR, COO, SCOO and ELL storage formats are used to in the experiments and th
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr4000000_lHPX_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr4000000_lHPX_fSCOO}}}
 
-        \caption{Strong scaling considering HPX and several storage format for a 4 000 000 $\times$ 4 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_nr4000000_lHPX}}
+        \caption{Strong scaling considering HPX and several storage formats for a 4 000 000 $\times$ 4 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_nr4000000_lHPX}}
 \end{figure}
 
 Figure \ref{fig:sla:pangea2_nr4000000_lHPX} summarizes the results obtained from the experiments with HPX in which the operation $A(Ax+x)$ is applied on a 4 000 000 $\times$ 4 000 000 sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
@@ -620,7 +619,7 @@ Similarly, SCOO, CSR and ELL have the same kind of performance patterns and COO 
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr4000000_lMPI_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr4000000_lMPI_fSCOO}}}
 
-        \caption{Strong scaling considering MPI and several storage format for a 4 000 000 $\times$ 4 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_nr4000000_lMPI}}
+        \caption{Strong scaling considering MPI and several storage formats for a 4 000 000 $\times$ 4 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_nr4000000_lMPI}}
 \end{figure}
 
 Figure \ref{fig:sla:pangea2_nr4000000_lMPI} summarizes the results obtained from the experiments with MPI in which the operation $A(Ax+x)$ is applied on a 4 000 000 $\times$ 4 000 000 sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
@@ -647,7 +646,7 @@ The best data distribution are similar to the ones obtained with a smaller matri
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr4000000_lYML_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_nr4000000_lYML_fSCOO}}}
 
-        \caption{Strong scaling considering YML and several storage format for a 4 000 000 $\times$ 4 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_nr4000000_lYML}}
+        \caption{Strong scaling considering YML and several storage formats for a 4 000 000 $\times$ 4 000 000 matrix with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_nr4000000_lYML}}
 \end{figure}
 
 Figure \ref{fig:sla:pangea2_nr4000000_lYML} summarizes the results obtained from the experiments with YML in which the operation $A(Ax+x)$ is applied on a 4 000 000 $\times$ 4 000 000 sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
@@ -720,7 +719,7 @@ Moreover, the size of the input and output vectors will increase depending on th
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr4000000_lHPX_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr4000000_lHPX_fSCOO}}}
 
-        \caption{Weak scaling considering HPX and several storage format for a 4 000 000 $\times$ 4 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr4000000_lHPX}}
+        \caption{Weak scaling considering HPX and several storage formats for a 4 000 000 $\times$ 4 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr4000000_lHPX}}
 \end{figure}
 
 Figure \ref{fig:sla:pangea2_ws_nr4000000_lHPX} summarizes the results obtained from the weak scaling experiments with HPX in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
@@ -739,10 +738,10 @@ As for the strong scaling experiments, the application takes more time with the 
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr4000000_lMPI_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr4000000_lMPI_fSCOO}}}
 
-        \caption{Weak scaling considering MPI and several storage format for a 4 000 000 $\times$ 4 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr4000000_lMPI}}
+        \caption{Weak scaling considering MPI and several storage formats for a 4 000 000 $\times$ 4 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr4000000_lMPI}}
 \end{figure}
 
-Figure \ref{fig:sla:pangea2_ws_nr4000000_lMPI} summarizes the results obtained from the weak scaling experiments with HPX in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
+Figure \ref{fig:sla:pangea2_ws_nr4000000_lMPI} summarizes the results obtained from the weak scaling experiments with MPI in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
 This figure shows the execution time for the different sparse storage formats depending on the number of nodes (cores) as well as the size of the matrix that increase with the number of nodes.
 % todo update with results
 The execution times are also increasing with MPI although the execution times are not as high.
@@ -756,10 +755,10 @@ This shows that the reduction and/or gather, depending on the data distribution,
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr4000000_lYML_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr4000000_lYML_fSCOO}}}
 
-        \caption{Weak scaling considering YML and several storage format for a 4 000 000 $\times$ 4 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr4000000_lYML}}
+        \caption{Weak scaling considering YML and several storage formats for a 4 000 000 $\times$ 4 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr4000000_lYML}}
 \end{figure}
 
-Figure \ref{fig:sla:pangea2_ws_nr4000000_lYML} summarizes the results obtained from the weak scaling experiments with HPX in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
+Figure \ref{fig:sla:pangea2_ws_nr4000000_lYML} summarizes the results obtained from the weak scaling experiments with YML in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
 This figure shows the execution time for the different sparse storage formats depending on the number of nodes (cores) as well as the size of the matrix that increase with the number of nodes.
 % todo update with results
 Similarly to HPX and MPI, the execution time are increasing.
@@ -792,7 +791,7 @@ We still performed them to confirm the results obtained with the 4 000 000 $\tim
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lHPX_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lHPX_fSCOO}}}
 
-        \caption{Weak scaling considering HPX and several storage format for a 3 000 000 $\times$ 3 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr3000000_lHPX}}
+        \caption{Weak scaling considering HPX and several storage formats for a 3 000 000 $\times$ 3 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr3000000_lHPX}}
 \end{figure}
 
 Figure \ref{fig:sla:pangea2_ws_nr3000000_lHPX} summarizes the results obtained from the weak scaling experiments with HPX in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
@@ -806,10 +805,10 @@ The execution times are similar to the ones obtain in Figure \ref{fig:sla:pangea
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lMPI_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_ws_nr3000000_lMPI_fSCOO}}}
 
-        \caption{Weak scaling considering MPI and several storage format for a 3 000 000 $\times$ 3 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr3000000_lMPI}}
+        \caption{Weak scaling considering MPI and several storage formats for a 3 000 000 $\times$ 3 000 000 matrix per node with C = 300 on Pangea II. Legend is (model, format, Q). \label{fig:sla:pangea2_ws_nr3000000_lMPI}}
 \end{figure}
 
-Figure \ref{fig:sla:pangea2_ws_nr3000000_lMPI} summarizes the results obtained from the weak scaling experiments with HPX in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
+Figure \ref{fig:sla:pangea2_ws_nr3000000_lMPI} summarizes the results obtained from the weak scaling experiments with MPI in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices for C = 300 and a vector.
 This figure shows the execution time for the different sparse storage formats depending on the number of nodes (cores) as well as the size of the matrix that increase with the number of nodes.
 In this case, we obtain the same kind of results as obtained with the 4 000 000 $\times$ 4 000 000 in Figure \ref{fig:sla:pangea2_ws_nr4000000_lMPI} although the execution times are lower due to the smaller output vectors.
 
@@ -830,7 +829,7 @@ We try C equal to 75, 150, 225 and 300 with our MPI, HPX and YML+XMP application
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_c_nr4000000_lHPX_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_c_nr4000000_lHPX_fSCOO}}}
 
-        \caption{Variation of the number of values per row considering HPX and several storage format for a 4 000 000 $\times$ 4 000 000 matrix per node with Q = 0.4 on Pangea II. Legend is (model, format, C). \label{fig:sla:pangea2_c_nr4000000_lHPX}}
+        \caption{Variation of the number of values per row considering HPX and several storage formats for a 4 000 000 $\times$ 4 000 000 matrix per node with Q = 0.4 on Pangea II. Legend is (model, format, C). \label{fig:sla:pangea2_c_nr4000000_lHPX}}
 \end{figure}
 
 Figure \ref{fig:sla:pangea2_c_nr4000000_lHPX} summarizes the results obtained from the variation of the number of values per row (C) experiments with HPX in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices of size 4 000 000 $\times$ 4 000 000 for Q = 0.4 and a vector.
@@ -849,7 +848,7 @@ Furthermore, the performances difference between the values of C is due to the d
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_c_nr4000000_lMPI_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_c_nr4000000_lMPI_fSCOO}}}
 
-        \caption{Variation of the number of values per row considering MPI and several storage format for a 4 000 000 $\times$ 4 000 000 matrix per node with Q = 0.4 on Pangea II. Legend is (model, format, C). \label{fig:sla:pangea2_c_nr4000000_lMPI}}
+        \caption{Variation of the number of values per row considering MPI and several storage formats for a 4 000 000 $\times$ 4 000 000 matrix per node with Q = 0.4 on Pangea II. Legend is (model, format, C). \label{fig:sla:pangea2_c_nr4000000_lMPI}}
 \end{figure}
 
 Figure \ref{fig:sla:pangea2_c_nr4000000_lMPI} summarizes the results obtained from the variation of the number of values per row (C) experiments with MPI in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices of size 4 000 000 $\times$ 4 000 000 for Q = 0.4 and a vector.
@@ -865,7 +864,7 @@ We can see that the execution time increases with the value of C which is logica
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_c_nr4000000_lYML_fCOO}}}
         \includegraphics[width=.45\textwidth]{{{fig_pangea2_c_nr4000000_lYML_fSCOO}}}
 
-        \caption{Variation of the number of values per row considering YML and several storage format for a 4 000 000 $\times$ 4 000 000 matrix per node with Q = 0.4 on Pangea II. Legend is (model, format, C). \label{fig:sla:pangea2_c_nr4000000_lYML}}
+        \caption{Variation of the number of values per row considering YML and several storage formats for a 4 000 000 $\times$ 4 000 000 matrix per node with Q = 0.4 on Pangea II. Legend is (model, format, C). \label{fig:sla:pangea2_c_nr4000000_lYML}}
 \end{figure}
 
 Figure \ref{fig:sla:pangea2_c_nr4000000_lYML} summarizes the results obtained from the variation of the number of values per row (C) experiments with YML in which the operation $A(Ax+x)$ is applied on a sparse C-diagonal Q-perturbed matrices of size 4 000 000 $\times$ 4 000 000 for Q = 0.4 and a vector.
@@ -873,15 +872,15 @@ This figure shows the execution time for the different sparse storage formats de
 % todo update with results
 For the small number of nodes, the higher the value of C, the longer the application takes.
 However, when the number of nodes increases, it is less the case.
+As seen previously, YML has trouble improving its performances from 4 to 8 nodes in strong scaling like experiments.
 This may be due to the lack of experiments in YML+XMP like the existence of parameters that could produce better execution times.
+Moreover, there are cases where the application takes less time with larger matrices than with smaller matrices.
+This should not be the case but the YML+XMP communications between tasks through the file system induces large difference of performances.
 
 % todo update ccl
-In these experiments, we used several values of C in our sparse C-diagonal Q-perturbed matrices for Q = 0.4 in order to study the influence of the number of values per row.
-The matrix size was 4 000 000 $\times$ 4 000 000 and did not increase with the number of nodes.
-We performed the sparse operation $A(Ax+x)$ with these matrix stored in SCOO, COO, CSR and ELL.
-The application was implemented with MPI, HPX and YML+XMP.
-The results were clear and expected : when the value of C increases, the execution time of the application increases.
-It is quite clear for HPX and MPI whereas there is to few experiments for YML+XMP to be able to make a reliable conclusion.
+In this subsection, we evaluated the influence of the number of values per row for the  operation $A(Ax+x)$ in a sparse C-diagonal Q-perturbed matrices of size 4 000 000 $\times$ 4 000 000.
+We can see that HPX and MPI applications are becoming more efficient with the increase of the number of values per row since the applications are taking 2 more times to process 4 times more values.
+Indeed, the time spent in the kernel increases while the time spent in the communications stays constant when the number of values increases.
 
 \subsubsection{Experiments Conclusion}
 The sparse operation $A(Ax+x)$ has been implemented in three classes of programming models based on a sparse matrix vector kernel supporting the SCOO, COO, CSR and ELL storage formats.
