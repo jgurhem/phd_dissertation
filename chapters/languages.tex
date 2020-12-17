@@ -61,10 +61,8 @@ Then, the runtime will compute dependencies out of data pointers used by the tas
 In a distributed system, the data movements among the nodes are completely implicit.
 
 
-\begin{figure*}[h]
 \lstinputlisting[style=customcode,language=C,
 caption=Task in PaRSEC\label{lst:parsec_task}]{chapters/languages/parsec_task.c}
-\end{figure*}
 
 
 \subsubsection{Task definition}
@@ -100,10 +98,8 @@ There is also a write mode (WRITE) that output a new piece of data.
 Control dependencies can also be added through the \textit{CTL} keyword.
 It allows the user to create control flow data which can tell the runtime if a task has to be done before another one.
 
-\begin{figure*}[h]
 \lstinputlisting[style=customcode,language=C,
 caption=Expression of PMM\_D dependencies\label{lst:parsec_pmmd_dep}]{chapters/languages/parsec_pmmd_dep.c}
-\end{figure*}
 
 This way of expressing the dependencies is error-prone.
 Indeed, the user can easily be lost in the definition of the dependencies since he has to replicate them in two tasks (for instance, the input of a task is the output from another one).
@@ -126,10 +122,8 @@ It uses \textit{parsec\_data\_t*} as well as \textit{parsec\_data\_copy\_t*}.
 Distributed Data Descriptors usually manipulate parsec\_data\_t objects, and provide parsec\_data\_copy\_t objects, using PaRSEC functions to instantiate them.
 
 
-\begin{figure*}[h]
 \lstinputlisting[style=customcode,language=C,
 caption=PaRSEC custom datatype definition\label{lst:parsec_custom_datatype}]{chapters/languages/parsec_custom_datatype.c}
-\end{figure*}
 
 PaRSEC uses all fields from the \textit{parsec\_ddesc\_t} object.
 The user has to fill them in order to implement a new data type.
@@ -151,10 +145,8 @@ In this case, it is the \textit{parsec\_lu\_new} function as shown in Listing \r
 It takes \textit{dcA} the data descriptor and \textit{bm} which is the number of tiles in each dimension as parameter.
 The preprocessor finds them in the source file and put them as input parameters of the function to launch the tasks.
 
-\begin{figure*}
 \lstinputlisting[style=customcode,language=C,
 caption=PaRSEC tasks launching\label{lst:parsec_launch}]{chapters/languages/parsec_launch.c}
-\end{figure*}
 
 
 \subsubsection{Granularity}
@@ -203,10 +195,8 @@ The user has to compile it each time he compiles an application.
 A static library is generated while executing the Makefile provided to compile an application and is included in the executable.
 Therefore, compiling an application is taking some time.
 
-\begin{figure*}
 \lstinputlisting[style=customcode,language=C,
 caption=Legion task\label{lst:legion_task}]{chapters/languages/legion_task.c}
-\end{figure*}
 
 \subsubsection{Task definition}
 Legion tasks are implemented as a tree of tasks.
@@ -226,10 +216,8 @@ It can be used with an \textit{Iterator} on an index space (as defined on line 1
 This iterator is used as index to the accessors so that pieces of data can be retrieved or set as shown on line 24.
 
 
-\begin{figure*}[t]
 \lstinputlisting[style=customcode,language=C,
 caption=Legion data\label{lst:legion_data}]{chapters/languages/legion_data.c}
-\end{figure*}
 
 \subsubsection{Dependency definition}
 Dependencies are implicitly defined with the access mode of the regions and the tree of tasks.
@@ -254,10 +242,8 @@ Finally, the \textit{LogicalPartition} which contains the split data can be crea
 \subsubsection{Graph execution}
 The tasks are registered into the runtime system then the user can use the runtime to start executing the tasks from the tree of tasks.
 
-\begin{figure*}
 \lstinputlisting[style=customcode,language=C,
 caption=Legion launch task\label{lst:legion_task_launch}]{chapters/languages/legion_task_launch.c}
-\end{figure*}
 
 There is several way of launching tasks in Legion.
 Tasks can be launched on a \textit{LogicalRegion} and  the task will process all the data of the region.
@@ -309,21 +295,16 @@ On line 4 from Listing \ref{lst:regent_task}, there is an example of read access
 Line 5 to 12 are the computations in the task.
 
 
-\begin{figure*}
 \lstinputlisting[style=customcode,
 caption=Regent task\label{lst:regent_task}]{chapters/languages/regent_task.rg}
-\end{figure*}
-
-\begin{figure*}
-\lstinputlisting[style=customcode,
-caption=Regent application\label{lst:regent_main}]{chapters/languages/regent_main.rg}
-\end{figure*}
 
 \subsubsection{Dependency definition}
 Dependencies between tasks are automatically inferred by Regent compiler from input modes.
 Line 35 to 43 from Listing \ref{lst:regent_main} show examples on how to call a task in Regent.
 This limits the parallelism that can be detected and create additional dependencies when the system is not sure that the tasks are independent.
 
+\lstinputlisting[style=customcode,
+caption=Regent application\label{lst:regent_main}]{chapters/languages/regent_main.rg}
 
 \subsubsection{Data definition}
 Data types are stored in regions.
@@ -396,10 +377,8 @@ The Python package of TensorFlow is easy to install through pip.
 For the other languages (C, Java, Go, \dots), binaries can be downloaded and have to be linked in the program.
 There is also the possibility to build it from sources.
 
-\begin{figure*}[h]
 \lstinputlisting[style=customcode,
 caption=TensorFlow block-based LU factorization\label{lst:tf_app}]{chapters/languages/tensorflow_app.py}
-\end{figure*}
 
 \subsubsection{Task definition}
 In TensorFlow, Operations are tasks which run on a subset of the problem.
@@ -467,10 +446,8 @@ It also tries to expose new levels of parallelism which are necessary to take ad
 HPX is an open-source implementation of the ParalleX execution model.
 This model focuses on overcoming the four main barriers to scalability (Starvation, Latencies, Overhead, Waiting for contention resolution).
 
-\begin{figure*}[h]
 \lstinputlisting[style=customcode,language=C++,
 caption=HPX task \label{lst:hpx_task}]{chapters/languages/hpx_task.cpp}
-\end{figure*}
 
 
 \subsubsection{Task definition}
@@ -502,10 +479,8 @@ To launch actions, an \textit{Operation} has to be defined by binding a locality
 Finally, the \textit{dataflow} function can be used to launch the action while waiting for the data held by the future.
 Line 27 to 30 in Listing \ref{lst:hpx_dep} is an example on how to create the \textit{Operation} and call the \textit{dataflow} function to launch the \textit{inv\_part\_action} which wrap a function that will process the data.
 
-\begin{figure*}
 \lstinputlisting[style=customcode,language=C++,
 caption=HPX dependencies \label{lst:hpx_dep}]{chapters/languages/hpx_dep.cpp}
-\end{figure*}
 
 \subsubsection{Data definition}
 Data are stored into a \textit{partition\_data} structure.
@@ -518,10 +493,8 @@ Listing \ref{lst:hpx_data} has the implementation of the \textit{partition\_serv
 It shows the use of HPX macros to register and set up the \textit{partition\_server}.
 
 
-\begin{figure*}
 \lstinputlisting[style=customcode,language=C++,
 caption=HPX data \label{lst:hpx_data}]{chapters/languages/hpx_data.cpp}
-\end{figure*}
 
 \subsubsection{Graph execution}
 There is several ways to initialize HPX runtime and execute applications.
@@ -536,10 +509,8 @@ They could have been used without waiting for them before hand so that any compu
 Finally, \textit{hpx::finalize} function is called to shutdown HPX runtime at the end of the application.
 
 
-\begin{figure*}[t]
 \lstinputlisting[style=customcode,language=C++,
 caption=HPX launch \label{lst:hpx_launch}]{chapters/languages/hpx_launch.cpp}
-\end{figure*}
 
 \subsubsection{Granularity}
 The tasks are single threaded functions called on the local node or on a remote node by the runtime.
@@ -662,19 +633,15 @@ With this information, the scheduler can anticipate the resource allocation and 
 The scheduler creates the processes that the XMP components need to run the component.
 Then each process will get the piece of data which will be used in the process from the data repository.
 
-\begin{figure*}[t]
 \lstinputlisting[style=customcode,
 caption=XMP implementation component for YML\label{lst:yml_task}]{chapters/languages/yml_task.query}
-\end{figure*}
 
 In this approach, there are no global communications along all the processors (like scalar products or reductions) in the application since applications are divided on component calls that use a subset of the computational resources allowed to the application.
 The components running at the same time don't communicate with each other and are run independently.
 Global communications take time and consume a lot of energy so reducing them and finding other ways to get the same results saves time and is more power efficient.
 
-\begin{figure*}
 \lstinputlisting[style=customcode,
 caption=Abstract component for YML\label{lst:yml_task_abst}]{chapters/languages/yml_task_abst.query}
-\end{figure*}
 
 \subsubsection{Task definition}
 In YML, implementing a task means to create a component.
@@ -720,10 +687,8 @@ It means that the task \textit{compute XMP\_inversion(A[i][i],B[i])} depends on 
 This event system is used to infer a graph of dependencies.
 It is used to schedule the tasks.
 
-\begin{figure*}
 \lstinputlisting[style=customcode,
 caption=YML Graph\label{lst:yml_graph}]{chapters/languages/yml_graph.query}
-\end{figure*}
 
 \subsubsection{Data definition}
 In YML, data types have to be registered so that it is able to manage them.
@@ -736,10 +701,8 @@ It can be a custom MPI type.
 They are used to import and export the type from the file system.
 MPIIO is used to do so in the Matrix type.
 
-\begin{figure*}
 \lstinputlisting[style=customcode,
 caption=Matrix XMP type\label{lst:yml_data}]{chapters/languages/yml_Matrix.xmptype.h}
-\end{figure*}
 
 \subsubsection{Graph execution}
 The graph is executed by launching the \textit{.yapp} application with the \textit{yml\_scheduler}.
@@ -804,10 +767,8 @@ Then, line 3 to 7 define the Job with its name space, name and version.
 The name of the job corresponds to the name of the Executable defined and registered in Listing \ref{lst:pegasus_reg_exe}.
 An executable is registered into a graph with the \textit{addExecutable} method.
 
-\begin{figure*}[h]
 \lstinputlisting[style=customcode,
 caption=Pegasus task\label{lst:pegasus_task}]{chapters/languages/pegasus_task.py}
-\end{figure*}
 
 A job can also pass arguments to the executable with the \textit{addArgument} method.
 String and files can be passed as arguments.
@@ -824,10 +785,8 @@ They will be transfered back to the user by the runtime, even the temporary file
 The user has to manually set the temporary files as not wanted as output instead of modifying a file.
 This decreases the complexity of the runtime since the data files will be unique.
 
-\begin{figure*}[h]
 \lstinputlisting[style=customcode,
 caption=Register executable in Pegasus\label{lst:pegasus_reg_exe}]{chapters/languages/pegasus_register_exe.py}
-\end{figure*}
 
 \subsubsection{Dependency definition}
 Dependencies are simple to add into a Pagasus graph with the Python interface.
@@ -835,10 +794,8 @@ Indeed, the graph has a method called \textit{addDependency} that takes the depe
 A dependency can be declared by providing if the parent and child jobs.
 Listing \ref{lst:pegasus_dep} shows an example of such a dependency.
 
-\begin{figure*}[h]
 \lstinputlisting[style=customcode,
 caption=Dependecy in Pegasus\label{lst:pegasus_dep}]{chapters/languages/pegasus_dep.py}
-\end{figure*}
 
 \subsubsection{Data definition}
 
@@ -846,10 +803,8 @@ Pegasus jobs call executables that process files so the user has to use data fil
 The user has to register data files either as intermediary to transfer data from a job to another as described above or registered to the graph which will be used as input and/or output of the jobs performed by the application.
 Listing \ref{lst:pegasus_file} shows an example of files registered to the graph.
 
-\begin{figure*}[h]
 \lstinputlisting[style=customcode,
 caption=File registration in Pegasus\label{lst:pegasus_file}]{chapters/languages/pegasus_file.py}
-\end{figure*}
 
 \subsubsection{Graph execution}
 Pegasus Python API generates a DAX which can be executed by Pegasus \textit{pegasus-plan} command.
