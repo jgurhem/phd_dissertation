@@ -24,8 +24,10 @@ If the architecture is too different, it may also be possible that the applicati
 
 However, MPI may not be a solution efficient enough on exascale machines, especially in terms of fault tolerance and check-pointing \cite{SWAAB2014}.
 Task-based approach can help in managing fault tolerance and check-pointing since the tasks could be restarted on another location and data from tasks saved at any moment.
-Moreover, this approach can be used to avoid the use of global operations on all the computing resources allocated to the application like reductions, broadcast or gather by only allowing such operations in parallel and distributed tasks.
-Therefore, these very costly operations are only executed on a subset of the allocated resources.
+Task based programming models can implement fault tolerance by restarting the failed tasks on other computing resources and even stop executing tasks on processors with high fault rate.
+Check-pointing could be implemented by storing the state of the output of the task in a way that allow to restart the application at the last check-point and reconstruct the lost data.
+Moreover, task based programming models can also be used to avoid collective communications like reductions, broadcast or gather by transforming them into multiple operations on tasks.
+Then, these operations can be scheduled by the programming scheduler to place the data and computations in a way that optimize and reduce the data communications.
 
 While MPI focus on exchanging data between processes, other programming models may be efficient to parallelize applications with good scalability without being held back by global synchronizations.
 For instance, Partitioned Global Address Space Languages (PGAS) programming models, that let the users see the distributed memory as a global memory address space that is partitioned across each processing element \cite{CDMCE2005}, are an alternative to MPI + X.
