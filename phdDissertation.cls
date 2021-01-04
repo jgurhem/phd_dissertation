@@ -127,10 +127,10 @@
 	\Large \textbf{{\@author}}
 
 	\vspace{3mm}
-	\large \textbf{à} {\@locationsoutenance}
+	\large \textbf{in} {\@locationsoutenance}
 
 	\vspace{3mm}
-	\large \textbf{le} {\@datesoutenanceEN}
+	\large \textbf{the} {\@datesoutenanceEN}
 
 	\vspace{3mm}
 	{\large to obtain the grade of Ph.D. in \textsc{\textbf{\@specialiteEN}}}
