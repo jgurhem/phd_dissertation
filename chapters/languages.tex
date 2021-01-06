@@ -5,25 +5,19 @@
 
 \lstdefinestyle{customcode}{
 	frame=single,
-	numbers=right,
 	numbers=left,
 	xleftmargin=2em,
 	framexleftmargin=1.8em,
 	numberstyle=\color{gray},
+%	basicstyle=\small,
 }
 
 In Chapter \ref{chap:hpc}, we introduced most of the current task based programming models.
 In this chapter, we select a few of them in order to use them in our experiments and implement parallel and distributed applications based on the methods presented in Chapter \ref{chap:methods}.
-We also describe in greater details the selected task based programming models.
-A YML+XMP application for dense linear algebra was previously implemented and was promoted in our research group so it used in this dissertation.
-Swift and Pegasus were chosen for their ability to run distributed and parallel tasks which is close to what is available in YML.
-We used Legion and Regent which is a simpler language made to more easily access Legion capabilities since Total is interested in Legion.
-HPX is a distributed extension of the C++ standard and is closely following C++ standards.
-It could become a standard way of defining and executing tasks on parallel and distributed resources.
-Therefore, HPX has been selected to implement our applications.
-TensorFlow is considered for its task based approach for linear algebra.
-It is also a library which is increasingly used and popularx.
-Finally, PaRSEC is used due to its integration into the linear algebra library DPLASMA and its dependency model based on data.
+In this chapter, we study several programming models in three classes of programming models in greater details.
+The first class is task based programming models in which tasks are fine grain and running inside only one thread or process.
+The second one contains task based programming models that use parallel and distributed tasks that run on multiple processes.
+The last class is message passing libraries that are the current commonly used programming model to implement parallel and distributed applications.
 
 \section{Message Passing Interface}
 The Message Passing Interface (MPI) \cite{MPIForum} is a standardized norm designed to work on a wide variety of parallel computers.
@@ -64,8 +58,7 @@ In a distributed system, the data movements among the nodes are completely impli
 \lstinputlisting[style=customcode,language=C,
 caption=Task in PaRSEC\label{lst:parsec_task}]{chapters/languages/parsec_task.c}
 
-
-\subsubsection{Task definition}
+\subsubsection{PaRSEC Task definition}
 Listing \ref{lst:parsec_task} shows how to define a task in PaRSEC.
 Line 1 defines the name of the task and the integer parameters in input.
 This task is called \textit{PMM}.
@@ -77,7 +70,7 @@ They contain the computations on the data.
 This task calls the \textit{pmm\_core} to process the data stored in the \textit{Ap} and \textit{Bp} pointers.
 
 
-\subsubsection{Dependency definition}
+\subsubsection{PaRSEC Dependency definition}
 Line 8 to 11 from Listing \ref{lst:parsec_task} shows how to describe the dependencies of a task in PaRSEC.
 The \textit{PMM} task uses two pieces of data \textit{A} and \textit{Inv}.
 They are temporary pointers that hold the data that will be used in the task.
@@ -105,7 +98,7 @@ This way of expressing the dependencies is error-prone.
 Indeed, the user can easily be lost in the definition of the dependencies since he has to replicate them in two tasks (for instance, the input of a task is the output from another one).
 Moreover, it can become very complicated when there is a lot of different tasks and condition on the parameters.
 
-\subsubsection{Data definition}
+\subsubsection{PaRSEC Data definition}
 \textit{dcA} is a \textit{two\_dim\_block\_cyclic\_t*}.
 This is a matrix data type provided by PaRSEC.
 It helps to store two dimensional arrays of matrices in memory.
@@ -139,7 +132,7 @@ Line 3 to 9 in Listing \ref{lst:parsec_launch} shows how to initialize \textit{d
 With the definition of these functions, PaRSEC is able to manage efficiently the data from the user.
 
 
-\subsubsection{Graph execution}
+\subsubsection{PaRSEC Graph execution}
 PaRSEC compiler generates code to launch the tasks.
 In this case, it is the \textit{parsec\_lu\_new} function as shown in Listing \ref{lst:parsec_launch}.
 It takes \textit{dcA} the data descriptor and \textit{bm} which is the number of tiles in each dimension as parameter.
@@ -149,27 +142,27 @@ The preprocessor finds them in the source file and put them as input parameters 
 caption=PaRSEC tasks launching\label{lst:parsec_launch}]{chapters/languages/parsec_launch.c}
 
 
-\subsubsection{Granularity}
+\subsubsection{PaRSEC Granularity}
 PaRSEC assigns computation threads to the cores, overlaps communications and computations.
 Each task is run into a thread.
 Furthermore, PaRSEC tasks are fine grain.
 
-\subsubsection{Tasks re-usability}
+\subsubsection{PaRSEC Tasks re-usability}
 Tasks cannot be reused as they are since their dependencies, parameter ranges and alignment are stored in the task definition.
 They have to be rewritten for each new application.
 However, core computations can be stored into a routine which can be reused into other tasks.
 
-\subsubsection{Scheduling}
+\subsubsection{PaRSEC Scheduling}
 The design of the PARSEC runtime system focuses on scalability.
 PaRSEC tries to limit task knowledge to processes that are responsible for their execution.
 The scheduling decisions are entirely distributed.
 Algorithmic correctness should not require control synchronization, and synchronous collective synchronization should be avoided.
 
 
-\subsubsection{Type of graph}
+\subsubsection{PaRSEC Type of graph}
 PaRSEC is mainly based on the expression of data flow dependencies but the user can also give additional control flow dependencies if needed.
 
-\subsubsection{GPU support}
+\subsubsection{PaRSEC GPU support}
 In PTG, the tasks are implemented for CPU by default.
 However, PaRSEC is able to move data to the GPU and to call tasks on it.
 The code to run on GPU is specified in the \textit{BODY} as for a CPU task and adding the option \textit{[type=CUDA]} to
@@ -198,7 +191,7 @@ Therefore, compiling an application is taking some time.
 \lstinputlisting[style=customcode,language=C,
 caption=Legion task\label{lst:legion_task}]{chapters/languages/legion_task.c}
 
-\subsubsection{Task definition}
+\subsubsection{Legion Task definition}
 Legion tasks are implemented as a tree of tasks.
 The main function calls Legion runtime to register the top level task which will spawn other tasks.
 Those task will also spawn other tasks.
@@ -219,11 +212,11 @@ This iterator is used as index to the accessors so that pieces of data can be re
 \lstinputlisting[style=customcode,language=C,
 caption=Legion data\label{lst:legion_data}]{chapters/languages/legion_data.c}
 
-\subsubsection{Dependency definition}
+\subsubsection{Legion Dependency definition}
 Dependencies are implicitly defined with the access mode of the regions and the tree of tasks.
 Indeed, a task can launch another tasks when it is finished.
 
-\subsubsection{Data definition}
+\subsubsection{Legion Data definition}
 Data are defined through regions of any given type.
 To define a region and divide it in sub-regions then run tasks on the sub-regions, an index space and a field space for the region have to be defined.
 The index space keeps the coordinates of the values in the multi-dimensional array represented by a region (line 8 from Listing \ref{lst:legion_data}).
@@ -239,7 +232,7 @@ Then, the index partitions can be created from the data index space and the sub-
 Finally, the \textit{LogicalPartition} which contains the split data can be created from the initial \textit{LogicalRegion} and the newly defined sub-regions index partitions (line 31 to 34 from Listing \ref{lst:legion_data}).
 
 
-\subsubsection{Graph execution}
+\subsubsection{Legion Graph execution}
 The tasks are registered into the runtime system then the user can use the runtime to start executing the tasks from the tree of tasks.
 
 \lstinputlisting[style=customcode,language=C,
@@ -256,13 +249,13 @@ This is performed by using the \textit{add\_region\_requirement} and the \textit
 These parameters are passed to the task via the runtime as we saw in Listing \ref{lst:legion_task}.
 Then we can tell the runtime to execute the tasks with the \textit{execute\_index\_space} method (Line 13 in Listing \ref{lst:legion_task_launch}).
 
-\subsubsection{Granularity}
+\subsubsection{Legion Granularity}
 Tasks are run as thread by the runtime so tasks are fine-grain.
 
-\subsubsection{Tasks re-usability}
+\subsubsection{Legion Tasks re-usability}
 Tasks can be registered and launched in another application if it provides the regions and parameters expected by the task.
 
-\subsubsection{Scheduling}
+\subsubsection{Legion Scheduling}
 Legion uses a software out-of-order processor (SOOP) to schedule tasks.
 It dynamically schedules a stream of tasks.
 It is constrained by region dependences.
@@ -270,10 +263,10 @@ It is also pipelined, distributed, and extracts nested parallelism from subtasks
 Legion uses a \textit{deferred execution model} which separates the issuing of the operations from when operations are executed.
 An issued operation waits for other operations on which it is dependent to complete before executing without blocking the scheduler.
 
-\subsubsection{Type of graph}
+\subsubsection{Legion Type of graph}
 Legion tasks are defined as a tree of tasks.
 
-\subsubsection{GPU support}
+\subsubsection{Legion GPU support}
 Legion supports data migrations to GPUs.
 Data are accessed through Legion data structure.
 Tasks are implemented in C++ and can be launched on GPU.
@@ -285,7 +278,7 @@ Regent \cite{SLTBA2015} is a programming model which simplifies Legion.
 Regent compiler translates Regent programs into efficient implementations for Legion.
 It results in programs that are written with fewer lines of codes and at a higher level.
 
-\subsubsection{Task definition}
+\subsubsection{Regent Task definition}
 A Regent task is similar to a function.
 It is defined with the \textit{task} keyword until the keyword \textit{end}.
 It has parameters after the name of the task (\textit{pmm\_d} in Listing \ref{lst:regent_task}).
@@ -298,7 +291,7 @@ Line 5 to 12 are the computations in the task.
 \lstinputlisting[style=customcode,
 caption=Regent task\label{lst:regent_task}]{chapters/languages/regent_task.rg}
 
-\subsubsection{Dependency definition}
+\subsubsection{Regent Dependency definition}
 Dependencies between tasks are automatically inferred by Regent compiler from input modes.
 Line 35 to 43 from Listing \ref{lst:regent_main} show examples on how to call a task in Regent.
 This limits the parallelism that can be detected and create additional dependencies when the system is not sure that the tasks are independent.
@@ -306,7 +299,7 @@ This limits the parallelism that can be detected and create additional dependenc
 \lstinputlisting[style=customcode,
 caption=Regent application\label{lst:regent_main}]{chapters/languages/regent_main.rg}
 
-\subsubsection{Data definition}
+\subsubsection{Regent Data definition}
 Data types are stored in regions.
 The regions can be partitioned and tasks can be executed on subregions.
 Custom types can be defined and used as base in regions.
@@ -332,30 +325,30 @@ Therefore, the lower bound is added to the \textit{int2d} while accessing the va
 \textit{int2d} are also used to access sub-regions as in line 40 of Listing \ref{lst:regent_main}.
 
 
-\subsubsection{Graph execution}
+\subsubsection{Regent Graph execution}
 The tasks are launched through the main function.
 Regent compiler converts code into Legion code so the tasks are executed using Legion execution model.
 Main function is registered into Regent using \textit{start} function (line 46 from \ref{lst:regent_main}).
 It is the starting point of the application.
 
 
-\subsubsection{Granularity}
+\subsubsection{Regent Granularity}
 Tasks are run as Legion tasks.
 They are run into a thread.
 Furthermore, they are fine-grain tasks.
 
-\subsubsection{Tasks re-usability}
+\subsubsection{Regent Tasks re-usability}
 Tasks can be reused.
 They can be stored in another regent file which can be included in another application.
 Then, tasks can be called as they are from the other application.
 
-\subsubsection{Scheduling}
+\subsubsection{Regent Scheduling}
 Legion scheduling policy is used here.
 
-\subsubsection{Type of graph}
+\subsubsection{Regent Type of graph}
 As Regent code is converted in to Legion code, Regent uses Legion tree of tasks that are spawn recursively starting from the main task.
 
-\subsubsection{GPU support}
+\subsubsection{Regent GPU support}
 Regent supports generation of CUDA code for Legion.
 A task can be converted to GPU code instead of CPU code by annotating the task with \textit{\_\_demand(\_\_cuda)}.
 Regent will then generate CUDA code for Legion that will be executed by Legion runtime.
@@ -380,7 +373,7 @@ There is also the possibility to build it from sources.
 \lstinputlisting[style=customcode,
 caption=TensorFlow block-based LU factorization\label{lst:tf_app}]{chapters/languages/tensorflow_app.py}
 
-\subsubsection{Task definition}
+\subsubsection{TensorFlow Task definition}
 In TensorFlow, Operations are tasks which run on a subset of the problem.
 New Operations can be added into TensorFlow.
 They have to be implemented in C++ and inserted into the source code of TensorFlow.
@@ -388,12 +381,12 @@ The user has to compile it from sources in order to have the new Operations avai
 There is several steps to follow : register the Operation, implement the Operation into a kernel, make it compatible with the devices (CPU and GPU) and re-build TensorFlow with the new Operation.
 
 
-\subsubsection{Dependency definition}
+\subsubsection{TensorFlow Dependency definition}
 Dependencies between the Operations are computed by TensorFlow system.
 They are inferred from the data accessed and the order of the calls.
 This limits the parallelism that can be detected and create additional dependencies when the system is not sure that the Operations are independent.
 
-\subsubsection{Data definition}
+\subsubsection{TensorFlow Data definition}
 In TensorFlow, data are managed through Tensors.
 It is a multi-dimensional array that store several pieces of data of the same type.
 Those data can be integers, doubles, complexes or strings.
@@ -406,7 +399,7 @@ They can be created with Tensors as base.
 
 TensorFlow Python binding offers the possibility to import data from a \textit{numpy} array and create a Tensor out of it.
 
-\subsubsection{Graph execution}
+\subsubsection{TensorFlow Graph execution}
 The graph is built on the run when TensorFlow has inferred the dependencies between the Operations.
 It is executed through a Session.
 The user has to create a Session and use it to run the computation on the different Tensors to launch the Operations and obtain the output of the computations.
@@ -416,16 +409,16 @@ It also show on line 15 and 16 how to initialize Variables through the Session.
 line 25 to 27 shows how to use the Session to perform the Operations on the Tensors.
 
 
-\subsubsection{Granularity}
+\subsubsection{TensorFlow Granularity}
 TensorFlow Operations run on a CPU or on a GPU depending on the resources available and the availability of the implementation of the kernel for the type of device targeted.
 
-\subsubsection{Tasks re-usability}
+\subsubsection{TensorFlow Tasks re-usability}
 Operations can be reused on different architectures if their implementation is available for this architecture.
 
-\subsubsection{Type of graph}
+\subsubsection{TensorFlow Type of graph}
 TensorFlow uses a data flow graph inferred from the Operations on Tensors used in the application.
 
-\subsubsection{GPU support}
+\subsubsection{TensorFlow GPU support}
 TensorFlow is designed to support GPU.
 Indeed, TensorFlow Operations can be implemented to run on GPU and/or CPU.
 
@@ -450,7 +443,7 @@ This model focuses on overcoming the four main barriers to scalability (Starvati
 caption=HPX task \label{lst:hpx_task}]{chapters/languages/hpx_task.cpp}
 
 
-\subsubsection{Task definition}
+\subsubsection{HPX Task definition}
 In distributed HPX applications, tasks are defined through \textit{HPX\_PLAIN\_ACTION} macro.
 Actions can be launch on a local node or a remote node by the scheduler depending on the available resources and the location of the data.
 Actions are used to retrieve the data and apply computations on them.
@@ -465,7 +458,7 @@ The \textit{dataflow} (on line 19 in Listing \ref{lst:hpx_task}) will wait for t
 
 The \textit{pmm\_d\_core} function will make the actual computations on the data.
 
-\subsubsection{Dependency definition}
+\subsubsection{HPX Dependency definition}
 Dependencies on tasks are expressed with futures on data used in the tasks and actions.
 The actions previously defined helps to wait for the data from the futures to be available.
 The actions can now be called with actual data in order to have a complete application.
@@ -482,7 +475,7 @@ Line 27 to 30 in Listing \ref{lst:hpx_dep} is an example on how to create the \t
 \lstinputlisting[style=customcode,language=C++,
 caption=HPX dependencies \label{lst:hpx_dep}]{chapters/languages/hpx_dep.cpp}
 
-\subsubsection{Data definition}
+\subsubsection{HPX Data definition}
 Data are stored into a \textit{partition\_data} structure.
 Those are held by futures to wait for their availability and create dependencies between the tasks.
 Then the actions make request to the \textit{partition\_server} to get the data in a future and wait for them.
@@ -496,7 +489,7 @@ It shows the use of HPX macros to register and set up the \textit{partition\_ser
 \lstinputlisting[style=customcode,language=C++,
 caption=HPX data \label{lst:hpx_data}]{chapters/languages/hpx_data.cpp}
 
-\subsubsection{Graph execution}
+\subsubsection{HPX Graph execution}
 There is several ways to initialize HPX runtime and execute applications.
 One of the way is shown in Listing \ref{lst:hpx_launch}.
 The main function has to initialize HPX via the function \textit{hpx::init} which takes Boost command line options description which helps to parse command line arguments as input.
@@ -512,25 +505,25 @@ Finally, \textit{hpx::finalize} function is called to shutdown HPX runtime at th
 \lstinputlisting[style=customcode,language=C++,
 caption=HPX launch \label{lst:hpx_launch}]{chapters/languages/hpx_launch.cpp}
 
-\subsubsection{Granularity}
+\subsubsection{HPX Granularity}
 The tasks are single threaded functions called on the local node or on a remote node by the runtime.
 They are fine-grain tasks.
 
-\subsubsection{Tasks re-usability}
+\subsubsection{HPX Tasks re-usability}
 The \textit{stepper} structure can be reused to store tasks and implement another function which will use the tasks as base.
 Tasks and actions may be stores in a better environment so that they can be used more easily.
 
-\subsubsection{Scheduling}
+\subsubsection{HPX Scheduling}
 HPX scheduler coordinates execution of tasks.
 It tries to maximize throughput of the cores, prioritize work according to need and minimize waiting time.
 HPX creates \textit{worker} (hardware) thread per core on startup on which it runs its own Task Scheduler.
 HPX tasks are executed on the HPX worker (OS) thread.
 Each HPX 'task' is referred to as a lightweight thread.
 
-\subsubsection{Type of graph}
+\subsubsection{HPX Type of graph}
 The data flow graph is provided by the user through futures and the \textit{dataflow} function.
 
-\subsubsection{GPU support}
+\subsubsection{HPX GPU support}
 HPX provides GPU support through CUDA futures.
 They work as the regular futures but allows to execute functions on GPUs.
 By default, the user has to use a future to execute CUDA functions to allocate memory on the device with CUDA, copy data to the device, make operations on the data and copy the results to the host.
@@ -620,10 +613,10 @@ Each element of the array is allocated to the node where corresponding template 
 \begin{figure}
 	\centering
 	\includegraphics[width=.35\textwidth]{xmp-example.pdf}
-	\caption{Example of XMP programming\label{fig:xmpprog}}
+	\caption{Example of XMP programming \cite{GuTPS2019}\label{fig:xmpprog}}
 \end{figure}
 
-\subsubsection{YML/XMP}
+\subsubsection{YML+XMP}
 For the experiments, we use XMP to develop the YML components as introduced in \cite{TsSHP2013}.
 This allows two levels programming.
 The higher level is the graph (YML) and the second level is the PGAS component (XMP).
@@ -643,7 +636,7 @@ Global communications take time and consume a lot of energy so reducing them and
 \lstinputlisting[style=customcode,
 caption=Abstract component for YML\label{lst:yml_task_abst}]{chapters/languages/yml_task_abst.query}
 
-\subsubsection{Task definition}
+\subsubsection{YML+XMP Task definition}
 In YML, implementing a task means to create a component.
 There is two type of components to implement; an abstract component and an implementation component which will be be implemented with XMP in this case.
 Listing \ref{lst:yml_task_abst} shows an example of abstract component.
@@ -666,7 +659,7 @@ The code of the task is contained in the \textit{header}, \textit{source} and \t
 The code inside the \textit{header} tag will be put at the end of the header part of the generated C source file of the component.
 The code from \textit{source} tag is put in the main and the code from the \textit{footer} tag will be put at the end of the generated C file.
 
-\subsubsection{Dependency definition}
+\subsubsection{YML+XMP Dependency definition}
 Dependencies are defined while creating the graph of tasks.
 Listing \ref{lst:yml_graph} shows a YML graph with dependencies between the tasks.
 Tasks are called with the keyword \textit{compute}, the name of the component provided in the abstract component and the parameters of the task.
@@ -690,7 +683,7 @@ It is used to schedule the tasks.
 \lstinputlisting[style=customcode,
 caption=YML Graph\label{lst:yml_graph}]{chapters/languages/yml_graph.query}
 
-\subsubsection{Data definition}
+\subsubsection{YML+XMP Data definition}
 In YML, data types have to be registered so that it is able to manage them.
 They are stored in the \textit{DefaultExecutionCatalog/generators} directory in YML configuration files.
 Listing \ref{lst:yml_data} shows an example of the functions to implement with the \textit{Matrix} used in the abstract component.
@@ -704,13 +697,13 @@ MPIIO is used to do so in the Matrix type.
 \lstinputlisting[style=customcode,
 caption=Matrix XMP type\label{lst:yml_data}]{chapters/languages/yml_Matrix.xmptype.h}
 
-\subsubsection{Graph execution}
+\subsubsection{YML+XMP Graph execution}
 The graph is executed by launching the \textit{.yapp} application with the \textit{yml\_scheduler}.
 This application is produced by \textit{yml\_compiler}.
 With XMP back-end, \textit{yml\_scheduler} is launched with \textit{mpirun -n 1 yml\_scheduler my\_app.yapp}.
 It will enable YML to launch tasks in the distributed environment.
 
-\subsubsection{Granularity}
+\subsubsection{YML+XMP Granularity}
 With the XMP back-end, tasks are MPI based applications implemented with XMP so they use multi-processes technology.
 Each XMP task can run on several nodes of the global number of nodes associated to the application.
 These tasks are coarse-grain.
@@ -718,23 +711,27 @@ These tasks are coarse-grain.
 The C back-end provides multi-threaded tasks.
 These tasks can be run on one node.
 
-\subsubsection{Tasks re-usability}
+\subsubsection{YML+XMP Tasks re-usability}
 Implementation and abstract components can be reused in another application by calling them again with the \textit{compute} keyword.
 However, components implemented in XMP have their number of cores used and size of data fixed.
 Unfortunately, they cannot be changed dynamically.
 It means that the components have to be recompiled each time one of those parameters is changed or that multiple versions if the component with different parameters have to coexist.
 
-\subsubsection{Scheduling}
+\subsubsection{YML+XMP Scheduling}
 When a task dependencies are satisfied, the task is put in the execution queue.
 The tasks in this queue are executed when the resources are available.
 Furthermore, the tasks are launched on the resources they ask in their implementation.
 
-\subsubsection{Type of graph}
+\subsubsection{YML+XMP Type of graph}
 The user defines the control flow graph while giving the dependencies between the tasks.
 However, the data flow graph can be extracted from the control flow graph and the access mode of the data provided in the abstract component.
 
-\subsubsection{GPU support}
-No support for GPUs has been directly implemented in YML.
+\subsubsection{YML+XMP GPU support}
+Support for GPUs depends on the backends used.
+The XMP backend does not directly support GPUs.
+The user has to use an external library to address the use of GPUs.
+
+Moreover, there is a backend that used XMP and StarPU that can address the usage of GPUs.
 
 
 
@@ -758,7 +755,7 @@ Pegasus also keeps track of what has been done, where, which software was used a
 
 Pegasus has been used in a number of scientific domains including astronomy, bioinformatics \cite{PRBBF2016}, earthquake science , gravitational wave physics, ocean science, and others.
 
-\subsubsection{Task definition}
+\subsubsection{Pegasus Task definition}
 In Pegasus, tasks are called \textit{Job}.
 Listing \ref{lst:pegasus_task} shows how to define and register a \textit{Job} into Pegasus.
 DAX Python API is used to generate the XML file that will be treated by Pegasus to launch the jobs on the available resources.
@@ -788,7 +785,7 @@ This decreases the complexity of the runtime since the data files will be unique
 \lstinputlisting[style=customcode,
 caption=Register executable in Pegasus\label{lst:pegasus_reg_exe}]{chapters/languages/pegasus_register_exe.py}
 
-\subsubsection{Dependency definition}
+\subsubsection{Pegasus Dependency definition}
 Dependencies are simple to add into a Pagasus graph with the Python interface.
 Indeed, the graph has a method called \textit{addDependency} that takes the dependency as parameter.
 A dependency can be declared by providing if the parent and child jobs.
@@ -797,7 +794,7 @@ Listing \ref{lst:pegasus_dep} shows an example of such a dependency.
 \lstinputlisting[style=customcode,
 caption=Dependecy in Pegasus\label{lst:pegasus_dep}]{chapters/languages/pegasus_dep.py}
 
-\subsubsection{Data definition}
+\subsubsection{Pegasus Data definition}
 
 Pegasus jobs call executables that process files so the user has to use data files that match the format used by the executables to read or write data from file.
 The user has to register data files either as intermediary to transfer data from a job to another as described above or registered to the graph which will be used as input and/or output of the jobs performed by the application.
@@ -806,18 +803,18 @@ Listing \ref{lst:pegasus_file} shows an example of files registered to the graph
 \lstinputlisting[style=customcode,
 caption=File registration in Pegasus\label{lst:pegasus_file}]{chapters/languages/pegasus_file.py}
 
-\subsubsection{Graph execution}
+\subsubsection{Pegasus Graph execution}
 Pegasus Python API generates a DAX which can be executed by Pegasus \textit{pegasus-plan} command.
 It will submit the jobs to the resources available to the application and manage the input and output data files.
 
-\subsubsection{Granularity}
+\subsubsection{Pegasus Granularity}
 The jobs can be anything between short one threaded application to large scale multi-node applications based on MPI.
 
-\subsubsection{Tasks re-usability}
+\subsubsection{Pegasus Tasks re-usability}
 Jobs can be reused in another application if they use the same arguments and files as input otherwise, they will have to be rewritten.
 
 
-\subsubsection{Scheduling}
+\subsubsection{Pegasus Scheduling}
 By default, Pegasus uses HTCondor DAGMan \cite{ThaTL2002} as underline work-flow manager.
 Therefore, it uses HTCondor Schedd to schedule the jobs submitted to HTCondor DAGMan.
 
@@ -825,10 +822,10 @@ Pegasus can use  other back-ends as engine.
 The scheduling policy will depend on how the engine manage the jobs submitted to it.
 
 
-\subsubsection{Type of graph}
+\subsubsection{Pegasus Type of graph}
 The user only defines dependencies between Jobs so the graph is a control flow graph.
 
-\subsubsection{GPU support}
+\subsubsection{Pegasus GPU support}
 Pegasus does not seem to support GPU by itself.
 The user should be able to tell Pegasus which tasks need GPU to run on and which resources have GPU available.
 Pegasus tasks are implemented on top of an existing executable so this executable has to be able to manage GPUs to run applications on them.
@@ -1050,6 +1047,10 @@ There is three types of leaf functions in Swift/T :
 
 \section{Analysis and First Evaluation of the Languages}
 
+We introduced three classes of programming models : the currently used message passing libraries, fine grain task based programming models in which tasks run on one thread or process and large grain task based programming models in which tasks are distributed and parallel and run on multiple processes.
+We studied several task based programming models in each category in detail.
+In particular, we studied the properties of HPX, PaRSEC, TensorFlow, Legion, Regent, YML+XMP, Swift and Pegasus.
+
 HPX is a task based programming model.
 The tasks are run as lightweight processes on the resources managed by HPX runtime.
 The data and the tasks can be transfered across distributed nodes.
@@ -1106,6 +1107,8 @@ YML+XMP is an example of such an application.
 It depends on libraries that are not commonly installed on supercomputers like \textit{Util}, a library implemented for YML or \textit{OmniRPC} and the \textit{omnicompiler} which are used to compile and launch parallel and distributed XMP based tasks.
 Moreover, XMP tasks are compiled into an application which is executed by YML scheduler through \textit{OmniRPC} with \textit{MPI\_Comm\_spawn}.
 Very few MPI implementations support \textit{MPI\_Comm\_spawn} as used by YML and \textit{OmniRPC} so installing the whole software stack with the right versions and support on a supercomputer is challenging.
+Furthermore, containerization technologies are not well supported yet on current supercomputers especially for distributed applications.
+The integration of those technologies on supercomputers is a interesting opportunity to make the deployment of complex software stacks easier.
 
 To address this deployment issue, we created containers which can hold the recipe to compile and install YML+XMP for a given architecture.
 These containers can be built on the supercomputers if the user has the rights to do so or build locally then sent on the supercomputer for execution.

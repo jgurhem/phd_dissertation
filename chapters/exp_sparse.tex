@@ -389,7 +389,7 @@ These matrices are the C-diagonal Q-perturbed matrices introduced in Chapter \re
 They are were used to perform numerical experiments which will be presented in the next section.
 
 
-\subsection{Numerical Experiments on Pangea II}
+\subsection{Results and Analyses on Total Petascale Pangea II}
 In these experiments, the sparse operation $A(Ax+x)$ has been performed on a sparse matrix stored COO, SCOO, ELL and CSR where $A$ is the sparse matrix and $x$ a vector.
 This operation has been chosen as test due to the fact that the output vector has to be recombined after the local sparse matrix vector in order to reuse it in the next sparse matrix vector product.
 The C-diagonal Q-perturbed matrices introduced in Chapter \ref{chap:methods} are used to evaluate the performances of the different programming models and storage formats.
@@ -402,7 +402,7 @@ Pangea II is the supercomputer on which the experiments have been performed.
 It is owned by Total and located in Pau, France.
 This supercomputer is composed of nodes built with 2 Xeon E5-2680v3 12C 2.5GHz processors for a total of 220 800 cores.
 The nodes are connected with Infiniband FDR interconnects.
-It performs at 5 283.11 TFlop/s for Linpack and 162.692 TFlop/s for HPCG.
+It performs at 5.283 PFlop/s for Linpack and 162.692 TFlop/s for HPCG.
 
 \subsubsection{Best Results Selection}
 These experiments depend on several parameters.

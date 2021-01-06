@@ -14,6 +14,7 @@ Initially, the increase in performance of an application was obtained from the i
 Indeed, the processors were becoming faster with each new generation and thus, the applications ran faster on them.
 Then, the frequency became impossible to increase without the processors producing too much heat in the early 2000s \cite{KirkH2010}.
 Therefore, either the processors had to be cooled at the cost of more power and infrastructure or setting the frequency of processors to a reasonable temperature so that the processors do not produce an excessive amount of heat and shut down so that they do not melt.
+Moreover, the data transfer speed between the memory and the processor lowest cache is slower than the time needed by the cores to use it.
 %https://software.intel.com/content/www/us/en/develop/blogs/why-has-cpu-frequency-ceased-to-grow.html
 Thus, the frequency of processors has stabilized since then.
 At this point, high performance application developers could not rely on the improvement of individual processors to achieve performance.
@@ -38,14 +39,15 @@ Fault tolerance allows applications to manage hardware or software errors on com
 Check pointing consists in saving a snapshot of the application a regular interval, so that applications can restart from the last snapshot in case of failure or stop.
 They are commonly used in long running applications to avoid re-running the application from the start in case something happens.
 It can also be used to see the evolution of data during the run of the application.
-For instance, this could be used to check the evolution of a simulation.
+For instance, this could be used to check the evolution of a simulation or a neural network training.
 
 Besides, global operations like reductions, gathers and broadcasts are very expensive due to the high number of resources partaking in the operation and the cost of sending information to distant resources on the network connecting the nodes.
 Task-based approach can help in managing fault tolerance and check-pointing since the tasks could be restarted on another location and data from tasks saved at any moment.
 Tasks allow to separate the expression of the parallelism from its parallel implementation by letting the developer express the tasks and their dependencies while the runtime of the programming models tries to run as much tasks as possible at the same time, respects the dependencies and tries to obtain the best performances possible.
-This means that application experts can express algorithms through tasks without being required to understand the hardware in detail.
+This means that application experts can express algorithms through graph of tasks without being required to understand the hardware in detail.
 Furthermore, the task-based approach can help to eliminate large scale collective communications by encapsulating them inside tasks.
 Then, these tasks can run on a subset of the resources allocated to the application and execute collective communications on a smaller scale.
+The graph of tasks can be efficiently scheduled so that the execution of tasks optimizes data migrations, IOs tasks and data check-pointing.
 In task based programming models, data can only be exchanged between tasks as their input and output parameters as opposed to exchanging data during the execution of the task.
 Therefore the algorithms using collective communications have to be redesigned in order to avoid them or rewrite them as task operations.
 
@@ -59,15 +61,15 @@ Some of them will be introduced in the following section.
 A task can be defined as an atomic set of operations, with a defined set of data as input and output, which can be asynchronously executed while enforcing data and/or control dependencies.
 This section introduces programming models supporting the definition and the scheduled execution of tasks.
 
-\subsection{Shared memory}
+\subsection{Task Based Programming Models on Shared Memory}
 First, task based programming models that are designed to work with shared memory architectures are introduced.
 Usually, the programming models are based on multi-threading where threads can be considered as workers which can execute the tasks.
-The scope of the task is limited to the thread although QUARK supports multi-threaded tasks.
+The scope of the task is limited to the thread although QUARK \cite{YarkKD2011} supports multi-threaded tasks.
 Some of the programming models introduced here can also offload data to accelerators like GPUs and execute tasks on them.
 
-TensorFlow is introduced in this dissertation since it based on tasks.
+TensorFlow \cite{AABBC2016} is introduced in this dissertation since it based on tasks.
 However, tasks are limited to algebra and tensor operations implemented by the TensorFlow developer team since TensorFlow is Artificial Intelligence and Deep Learning oriented.
-PyTorch \cite{PGMLB2019} and MindSpore are alternative frameworks to TensorFlow with similar interfaces and functioning.
+PyTorch \cite{PGMLB2019} and MindSpore \footnote{https://www.mindspore.cn/en} are alternative frameworks to TensorFlow with similar interfaces and functioning.
 They will not be covered in this dissertation since they have concepts similar to TensorFlow and are only providing Artificial Intelligence based tasks.
 
 \subsubsection{Cpp-Taskflow}
@@ -178,7 +180,7 @@ In CnC, there are two ordering requirements : producer/consumer linked to data d
 It allows important scheduling optimizations with the two graphs directly available.
 CnC has a lot of explanations and possibilities but the development of an application becomes complex very quickly.
 
-\subsection{Distributed memory}
+\subsection{Task Based Programming Models on Distributed Memory}
 We now present some task based programming models in which tasks are scheduled to run on distributed memory.
 In these programming models, the data dependencies are also taken into consideration to execute single thread (or process) tasks on multiple nodes.
 The data used by the tasks are described to the programming models so that the schedulers can execute the tasks where the data are stored to reduce data movement if it is supported or send the data where they will be consumed by tasks.
@@ -310,7 +312,7 @@ Finally, Chapel provides interoperability features to integrate other languages 
 Chapel is an open-source project hosted on GitHub under the Apache v2.0 license.
 It uses third-party open-source packages under their own licenses.
 
-\subsection{Tasks with distributed memory}
+\subsection{Task Based Programming Models where Tasks run on Distributed Memory}
 Finally, task based programming models in which tasks are parallel and distributed functions or applications capable of running on several nodes are introduced.
 In this case, data are not always managed by the scheduler.
 Indeed, some of the programming models with parallel and distributed tasks use the file system to transmit data from one task to another by explicitly writing and reading data from files.

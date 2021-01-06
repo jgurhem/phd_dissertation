@@ -5,7 +5,7 @@ The task based programming models we will use to make experiments have been sele
 We will now introduce the experiments we executed on clusters and supercomputers with the dense linear algebra applications we implemented using these task based programming models.
 We will also discuss the numerical experiments we performed and the results we obtained.
 
-\section{Task-Based Methods and Algorithms}
+\section{Task-Based Methods and Algorithms to Solve Dense Linear Systems}
 
 
 Let $A$ be a block matrix of size $np \times np$ and $p \times p$ blocks so each block is of size $n \times n$ .
@@ -21,7 +21,7 @@ Each assignment will correspond to a task in the implementation of the algorithm
 
 
 
-\subsection{Block-Based Gaussian Elimination to Solve Linear Systems}
+\subsection{Block-Based Gaussian Elimination}
 
 \begin{algorithm}[h]
 	\DontPrintSemicolon
@@ -69,7 +69,7 @@ The XMP components that make the different operations are also written to take a
 
 
 
-\subsection{Block-Based Gauss-Jordan Elimination to Solve Linear Systems}
+\subsection{Block-Based Gauss-Jordan Elimination}
 
 \begin{algorithm}[h]
 	\DontPrintSemicolon
@@ -116,8 +116,7 @@ The XMP components that make the different operations are also written to take a
 	\caption{Block-based LU factorization graph for p = 4\label{fig:graph_lu}}
 \end{figure}
 
-\subsection{Block-Based LU factorization to Solve Linear Systems}
-
+\subsection{Block-Based Resolution of Block Triangular Systems}
 
 \begin{algorithm}[h]
 	\DontPrintSemicolon
@@ -268,7 +267,7 @@ As YML and XMP were introduced by authors of this paper, as the OmniRPC middlewa
 Then, in the next section, we compare YML/XMP and XMP to ScaLAPACK and our MPI implementation of the resolution of a dense linear system on Poincare, an IBM cluster.
 
 
-\subsection{Experiments on Poincare\label{sec:exp}}
+\subsection{Experiments on Poincare, a cluster from La Maison de la Simulation\label{sec:exp}}
 
 \subsubsection{The cluster}
 The tests were performed on Poincare, the cluster of \textit{La Maison de la Simulation} in France.
@@ -399,11 +398,6 @@ In YML, the communications are only made on a subset of cores while, in XMP, com
 Furthermore, YML has a scheduler that manage the tasks and the data migrations between the tasks in order to optimize them.
 They can optimized further with YML asynchronous communications between tasks.
 Finally, MPI applications are very well adapted to the current systems so the performances of these applications are great if the application is well implemented.
-
-
-
-
-
 
 \subsection{Prediction of the optimal parameters}
 The prediction of the optimal values for the number of blocks (size of the block) and the number of processes per task (number of parallel tasks) is not a deterministic problem since it depends on the machine and the available resources.
@@ -581,9 +575,6 @@ Implementing a new mapper may improve the performances of our Regent application
 Finally, YML+XMP is the only programming model using tasks which are also distributed but the communications through the file system decrease its efficiency.
 YML+XMP performances may not be impressive on this number of nodes but with the increase of the number of nodes and its strong scalability higher than the other task-based programming languages, YML+XMP could be able to perform better than the other programming models on a very large scale as already experienced on the K computer \cite{GuTPS2019}.
 Moreover, changing the use of the file system to make the communications between the tasks to in-memory communications could improve the performances even more.
-
-
-\section{Second Analysis and Selection of MPI, PaRSEC, HPX, Pegasus and YML+XMP}
 
 % chapter transition
 \paragraph{}

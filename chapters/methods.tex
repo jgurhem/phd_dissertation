@@ -1,16 +1,16 @@
 \chapter{Methods \label{chap:methods}}
 \graphicspath{{chapters/methods/}}
-This chapter introduces the base algorithms from which the task-based algorithms in the next chapters are derived.
+This chapter introduces the basic algorithms from which the task-based algorithms in the next chapters are derived.
 The dense linear algebra algorithms will be presented then the sparse linear algebra and finally, the Kirchhoff seismic pre-stack depth migration.
 
 \section{Dense Linear Algebra}
 
 This section focus on the dense linear methods we consider as benchmark to experiment on the programming models.
-We introduce the LU factorization and three methods to solve a linear system namely the Gaussian elimination, the Gauss-Jordan elimination and the LU factorization.
+We introduce the LU factorization, the Gaussian elimination, the Gauss-Jordan elimination and the backward and forward substitution.
 We introduce the regular point to point methods as well as the block based methods.
 
 
-The LU factorization and the solution of linear systems are two very useful dense linear algebra operations.
+These methods to solve dense linear systems two very useful algebra operations.
 They are used as base for more complex operations like linear solvers.
 For instance, the LU factorization to solve a linear system is used a benchmark which is called LINPACK \cite{Parle1981} \cite{DonLP2003} for the TOP 500 which ranks the performances of the supercomputers.
 The LU factorization is also used to invert a matrix in LAPACK \cite{ABBBD1999} and its distributed counterpart ScaLAPACK \cite{ChDPW1992} \cite{BCCDD1996}.
@@ -118,7 +118,7 @@ Algorithm \ref{alg:lufact_sls} solves the linear system $Ax = b$ to obtain $x$ g
 \begin{algorithm}[h]
 	\DontPrintSemicolon
 	%\SetAlgoVlined
-	\caption{Solution of a linear system with a block-based LU factorization\label{alg:lufact_sls}}
+	\caption{Backward and forward substitution to solve a triangular linear system with a block-based LU factorization\label{alg:lufact_sls}}
 	\For{i \KwFrom 0 \KwTo p-2}{
 		\For{j \KwFrom i+1 \KwTo p}{
 			(5) $b_j^{(i+1)} = b_j^{(i)} - A_{j,i}^{(i+1)} \cdot b_i^{(p)}$ \;
@@ -138,7 +138,7 @@ Algorithm \ref{alg:lufact_sls} solves the linear system $Ax = b$ to obtain $x$ g
 %\cite{DonGW1994}
 %\cite{Straz1995}
 
-The block LU algorithm can also be obtained from the scalar algorithm since the it can be generalized by changing from scalar to matrices and using the appropriate operations.
+The block LU algorithm can also be obtained from the scalar algorithm since the it can be generalized by changing from scalar to block matrices and using the appropriate operations.
 The scalar algorithm with pivot for the LU factorization can be found in \cite{BissV1988} \cite{Velde1990}.
 However, there is no pivoting in the block algorithm although pivoting may be used to increase the stability during the inversion of the diagonal blocks.
 Algorithm \ref{alg:lufact_scalar} is a scalar version without pivot of the LU factorization \cite{GoluL1983}.
@@ -299,15 +299,17 @@ Most of these iterative methods are based on the sparse matrix vector product wh
 
 \section{Sparse Linear Algebra}
 
-Discretization of partial differential equation in numerical simulations often leads to the creation of a linear system which has to be resolved in order to solve the equation.
+There is a large amount of applications that use sparse matrices.
+For instance, the discretization of partial differential equation in numerical simulations often leads to the creation of a linear system which has to be resolved in order to solve the equation.
+Another example is the representation of the dependency graph of web pages on which the PageRank method can be applied to rank them.
 The linear system is most of the time stored as a matrix.
 When the matrix is dense, direct methods can be used to solve the linear system as seen in the previous section.
 However, the discretization of the partial differential equation can produce linear system where the matrix contains a large amount of zero.
-A matrix can be considered sparse when storing the matrix in a sparse storage format is less expensive than using the dense storage format.
+A matrix can be considered sparse when storing the matrix in a sparse storage format takes less memory space than using the dense storage format.
 In this case, the matrix is considered sparse and is stored using sparse storage formats.
 Some of the most commonly used sparse matrix storage formats are discussed in this section.
-Moreover, the direct methods are not suitable to solve sparse linear systems since they introduce new values in the matrix during the Gaussian elimination.
-Modifying a sparse matrix is difficult since depending on the storage format the row or the columns are compressed (the zero are removed from the arrays) so inserting new values means creating a new array and copying the previous values while adding the new one.
+Moreover, the direct methods to solve sparse linear systems are complex to implement since they introduce new values in the matrix during the Gaussian elimination.
+Indeed, modifying a sparse matrix is difficult since depending on the storage format the row or the columns are compressed (the zero are removed from the arrays) so inserting new values means creating a new array and copying the previous values while adding the new one, except for a few sparse storage formats like coordinates (COO introduced later).
 Therefore, avoiding insertion in sparse matrix improves the performances greatly since the copy is very expensive.
 This leads to the use of iterative sparse methods to solve linear systems.
 These methods heavily rely on sparse matrix vector product.
@@ -416,7 +418,7 @@ val
 \end{algorithm}
 
 \subsubsection{Compressed Sparse Row - CSR}
-The Compressed Sparse Row format (CSR) \cite{HacBG1971} \cite{Gusta1972} is similar to the COO format in which the vector containing the index of the rows is compressed.
+The Compressed Sparse Row format (CSR) \cite{HacBG1971} \cite{Gusta1972} or Yale format \cite{EiESS1977} is similar to the COO format in which the vector containing the index of the rows is compressed.
 The array giving the row index of the value at the same position in the array of values is replaced by an array which gives the position of the beginning of each row in the column array.
 In COO, the row array has NNZ values (the number of non zero values) whereas there are only $N+1$ values in the CSR row array (N is the dimension of the matrix) where N is smaller than NNZ.
 Therefore, it saves space in memory.
@@ -549,13 +551,16 @@ However, these methods are not described in this dissertation.
 	\For{i = 1, $N_{row}$}{
 		y[i] = 0.0 \;
 		\For{j = 1, $max\_col$}{
-			$y[i] \pluseq  val[i,j] \times x[columns[i,j]]$ \;
+			$y[i] \pluseq  values[i,j] \times x[columns[i,j]]$ \;
 		}
 	}
 \end{algorithm}
 
 \subsubsection{Sparse General Pattern - SGP}
 The Sparse General Pattern format (SGP) was introduced in \cite{Petit1991} and there is an example of such format in \cite{PetiE1996}.
+The SGP sparse storage format can be used to compress matrices by rows (Figure \ref{fig:methods:sgpr_ex}) or by columns (Figure \ref{fig:methods:sgpc_ex}) depending on the needs.
+This format is similar to Ellpack with the addition of another matrix that stores the position of the value in the column (resp. row) for the compressed row (resp. column) format.
+This allows to easily change between row and column compressed formats.
 
 \begin{figure}[h]
 \centering
@@ -580,6 +585,17 @@ The Sparse General Pattern format (SGP) was introduced in \cite{Petit1991} and t
 \caption{Sparse matrix stored in Sparse General Pattern with compressed rows format \label{fig:methods:sgpr_ex}}
 \end{figure}
 
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	\caption{Matrix vector multiplication - SGP row compression\label{fig:methods:sgpr_algo}}
+	%\scriptsize
+	\For{i = 1, $N_{row}$}{
+		y[i] = 0.0 \;
+		\For{j = 1, $max\_col$}{
+			$y[i] \pluseq  values[i,j] \times x[columnindex[i,j]]$ \;
+		}
+	}
+\end{algorithm}
 
 \begin{figure}[h]
 \centering
@@ -599,13 +615,27 @@ The Sparse General Pattern format (SGP) was introduced in \cite{Petit1991} and t
 \end{figure}
 
 
+\begin{algorithm}[h]
+	\DontPrintSemicolon
+	\caption{Matrix vector multiplication - SGP column compression\label{fig:methods:sgpc_algo}}
+	%\scriptsize
+	\For{i = 1, $N_{row}$}{
+		y[i] = 0.0 \;
+	}
+	\For{j = 1, $N_{col}$}{
+		\For{i = 1, $max\_row$}{
+			$y[rowpos[i,j]] \pluseq  values[i,j] \times x[rowindex[i,j]]$ \;
+		}
+	}
+\end{algorithm}
+
 \subsubsection{Hybrid - HYB}
 
 The hybrid method consist in using two types of format to store a matrix.
 For instance $A = B + C$ where $B$ and $C$ are not stored with the same format.
 
 
-\subsection{Sparse Matrix-Vector Product Parallelization}
+\subsection{Parallelization}
 CSR is the most commonly used sparse storage format in the sparse libraries.
 Usually, the matrix is divided by its rows \cite{YeCP2015} since the CSR format provides an easy way to separate the rows of a matrix in the case of distributed memory computing.
 In the case of shared memory, the matrix is shared by all the threads.
@@ -620,7 +650,7 @@ To summarize, the parallelization of the sparse matrix vector product consist on
 The exact computations performed locally \cite{FeWPS1993} depends on the sparse storage format of the matrix.
 
 
-\subsection{Sparse Matrix-Vector Product Optimizations}
+\subsection{Optimizations}
 As the sparse matrix vector product is a key component in graph kernels and sparse linear solvers which are often used in scientific applications, improving its efficiency could enhance the performances of those scientific applications.
 In this subsection, we will mention most of the common optimizations implemented to improve the performances of the sparse matrix vector product.
 
@@ -725,10 +755,10 @@ The acquisition campaign gives a huge amount of traces since there is a lot of r
 A trace contains the coordinates of the source and the receiver and the data from the seismogram.
 
 \subsection{Green functions}
-The Green functions represent the response and the behaviour of the wave when the source is a Dirac impulse.
+The Green functions represent the response and the behavior of the wave when the source is a Dirac impulse.
 They allow to solve the wave equation using an integral formula in function of the source of the wave.
-The behaviour of the wave in the ground depends on the velocity model.
-Usually, Green functions are pre-calculated and stored on disk for a 2D grid on surface and a 3D grid underground.
+The behavior of the wave in the ground depends on the velocity model.
+Usually, Green functions are precomputed and stored on disk for a 2D grid on surface and a 3D grid underground.
 During the building of the model and the migration, Green functions are retrieved from disk.
 
 In the Kirchhoff migration, the Green functions are used to estimate the travel time between 2 points depending on the velocity model.
@@ -741,7 +771,7 @@ So we can deduce $T_{SPR} = T_{SP} + T_{PR}$ (see Figure \ref{fig:Green_function
 	\caption{Wave travel between S and R through P\label{fig:Green_functions1} from \cite{rapport_Total_Petiton}}
 \end{figure}
 
-Green functions are pre-calculated for a 2D grid at the surface and for à 3D grid underground (see Figure \ref{fig:grids}).
+Green functions are precomputed for a 2D grid at the surface and for à 3D grid underground (see Figure \ref{fig:grids}).
 Moreover, a block of the 3D grid contains an image at a finer grain.
 Therefore, it is necessary to interpolate or extrapolate the Green functions for the points into the finer grid (see Figure \ref{fig:fine_coarse_grid}).
 
@@ -805,7 +835,7 @@ The values of $A$ and $\tau$ are computed for the coarse grid and they are inter
 
 
 \subsection{Analysis of the output by the geophysicists}
-The resulting image is analysed by geophysicists.
+The resulting image is analyzed by geophysicists.
 If they think that the velocity model is coherent with the image, the model can be exploited.
 Otherwise, the velocity model is modified and the process of the Kirchhoff migration is reused until the geophysicists judge that the velocity model corresponds to the data.
 
