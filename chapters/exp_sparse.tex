@@ -7,8 +7,8 @@
 
 The sparse matrix vector product with several matrix storage format and matrix distribution across the computing resources is the basic algorithm considered in this chapter.
 The sparse operation $A(Ax+x)$ is also considered as it uses two times the sparse matrix vector product.
-We will implement these algorithms with the selected task based programming models and perform numerical experiments on several clusters and supercomputers.
-Finally, we will discuss the results obtained in the experiments.
+We implement these algorithms with the selected task based programming models and perform numerical experiments on several clusters and supercomputers.
+Finally, we discuss the results obtained in the experiments.
 
 
 \section{Task-Based Methods for Parallel and Distributed Algorithms}
@@ -57,7 +57,7 @@ The distribution by rows consists in splitting the columns and keeping the value
 These rows are stored in a sparse storage format locally.
 In this case, the input vector cannot be split since a complete row of the matrix may be stored in each computing resource.
 In the sparse case, the rows may not be complete on each process but it can not be known in advance.
-The input vector will be duplicated in each computing resource.
+The input vector is duplicated in each computing resource.
 The result vector has the same size as the number of rows in the sub-matrices.
 Here, it corresponds to the number of rows in each corresponding sub-matrices.
 However, each computing resource contains a sub-vector.
@@ -80,15 +80,15 @@ The result vector has the same size as the number of rows in the sub-matrices of
 However, each computing resource contains a part of a sub-vector.
 To obtain the global result, all the distributed results of the same row have to be reduced then each rows have to be gathered if the full result vector is needed in one place.
 
-The data distribution determines which part of the global matrix will be stored on a given computing resource.
-The Section \ref{sec:sla:task_definition} points out how these data will be used to perform the matrix vector product.
+The data distribution determines which part of the global matrix iq stored on a given computing resource.
+The Section \ref{sec:sla:task_definition} points out how these data is used to perform the matrix vector product.
 
 \subsection{Tasks Definition \label{sec:sla:task_definition}}
 
 In this section, we consider that the matrix is divided according to one of the distribution described previously (except for the COO storage format).
-Each sub-matrix will be used as input of the matrix vector product tasks defined in the following algorithms.
-We will define data structures to store the matrices and use them in the tasks.
-Finally, the algorithms for the tasks will be designed.
+Each sub-matrix is used as input of the matrix vector product tasks defined in the following algorithms.
+We define data structures to store the matrices and use them in the tasks.
+Finally, the algorithms for the tasks is designed.
 
 
 \begin{algorithm}[h]
@@ -115,11 +115,11 @@ It also shows the algorithm to make a matrix vector product on the sub-matrix gi
 The data structure contains the three arrays necessary to store the matrix in the COO storage format.
 In this implementation of the matrix vector product with the COO format, the sub-matrix does not have to be sorted e.g. this implementation does not expect the coordinates of the values of the matrix to be in a given range.
 Therefore, this implementation can process any value in any position in any sub-matrix (which is not the case with the other storage formats).
-However, we cannot deduce the range of position in the full input vector which will be effectively used in the task as well as the range of position for the output vector since there is no restrictions on the range of coordinates of the values in the matrix.
+However, we cannot deduce the range of position in the full input vector which is effectively used in the task as well as the range of position for the output vector since there is no restrictions on the range of coordinates of the values in the matrix.
 Thus, this task also expect the full vector as input for the tasks (independently of the data distribution described) and output a full vector.
 
-It can allow a better load balancing at the cost of a full vector in input and output which will change how the output vector will be processed to construct the full output vector.
-This will be discussed in Section \ref{sec:sla:task_based_parallel_algorithms}.
+It can allow a better load balancing at the cost of a full vector in input and output which change how the output vector is processed to construct the full output vector.
+This is discussed in Section \ref{sec:sla:task_based_parallel_algorithms}.
 
 
 \begin{algorithm}[h]
@@ -150,8 +150,8 @@ The algorithm for the SCOO storage format is similar to the algorithm for COO wh
 In this case, the range of position for the input and output vectors can be computed since the range of coordinates for the values in the SCOO storage format are restricted to the data distributions discussed in Section \ref{sec:sla:data_distribution}.
 Therefore, depending of the data distribution, the input and output vector shapes change.
 
-In this case, the construction of the full output vector will depend on the division of the matrix as specified in Section \ref{sec:sla:data_distribution}.
-This will be detailed further in Section \ref{sec:sla:task_based_parallel_algorithms}.
+In this case, the construction of the full output vector depends on the division of the matrix as specified in Section \ref{sec:sla:data_distribution}.
+This is detailed further in Section \ref{sec:sla:task_based_parallel_algorithms}.
 
 
 \begin{algorithm}[h]
@@ -211,7 +211,7 @@ The data structure contains the number of columns needed in the arrays and the t
 As for the SCOO and CSR storage formats, the ranges of position for the input and output vectors can be computed.
 
 In this section, we presented the algorithms used to perform the matrix vector product on the sub-matrices in the tasks with the COO, SCOO, ELL and CSR sparse storage formats.
-They will be used to perform the matrix vector product on the global matrix.
+They are used to perform the matrix vector product on the global matrix.
 The Section \ref{sec:sla:task_based_parallel_algorithms} introduces the task-based algorithms to perform the sparse matrix vector product and construct the complete output vector.
 
 \subsection{Task-Based Parallel Algorithms \label{sec:sla:task_based_parallel_algorithms}}
@@ -326,14 +326,14 @@ In this case, the reconstruction of the full output vector is made by summing al
 
 Algorithm \ref{alg:sparse:task_spmv_COO} performs the matrix vector product on the global matrix when it is distributed as a non restricted and split COO sparse storage format.
 The matrix is split so that there is the same amount of values in each sub-matrix.
-This improves the load balancing of the computations in the tasks (each task will make the same number of computations).
+This improves the load balancing of the computations in the tasks (each task has the same number of computations).
 With this data distribution, the shape of the input and output vectors cannot be anticipated so the matrix vector product task expect the full vector as input and return a full vector.
 Then, to compute the output of the global matrix vector product, the output vector of each task has to be summed.
 
 This section introduced the data distribution considered in this study.
 They are a division by blocks of rows, blocks of columns, rectangle blocks in the rows and columns and a distribution with the same number of value in each task.
 We also introduced the algorithms to implement the tasks for the sub-matrices with the different sparse matrix storage formats (COO, SCOO, ELL and CSR) as well as the task-based algorithms to perform the matrix vector product on the global matrix.
-These algorithms will be used to implement a task-based sparse matrix vector application and compare the performances obtained across different programming models, matrix storage format and data distribution in Section \ref{sec:sla:exp}.
+These algorithms are used to implement a task-based sparse matrix vector application and compare the performances obtained across different programming models, matrix storage format and data distribution in Section \ref{sec:sla:exp}.
 
 \section{Numerical Experiments \label{sec:sla:exp}}
 In this section, a sparse matrix vector product using task based, distributed and parallel programming models as well as the numerical experiments performed.
@@ -352,7 +352,7 @@ This kernel is called in the HPX and YML+XMP tasks and the MPI processes to perf
 Then the programming model is used to make the appropriate data migrations in order to combine and form the output vector according to the algorithms introduced in Section \ref{sec:sla:task_based_parallel_algorithms}.
 
 The kernel is designed to perform the sparse matrix vector product on the sub-matrices obtained from the split of the global matrix.
-The input matrix can be split over a 2D grid with particular cases in which there will be only one column (split only across rows) or only one row (split only across columns) as introduced in Section \ref{sec:sla:data_distribution}.
+The input matrix can be split over a 2D grid with particular cases in which there is only one column (split only across rows) or only one row (split only across columns) as introduced in Section \ref{sec:sla:data_distribution}.
 The $N_r \times N_c$ matrix is divided into an $N_{gr} \times N_{gc}$ grid.
 This kernel is called in the MPI processes to perform the sparse matrix vector product on the local matrices.
 In MPI, $N_{gr} \times N_{gc}$ is equal to the number of avail processes in the application.
@@ -386,7 +386,7 @@ YML+XMP does not support the creation of libraries therefore, the sparse matrix 
 The libraries also contain functions to generate distributed sparse matrices and the YML+XMP applications has tasks for this purpose.
 The sparse matrices can be generated in each one of the supported storage format and in the data distribution introduced in Section \ref{sec:sla:data_distribution}.
 These matrices are the C-diagonal Q-perturbed matrices introduced in Chapter \ref{chap:methods}.
-They are were used to perform numerical experiments which will be presented in the next section.
+They are were used to perform numerical experiments which is presented in the next section.
 
 
 \subsection{Results and Analyses on Total Petascale Pangea II}
@@ -415,7 +415,7 @@ Even if these parameters are related, which reduces the range of values to try, 
 
 Therefore, after running the applications, despite using only a subset of the possible cases to try, a large number of runs for the different parameters is produced.
 Then, we have to select the case that produces the best execution time depending on which case we want to display.
-For instance, if we want the best case for MPI for a given matrix size, storage format, C, Q and a 2 nodes, the results will change depending on the data distribution.
+For instance, if we want the best case for MPI for a given matrix size, storage format, C, Q and a 2 nodes, the results change depending on the data distribution.
 Thus, we have to select which data distribution has made the best performances.
 The application is run multiple time for a given data distribution so we take the median execution time as metric to compare the different data distributions.
 Then, we chose the case that has the best median (usually the smallest since we want the fastest execution time).
@@ -570,17 +570,17 @@ Therefore, the differences in performances between the programming models is due
 As such, the influence of Q is the clearest for MPI since their communications are very efficient.
 For HPX and YML, the influence of Q is absorbed by our implementation of the reduction in HPX and YML+XMP as well as the IOs for YML+XMP.
 In C-diagonal Q-perturbed matrices, C represents the number of values per row above the diagonal and Q is the probability to perturb the fact that all the values are packed above the diagonal.
-When Q increases, the values on the row will be more dispersed on this row instead of being grouped above the diagonal.
-Hence, the data access pattern of the input vector will change with the different values of Q.
-When Q is zero, C consecutive values starting from the diagonal of the matrix will be multiplied with the input vector.
-Since the values are consecutive in memory and in term of columns that will be accessed in the input vector, it will only access a portion of size C of the input vector.
+When Q increases, the values on the row is more dispersed on this row instead of being grouped above the diagonal.
+Hence, the data access pattern of the input vector changes with the different values of Q.
+When Q is zero, C consecutive values starting from the diagonal of the matrix are multiplied with the input vector.
+Since the values are consecutive in memory and in term of columns that are accessed in the input vector, it only accesses a portion of size C of the input vector.
 This access is very regular and efficient.
-However, when Q increases, the values are more dispersed in the row and the accesses to the input vector when making the multiplication will not be as regular and will change from one row to another.
-This random access to the memory containing the input vector will be less efficient.
+However, when Q increases, the values are more dispersed in the row and the accesses to the input vector when making the multiplication is not as regular and changes from one row to another.
+This random access to the memory containing the input vector is less efficient.
 Therefore, Q influences the execution time of the sparse matrix vector kernel and explains the difference of performances with the different values of Q.
 
 Then, the size of the sparse matrix is increased.
-The effect of the size of the matrix will be addressed in the next section.
+The effect of the size of the matrix is addressed in the next section.
 
 \subsubsection{Strong scaling with a 4 000 000 $\times$ 4 000 000 sparse matrix}
 We continue our strong scaling experiments on the operation $A(Ax+x)$ with a 4 000 000 $\times$ 4 000 000 sparse C-diagonal Q-perturbed matrices for C = 300 and several values of Q.
@@ -709,8 +709,8 @@ Similarly to what happens with Q, the time spent out of the kernel smooths the p
 Weak scaling experiments have been performed on a sparse C-diagonal Q-perturbed matrices for C = 300 which size has been increased with the number of nodes (cores) used to execute the applications.
 The applications can perform the sparse operation $A(Ax+x)$ with SCOO, COO, CSR and ELL storage formats and are implemented with MPI, HPX an YML+XMP.
 The base size of the matrix is 4 000 000 $\times$ 4 000 000 and each dimension is multiplied by the number of nodes in order to approximatively have a 4 000 000 $\times$ 4 000 000 per node.
-Since C is fixed to 300, there will be 300 values per row and multiplying the two dimension will only multiply the number of values by the number of nodes and not its square like it would if the matrix was dense.
-Moreover, the size of the input and output vectors will increase depending on the number of nodes.
+Since C is fixed to 300, there are 300 values per row and multiplying the two dimension only multiply the number of values by the number of nodes and not its square like it would if the matrix was dense.
+Moreover, the size of the input and output vectors increases depending on the number of nodes.
 
 \begin{figure}[H]
         \centering
@@ -923,4 +923,4 @@ Although, they are not the only reason of the performance difference between the
 In this chapter, we introduced the experiments we made with the parallel and distributed sparse matrix vector product we implemented using the selected task based programming models.
 We also discussed the numerical experiments we performed and the results we obtained.
 The selected task based programming models are also used to implement a parallel and distributed task based Kirchhoff seismic pre-stack depth migration application in the following chapter.
-We will also perform numerical experiments on supercomputers as well as discuss the results obtained from these experiments.
+Then, we also perform numerical experiments on supercomputers as well as discuss the results obtained from these experiments.
