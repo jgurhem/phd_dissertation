@@ -1,114 +1,156 @@
 \chapter{Task-Based, Parallel and Distributed Dense Linear Algebra Applications \label{chap:exp_dense}}
 \graphicspath{{chapters/exp_dense/}}
 
-The task based programming models we will use to make experiments have been selected in the previous chapter.
-We will now introduce the experiments we executed on clusters and supercomputers with the dense linear algebra applications we implemented using these task based programming models.
-We will also discuss the numerical experiments we performed and the results we obtained.
+The task based programming models used to make experiments in this dissertations have been introduced and selected in the previous chapter.
+In this chapter, we introduce the dependency graphs of the block based dense linear algebra algorithms to solve linear systems.
+Afterwards, these graphs are converted into with YML+XMP applications that are used to perform experiments on the K computer.
+Then, we focus on the block based LU factorization and implement it with YML+XMP, PaRSEC, Regent and HPX due to the fact that implementing the three algorithms to solve linear systems with every task based programming model would have taken too much time and is not the purpose of this dissertation.
+We perform experiments to compare and analyze the performances we obtain with the different task based implementations.
+We also compare the task based implementations to our MPI implementation and ScaLAPACK since MPI is the current library used to implement parallel and distributed applications and ScaLAPACK is a well optimized dense linear algebra library.
 
-\section{Task-Based Methods and Algorithms to Solve Dense Linear Systems}
+\section{Task-Based Graphs of Methods to Solve Dense Linear Systems}
+In this section, we present the dependency graphs related to the block based dense linear algebra algorithms introduced in Chapter \ref{chap:methods}.
+These graphs are used in this chapter to transform the block based methods into task based applications implemented with multiple task based programming models.
 
-
-Let $A$ be a block matrix of size $np \times np$ and $p \times p$ blocks so each block is of size $n \times n$ .
+Let $A$ be a block matrix of size $np \times np$ and $p \times p$ blocks so each block is of size $n \times n$.
 Let $b$ and $x$ be block vectors of size $np$ and $p$ blocks so each block is of size $n$.
 The goal here is to solve the linear system $Ax=b$.
 
-In the following algorithms, $A_{i,j}^{(k)}$ represents the $k^{th}$ version of the block at the $i^{th}$ row and $j^{th}$ column of the block matrix $A$.
-Thus, $b_i^{(k)}$ represents the $k^{th}$ version of the block at the $i^{th}$ row of the block vector $b$.
-The algorithm is expressed using assignments on the blocks of $A_{i,j}^{(k+1)}$ and $b_i^{(k+1)}$.
-They consist on operations on blocks like matrix matrix product, inversion of a matrix and matrix vector product.
-Each assignment will correspond to a task in the implementation of the algorithms so the number of task will correspond to the number of assignments.
+In the following algorithms, $A_{i,j}^{(k)}$ represents the $k^{th}$ step of the block at the $i^{th}$ row and $j^{th}$ column of the block matrix $A$.
+Thus, $b_i^{(k)}$ represents the $k^{th}$ step of the block at the $i^{th}$ row of the block vector $b$.
+The algorithms are expressed using assignments on the blocks of $A_{i,j}^{(k+1)}$ and $b_i^{(k+1)}$.
+The block based algorithms introduced in Chapter \ref{chap:methods} are presented again with a color for each type of operation performed.
+The red color is for the inversion of a matrix.
+The blue (magenta) color is for the product between two matrices (a matrix and a vector).
+The dark (light) green color is for a matrix (vector) minus the product between two matrices (a matrix and a vector).
+The cyan color is for solution of a linear system.
+The black is for any type of operation that may produce the block matrix in input of the LU factorization, for instance generating the data, reading them from disc or data coming from other tasks.
+These operations are represented in the following dependency graphs.
+The graphs can be used to schedule the operations in task based programming models.
+They will be expressed to form application with task based programming models as best as the programming models allow to do so.
+Each bubble represents an assignment and an operation on the data.
+In Figure \ref{fig:graph_legends}, the color of the bubbles are associated to the operation they represent.
 
-
-
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{legend}
+	\caption{Graphs legend\label{fig:graph_legends}}
+\end{figure}
 
 \subsection{Block-Based Gaussian Elimination}
 
+
+In Algorithm \ref{alg:bg_el_block_colo}, colors are used to represent the different operations performed in Algorithm \ref{alg:bg_el_block}.
+These colors are also used in Figure \ref{fig:graph_sls_g} to represent the task associated to the operations in the dependency graph.
+
 \begin{algorithm}[h]
 	\DontPrintSemicolon
-	\caption{Block-Based Gaussian elimination and back substitution \label{alg:bg_el_data_dep}}
+	\caption{Block Gaussian elimination and back substitution \label{alg:bg_el_block_colo}}
 	%\scriptsize
 	\For{k \KwFrom 0 \KwTo p-2}{
-		(1) $\displaystyle Inv^{(k)} = [A_{k,k}^{(k)}]^{-1}$ \;
-		(2) $b_k^{(k+1)} = Inv^{(k)} \cdot b_k^{(k)}$ \;
+		(1) {\color{red} $\displaystyle Inv^{(k)} = [A_{k,k}^{(k)}]^{-1}$ } \;
+		(2) {\color{magenta} $b_k^{(k+1)} = Inv^{(k)} \cdot b_k^{(k)}$ }\;
 		\For{j \KwFrom k+1 \KwTo p-1}{
-			(3) $\displaystyle A_{k,j}^{(k+1)} = Inv^{(k)} \cdot A_{k,j}^{(k)} $ \;
+			(3) {\color{blue} $\displaystyle A_{k,j}^{(k+1)} = Inv^{(k)} \cdot A_{k,j}^{(k)}$ } \;
 		}
 		\For{i \KwFrom k+1 \KwTo p-1}{
-			(4) $b_i^{(k+1)} = b_i^{(k)} - A_{i,k}^{(k)} \cdot b_k^{(k+1)}$ \;
+			(4) {\color{YellowGreen} $b_i^{(k+1)} = b_i^{(k)} - A_{i,k}^{(k)} \cdot b_k^{(k+1)}$ } \;
 			\For{j \KwFrom k+1 \KwTo p-1}{
-				(5) $A_{i,j}^{(k+1)} = A_{i,j}^{(k)} - A_{i,k}^{(k)} \cdot A_{k,j}^{(k+1)}$ \;
+				(5) {\color{OliveGreen} $A_{i,j}^{(k+1)} = A_{i,j}^{(k)} - A_{i,k}^{(k)} \cdot A_{k,j}^{(k+1)}$ } \;
 			}
 		}
 	}
 
-	(6) $b_{p-1}^{(p)} = Inv^{(p-1)} \cdot b_{p-1}^{(p-1)}$ \;
+	(6) {\color{magenta} $b_{p-1}^{(p)} = Inv^{(p-1)} \cdot b_{p-1}^{(p-1)}$} \;
 
 	\For{k \KwFrom 1 \KwTo p-1 }{
 		\For{i \KwFrom 0 \KwTo p-k-1 }{
-			(7) $b_i^{(k+i+1)} = b_i^{(k+i)} - A_{i,p-k}^{(i+1)} \cdot b_{p-k}^{(p)}$ \;
+			(7) {\color{YellowGreen} $b_i^{(k+i+1)} = b_i^{(k+i)} - A_{i,p-k}^{(i+1)} \cdot b_{p-k}^{(p)}$ } \;
 		}
 	}
 \end{algorithm}
 
-The Gaussian elimination in Algorithm \ref{alg:bg_el_data_dep} solves the system by doing a block triangularization of the block matrix $A$, and by solving the triangular system.
-In this algorithm, the number of assignments is $\frac{p^3+3p^2+2p}{3} \sim \frac{p^3}{3}$.
-The block-wise Gaussian elimination and back substitution have been implemented using YML/XMP.
+In Figure \ref{fig:graph_sls_g}, the dependency graph of the Block Gaussian elimination with the back substitution to solve a linear system is given for $p = 4$.
+This dependency graph can be used to understand the dependencies between the operations.
+Then, they can be expressed as a task based applications where the operations are the tasks and the dependency graph can be used to order the tasks.
 
-For this experiments, the Algorithm \ref{alg:bg_el_data_dep} is expressed as YvetteML graph and the operations on blocks are implemented using XMP.
-Each operation is performed on a matrix of a vector which are a subdivision of the global matrices and vectors.
-In YvetteML, there are two means to express the parallelism between components : the \textit{par} loop and the \textit{par} statement.
-To implement the block-wise Gaussian elimination, we expressed all the call to the components in parallel and we used the event management system of YvetteML to express the dependencies between the tasks.
-In the Algorithm \ref{alg:bg_el_data_dep}, we observe that each block i,j at step k of the Gaussian Elimination is updated only once.
-Then, it is possible to associated the corresponding tasks to the triplets (i,j,k).
-Each task may be launched only when some tasks of the previous steps are completed and when the data are migrated to the allocated computing resource.
-Therefore, the dependency graph is equivalent in this case of the precedence between triplets: for example (i,j,k) will always depend of (i,j,l$<$k), for the adequate value of i,j, and k.
-If we associate each triplet to a Yvette array of events, each assignment of the block (i,j) at step k in the Algorithm \ref{alg:bg_el_data_dep} have to be preceded by a “wait” expressing the dependence between (i,j,k) and previous triplets.
-For the block i of a given step  of the back substitution, we use the same properties.
+Furthermore, the dependency graph can help find the parallelism between the operations and the critical path of the graph which represents the operations that cannot be delayed in order to execute the operations the fastest.
+For instance, the operations $C-AB$ in A-2-2-1 and A-3-3-1 can be executed at the same time since they depend on completely different data.
+However, the inversion in inv-0 and the matrix vector product in B-0-1 cannot be executed at the same time since the operation in B-0-1 needs the output of the inversion.
+Moreover, the inversion and the following matrix vector product could be reunited in the same operation that output both results but it requires the addition of another piece of data for this operation.
 
-The XMP components that make the different operations are also written to take advantage of the XMP directives and use the processors allocated by YML to efficiently run the operations on the block matrices.
-
-
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{sls_g_graph_n4}
+	\caption{Block-based Gaussian Elimination graph with back substitutions for p = 4\label{fig:graph_sls_g}}
+\end{figure}
 
 \subsection{Block-Based Gauss-Jordan Elimination}
 
+In Algorithm \ref{alg:bgj_block_colo}, colors are used to represent the different operations performed in Algorithm \ref{alg:bgj_block}.
+These colors are also used in Figure \ref{fig:graph_sls_gj} to represent the task associated to the operations in the dependency graph
+
 \begin{algorithm}[h]
 	\DontPrintSemicolon
-	\caption{Block-Based Gauss-Jordan elimination to solve a linear system \label{alg:bgj_data_dep} }
+	\caption{Block (Generalized) Gauss-Jordan elimination to solve a linear system \label{alg:bgj_block_colo} }
 	\For{k \KwFrom 0 \KwTo p-1}{
-		(1) $\displaystyle Inv^{(k)} = [A_{k,k}^{(k)}]^{-1}$ \;
-		(2) $b_k^{(k+1)} = Inv^{(k)} \cdot b_k^{(k)}$ \;
+		(1) {\color{red} $\displaystyle Inv^{(k)} = [A_{k,k}^{(k)}]^{-1}$ } \;
+		(2) {\color{magenta} $b_k^{(k+1)} = Inv^{(k)} \cdot b_k^{(k)}$ } \;
 		\For{j \KwFrom k+1 \KwTo p-1}{
-			(3) $\displaystyle A_{k,j}^{(k+1)} = Inv^{(k)} \cdot A_{k,j}^{(k)} $ \;
+			(3) {\color{blue} $\displaystyle A_{k,j}^{(k+1)} = Inv^{(k)} \cdot A_{k,j}^{(k)} $ } \;
 			\For{i \KwFrom 0 \KwTo p-1}{
 				\If{k $\neq$ i}{
-					(4) $A_{i,j}^{(k+1)} = A_{i,j}^{(k)} - A_{i,k}^{(k)} \cdot A_{k,j}^{(k+1)}$ \;
+					(4) {\color{OliveGreen} $A_{i,j}^{(k+1)} = A_{i,j}^{(k)} - A_{i,k}^{(k)} \cdot A_{k,j}^{(k+1)}$ } \;
 				}
 			}
 		}
 		\For{i \KwFrom 0 \KwTo p-1}{
 			\If{k $\neq$ i}{
-				(5) $b_i^{(k+1)} = b_i^{(k+1)} - A_{i,k}^{(k)} \cdot b_k^{(k+1)}$ \;
+				(5) {\color{YellowGreen} $b_i^{(k+1)} = b_i^{(k+1)} - A_{i,k}^{(k)} \cdot b_k^{(k+1)}$ } \;
 			}
 		}
 	}
 \end{algorithm}
 
+In Figure \ref{fig:graph_sls_gj}, the dependency graph of the Block Gauss-Jordan elimination to solve a linear system is given for $p = 4$.
+
+As for the Gaussian elimination, the inversion could be reunited with the matrix matrix product that is executed afterwards with the same advantages and drawbacks.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{sls_gj_graph_n4}
+	\caption{Block-based Gauss-Jordan Elimination graph for p = 4\label{fig:graph_sls_gj}}
+\end{figure}
+
 \subsection{Block-Based LU factorization}
+
+In Algorithm \ref{alg:lu_block_colo}, colors are used to represent the different operations performed in Algorithm \ref{alg:lufact_block}.
+These colors are also used in Figure \ref{fig:graph_lu} to represent the task associated to the operations in the dependency graph
+In this algorithm, the LU factorization is shown alone due to the fact that we implemented applications that only perform it.
 
 \begin{algorithm}[h]
 	\DontPrintSemicolon
 	%\SetAlgoVlined
-	\caption{LU Factorization\label{alg:lufact_data_dep}}
+	\caption{Block-based LU Factorization\label{alg:lu_block_colo}}
+	\For{i \KwFrom 0 \KwTo p-1}{
+		\For{j \KwFrom 0 \KwTo p-1}{
+			init($A_{i,j}^{(0)}$)
+		}
+	}
 	\For{k \KwFrom 0 \KwTo p-2}{
-		(1) $\displaystyle Inv^{(k)} = [A_{k,k}^{(k)}]^{-1}$ \;
+		{\color{red} $\displaystyle Inv^{(k)} = [A_{k,k}^{(k)}]^{-1}$} \;
 		\For{i \KwFrom k+1 \KwTo p-1}{
-			(2) $\displaystyle A_{i,k}^{(k+1)} = A_{i,k}^{(k)} \cdot Inv^{(k)}$ \;
+			{\color{blue} $\displaystyle A_{i,k}^{(k+1)} = A_{i,k}^{(k)} \cdot Inv^{(k)}$} \;
 			\For{j \KwFrom k+1 \KwTo p-1}{
-				(3) $A_{i,j}^{(k+1)} = A_{i,j}^{(k)} - A_{i,k}^{(k+1)} \cdot A_{k,j}^{(k)}$ \;
+				{\color{OliveGreen} $A_{i,j}^{(k+1)} = A_{i,j}^{(k)} - A_{i,k}^{(k+1)} \cdot A_{k,j}^{(k)}$} \;
 			}
 		}
 	}
 \end{algorithm}
+
+In Figure \ref{fig:graph_lu}, the dependency graph of the Block Gauss-Jordan elimination to solve a linear system is given for $p = 4$.
+
+As for the Gaussian elimination and Gauss-Jordan elimination, the inversion could be reunited with the matrix matrix product that is executed afterwards with the same advantages and drawbacks.
 
 \begin{figure}[h]
 	\centering
@@ -118,38 +160,89 @@ The XMP components that make the different operations are also written to take a
 
 \subsection{Block-Based Resolution of Block Triangular Systems}
 
+In Algorithm \ref{alg:lufact_sls_colo}, colors are used to represent the different operations performed in Algorithm \ref{alg:lufact_sls}.
+These colors are also used in Figure \ref{fig:graph_sls_lu} to represent the task associated to the operations in the dependency graph
+In this algorithm, the solution of the dense linear system $A = LU = b$ is shown.
+It expects a matrix A in which the LU factorization of the input matrix is stored.
+This algorithm can be appended to the algorithm to perform the LU factorization.
+
 \begin{algorithm}[h]
 	\DontPrintSemicolon
 	%\SetAlgoVlined
-	\caption{Solution of a linear system with a block-based LU factorization\label{alg:lufact_sls_data_dep}}
+	\caption{Backward and forward substitution to solve a triangular linear system with a block-based LU factorization\label{alg:lufact_sls_colo}}
 	\For{i \KwFrom 0 \KwTo p-2}{
 		\For{j \KwFrom i+1 \KwTo p}{
-			(5) $b_j^{(i+1)} = b_j^{(i)} - A_{j,i}^{(i+1)} \cdot b_i^{(p)}$ \;
+			(5) {\color{YellowGreen} $b_j^{(i+1)} = b_j^{(i)} - A_{j,i}^{(i+1)} \cdot b_i^{(p)}$ } \;
 		}
 	}
 	\;
 	\For{k \KwFrom p-1 \KwTo 0 \KwStep -1}{
-		(6) solve $b_{k}^{(p)} = A_{k,k}^{(k)} \cdot b_k^{(p-1)}$ \;
+		(6) {\color{Cyan}  solve $b_{k}^{(p)} = A_{k,k}^{(k)} \cdot b_k^{(p-1)}$ } \;
 		\For{i \KwFrom 1 \KwTo k-1}{
-			(7) $b_i^{(p-k+i)} = b_i^{(p-k+i-1)} - A_{i,k}^{(i)} \cdot b_k^{(p)}$ \;
+			(7) {\color{YellowGreen} $b_i^{(p-k+i)} = b_i^{(p-k+i-1)} - A_{i,k}^{(i)} \cdot b_k^{(p)}$ } \;
 		}
 	}
 \end{algorithm}
 
+In Figure \ref{fig:graph_sls_lu}, we added the backward and forward substitution to the LU factorization.
+This allows to solve a dense linear system by using a LU factorization and reuse the factorization if necessary.
 
-\section{Numerical Experiments on Linear systems}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{sls_lu_graph_n4}
+	\caption{Block-based LU factorization graph with forward and backward substitutions for p = 4\label{fig:graph_sls_lu}}
+\end{figure}
 
-In the first place, the multi-level programming YML/XMP will be compared to XMP on the K computer where OmniRPC and XMP are installed.
-Then, YML/XMP and XMP will be compared to ScaLAPACK and the implementation of the resolution of a dense linear in MPI on Poincare.
+The dependency graphs of three methods to solve dense linear systems were introduced.
+They are used to implement task based applications in which the tasks execute the operations on the blocks in the following sections.
+The operations themselves are parallelized in YML+XMP tasks.
+
+\section{Usage of YML+XMP and Experimentations}
+
+In the first place, the multi-level programming YML/XMP is compared to XMP on the K computer where OmniRPC and XMP are installed.
+Then, YML/XMP and XMP is compared to ScaLAPACK and the implementation of the resolution of a dense linear in MPI on Poincare.
 
 
 \subsection{Experiments on the K computer}
 
 \subsubsection{The supercomputer}
-In this section, the tests were performed on the K Computer from Riken AICS in Kobe, Japan.
+In this section, the tests were performed on the K Computer as shown on the left \footnote{Toshihiro Matsui, https://www.flickr.com/photos/44861631@N02/32588659510,  Creative Commons Attribution 2.0 Generic license} of Figure \ref{fig:Kcomputer} from Riken AICS in Kobe, Japan.
 This supercomputer was manufactured by Fujitsu.
-There is 88,128 compute nodes containing an eight-core SPARC64 VIIIfx processor and 16 Go of memory.
-The network is based on Tofu interconnect.
+There is 88,128 compute nodes containing an eight-core SPARC64 VIIIfx processor and 16 Go of memory, for a total of 705,024 cores.
+The network is based on torus fusion (Tofu) interconnect, a six-dimensional mesh topology.
+It performed at 10.51 PFlop/s for Linpack and 602.736 TFlop/s for HPCG.
+% https://en.wikipedia.org/wiki/Torus_fusion
+% https://en.wikipedia.org/wiki/K_computer
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.5\textwidth]{k_computer}
+	\includegraphics[width=.3\textwidth]{k_proc}
+	\caption{K Computer (left) and its SPARC64 VIIIfx processor (right) \cite{ToMRG2012} \label{fig:Kcomputer}}
+\end{figure}
+
+\subsubsection{The Block Based Gaussian Elimination in YML}
+The Gaussian elimination in Algorithm \ref{alg:bg_el_block_colo} solves the system by doing a block triangularization of the block matrix $A$, and by solving the triangular system.
+In this algorithm, the number of assignments is $\frac{p^3+3p^2+2p}{3} \sim \frac{p^3}{3}$.
+The block-wise Gaussian elimination and back substitution have been implemented using YML/XMP.
+
+For this experiments, the Algorithm \ref{alg:bg_el_block_colo} is expressed as YvetteML graph in Listing \ref{lst:yml_graph_bg} and the operations on blocks are implemented using XMP.
+Each operation is performed on a matrix of a vector which are a subdivision of the global matrices and vectors.
+In YvetteML, there are two means to express the parallelism between components : the \textit{par} loop and the \textit{par} statement.
+To implement the block-wise Gaussian elimination, we expressed all the call to the components in parallel and we used the event management system of YvetteML to express the dependencies between the tasks.
+In the Algorithm \ref{alg:bg_el_block_colo}, we observe that each block i,j at step k of the Gaussian Elimination is updated only once.
+Then, it is possible to associated the corresponding tasks to the triplets (i,j,k).
+Each task may be launched only when some tasks of the previous steps are completed and when the data are migrated to the allocated computing resource.
+Therefore, the dependency graph is equivalent in this case of the precedence between triplets: for example (i,j,k) will always depend of (i,j,l$<$k), for the adequate value of i,j, and k.
+If we associate each triplet to a Yvette array of events, each assignment of the block (i,j) at step k in the Algorithm \ref{alg:bg_el_block_colo} have to be preceded by a “wait” expressing the dependence between (i,j,k) and previous triplets as shown in Listing \ref{lst:yml_graph_bg}.
+For the block i of a given step  of the back substitution, we use the same properties.
+
+\lstinputlisting[tabsize=4, style=customcode,
+caption=YML Graph for the Gaussian elimination\label{lst:yml_graph_bg}]{chapters/exp_dense/bg.query}
+
+The XMP components that make the different operations are also written to take advantage of the XMP directives and use the processors allocated by YML to efficiently run the operations on the block matrices.
+The tasks perform operations on matrices like matrix product and inversion as well as operations on vectors like matrix vector product.
+Tasks on matrix products and matrix inversions have a comparable complexity compared to matrix vector products which have less operations.
 
 \subsubsection{Resolution of a linear system of size 16384 on 1024 cores}
 This experiment consists in solving a dense linear system of size 16384 with the block-wise Gaussian elimination with YML/XMP.
@@ -265,6 +358,9 @@ The Gauss-Jordan elimination may even execute faster than the Gaussian eliminati
 We compared YML/XMP to XMP for several cases on the K computer to evaluate the multi-level distributed/parallel programming associated to the studied programming paradigm on such supercomputer, even if the system of these machines does not yet propose smart scheduling.
 As YML and XMP were introduced by authors of this paper, as the OmniRPC middleware used fore these experiments, we have to evaluate such programming on a more general cluster and compare it to more classic end-user programming.
 Then, in the next section, we compare YML/XMP and XMP to ScaLAPACK and our MPI implementation of the resolution of a dense linear system on Poincare, an IBM cluster.
+As MPI and ScaLAPACK are more optimized than our YML/XMP implementations, it is certain that they will obtain better performances.
+However, MPI is the current and most commonly used library to implement parallel and distributed applications.
+Therefore, we have to compare to it even if the purpose is to compare and analyze and not to be faster than MPI.
 
 
 \subsection{Experiments on Poincare, a cluster from La Maison de la Simulation\label{sec:exp}}
@@ -412,8 +508,10 @@ Indeed, the size of a block depends on the number of blocks which influences the
 Furthermore, the size of the block will define the number operation in the task while the number of communications will depend on the number of processes and the size of the block.
 
 Hence, the prediction of the optimal values is difficult but, for a given machine, the machine learning may be able to give an estimation of the value of the parameters.
+Besides, in the future, middlewares and schedulers will improve and integrate more efficiently with task based programming models and tools.
+Therefore, the prediction of these parameters will be easier, more efficient and accurate.
 
-\section{Numerical Experiments on the LU factorization}
+\section{Several Graph Based Language to Compute the LU factorization}
 \subsection{Experiments details}
 We performed performance tests on up to 64 nodes of Poincare with the LU factorization implemented via MPI, ScaLAPACK, XMP, YML+XMP, HPX, PaRSEC and Regent.
 We used several sizes of matrices : $16384 \times 16384$, $32768 \times 32768$ and $49512 \times 49512$.
@@ -424,9 +522,9 @@ We used several values for the number of blocks.
 Table \ref{tab:blocks}, Table \ref{tab:blocks_32k} and Table \ref{tab:blocks_49k} show the block parameters which obtained the fastest execution time for each size of matrix.
 The execution times shown here are the case in which we obtained the fastest time for each number of nodes.
 We performed those test several times and computed the execution times mean of the same case.
-We will compare the results of the task-based programming languages to those obtained with ScaLAPACK.
-We will also compare them to our MPI and XMP implementations.
-Tests were run on several number of nodes in order to extract strong scaling information which will be discussed in Section \ref{sec:strong_scaling}.
+We compare the results of the task-based programming languages to those obtained with ScaLAPACK.
+We also compare them to our MPI and XMP implementations.
+Tests were run on several number of nodes in order to extract strong scaling information which are discussed in Section \ref{sec:strong_scaling}.
 We used  1, 2, 4, 8, 16, 32 and 64 nodes to factorize the $16384 \times 16384$ values matrix.
 Then, we used 4, 8, 16, 32 and 64 nodes for the $32768 \times 32768$ values matrix.
 And finally, we used 8, 16, 32 and 64 nodes for the $49512 \times 49512$ values matrix.

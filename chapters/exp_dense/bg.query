@@ -1,0 +1,60 @@
+par (k:= 0; blockcount-2)
+do
+	par
+		wait(Aev[k][k][k]);
+		compute XMP_inversion(A[k][k],AInv[k]);
+		notify(Aev[k][k][k+1]);
+	//
+		par(i:= k+1; blockcount-1)
+		do
+			#A[k,i] = AInv[k] * A[k,i]
+			wait(Aev[k][k][k+1]);
+			wait(Aev[k][i][k]);
+			compute XMP_prodMat(AInv[k],A[k][i]);
+			notify(Aev[k][i][k+1]);
+		enddo
+	//
+		wait(Aev[k][k][k+1]);
+		wait(Bev[k][k]);
+		compute XMP_prodMV(AInv[k],B[k]);
+		notify(Bev[k][k+1]);
+	//
+		par (i:= k+1; blockcount-1)
+		do
+			par
+				par (j:= k+1; blockcount-1)
+				do
+					#A[i,j] = A[i,j] - A[i,k] * A[k,j]
+					wait(Aev[i][k][k]);
+					wait(Aev[i][j][k]);
+					wait(Aev[k][j][k+1]);
+					compute XMP_prodDiff(A[i][k],A[k][j],A[i][j]);
+					notify(Aev[i][j][k+1]);
+				enddo
+			//
+				#B[i] = B[i] - A[i,k] * B[k]
+				wait(Bev[i][k]);
+				wait(Bev[k][k+1]);
+				wait(Aev[i][k][k]);
+				compute XMP_prodDiffMV(A[i][k],B[k],B[i]);
+				notify(Bev[i][k+1]);
+			endpar
+		enddo
+	endpar
+enddo
+
+compute XMP_inversion(A[blockcount-1][blockcount-1],AInv[blockcount-1]);
+compute XMP_prodMV(AInv[blockcount-1],B[blockcount-1]);
+notify(Bev[blockcount-1][blockcount]);
+
+par(k:= 1; blockcount-1)
+do
+	par (i:= 0; blockcount-k-1)
+	do
+		wait(Bev[i][k+i]);
+		wait(Bev[blockcount-k][blockcount]);
+		wait(Aev[i][blockcount-k][i+1]);
+		compute XMP_prodDiffMV(A[i][blockcount-k],B[blockcount-k],B[i]);
+		notify(Bev[i][k+i+1]);
+	enddo
+enddo
