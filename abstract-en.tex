@@ -1,15 +1,13 @@
 \chapter*{Abstract}
 
-Nowadays, message passing libraries are the technology the most used to implement parallel and distributed applications.
+Since the middle of the 1990s, message passing libraries are the most used technology to implement parallel and distributed applications.
 However, they may not be a solution efficient enough on exascale machines since scalability issues will appear due to the increase in computing resources.
-Task based programming models can be used to avoid collective communications like reductions, broadcast or gather by transforming them into multiple operations on tasks.
+Task-based programming models can be used, for example, to avoid collective communications along all the resources like reductions, broadcast or gather by transforming them into multiple operations on tasks.
 Then, these operations can be scheduled by the programming scheduler to place the data and computations in a way that optimize and reduce the data communications.
-As programming models are evolving rapidly, it is important to have a clear view of the main capabilities of the current programming models in order to use the most suitable programming model to the targeted architectures and the implemented application.
 
-The main objective of this thesis is to study what must be task-based programming for scientific applications and to propose a specification of such distributed and parallel programming, by experimenting for several simplified representations of important scientific applications for TOTAL.
-The optimization of data movements will be studied and scheduling strategies proposed and evaluated.
-During the dissertation, several programming languages and paradigms will be studied.
-A detailed taxonomy of these will be proposed and a review of the developments in the field will be realized.
-Software will be developed using these programming models for each simplified applications.
-As a result of this research, a methodology for parallel task programming will be proposed, optimizing data movements, in general, and for targeted scientific applications, in particular.
-A taxonomy of these languages and a strategy of evolution between the current codes and those respecting this methodology will be introduced.
+The main objective of this thesis is to study what must be task-based programming for scientific applications and to propose a specification of such distributed and parallel programming, by experimenting for several simplified representations of important scientific applications for TOTAL, and classical dense and sparse linear methods.
+During the dissertation, several programming languages and paradigms are studied.
+Dense linear methods to solve linear systems, sequences of sparse matrix vector product and the Kirchhoff seismic pre-stack depth migration are studied and implemented as task-based applications.
+A taxonomy, based on several of these languages is proposed.
+Software were developed using these programming models for each simplified application.
+As a result of these researches, a methodology for parallel task programming is proposed, optimizing data movements, in general, and for targeted scientific applications, in particular.
