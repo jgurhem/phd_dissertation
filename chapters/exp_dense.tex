@@ -511,6 +511,25 @@ Hence, the prediction of the optimal values is difficult but, for a given machin
 Besides, in the future, middlewares and schedulers will improve and integrate more efficiently with task based programming models and tools.
 Therefore, the prediction of these parameters will be easier, more efficient and accurate.
 
+\subsection{Results summary}
+We experimented YML/XMP, a programming paradigm based on a graph of parallel and distributed tasks, on the cluster of the \textit{Maison de la Simulation} in France and the K computer in Japan.
+We solved a dense linear system of different size with 1024 and 8096 cores.
+We obtained results relatively close to XMP and MPI even though that YML/XMP on Poincare uses the file system to implement the asynchronous data migrations, the YML scheduler is not very efficient at this point that the overhead induced by YML is substantial.
+On the K computer, with a larger number of cores and and size of the system, YML/XMP ran faster than XMP.
+ScaLAPACK is slower because of the special distribution of the data used within it.
+In this application, we need to change the definition of the distribution of the data in order to reduce the import time.
+We can expect the same outcome on the K Computer if we run the ScaLAPACK application on it; the computation time would be excellent but the IO to import the data will slow down the application.
+As we are using ScaLAPACK, a YML task which make a call to the ScaLAPACK functions will not be efficient since YML load the data from disk and the distribution of the data in ScaLAPACK makes the IO difficult.
+Finally, we compared the Gaussian elimination to the Gauss-Jordan elimination and we find out that the Gauss-Jordan elimination has execution time close to the Gaussian elimination although the Gauss-Jordan elimination has more operations.
+So the parallel task programming paradigm seems well suited to execute methods with high parallelism.
+Thus a programming paradigm using a graph of parallel tasks where each task can also be parallel may be interesting to create efficient parallel and distributed applications on exascale super-computers.
+
+We can outline the fact that a programming paradigm based on a graph of parallel and distributed tasks can obtain better performances on a huge amount of cores.
+Future supercomputers and post-petascale platforms would propose middle-ware and systems with smarter schedulers \cite{EPPSA2016} and dedicated I/O systems \cite{HuMPC2011} which will allow some efficient data persistence and anticipation of data migrations.
+In those machines, programming paradigms such as YML/XMP would be well-adapted and efficient.
+As the increasing number of nodes on such distributed and parallel architectures, with large latency for communications between farthest nodes, will penalize global communications, our approach which avoid global operations along all the nodes but generate operations just inside subsets of nodes, would be well-adapted.
+
+
 \section{Several Graph Based Language to Compute the LU factorization}
 \subsection{Experiments details}
 We performed performance tests on up to 64 nodes of Poincare with the LU factorization implemented via MPI, ScaLAPACK, XMP, YML+XMP, HPX, PaRSEC and Regent.
