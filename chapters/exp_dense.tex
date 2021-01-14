@@ -693,10 +693,124 @@ Finally, YML+XMP is the only programming model using tasks which are also distri
 YML+XMP performances may not be impressive on this number of nodes but with the increase of the number of nodes and its strong scalability higher than the other task-based programming languages, YML+XMP could be able to perform better than the other programming models on a very large scale as already experienced on the K computer \cite{GuTPS2019}.
 Moreover, changing the use of the file system to make the communications between the tasks to in-memory communications could improve the performances even more.
 
-% chapter transition
-\paragraph{}
-In this chapter, we introduced the experiments we made with the dense linear algebra applications we implemented using the selected task based programming models.
-We also discussed the numerical experiments we performed and the results we obtained.
+\section{Synthesis and Perspectives}
+In this chapter, we introduced the dependency graph of three block based algorithms to solve linear systems : the block Gaussian elimination, the block Gauss-Jordan elimination and the block LU factorization.
+Then we used the dependency graphs to implement corresponding task based applications with YML+XMP in which dependencies between tasks are expressed with a graph.
+Each task is parallel and distributed and correspond to a operation on sub-matrices in the block algorithms.
+We also implemented a XMP, a MPI and a ScaLAPACK version of these applications.
+Then, we compared the efficiency of the the YML+XMP and XMP applications on the 1024 cores of the K Computer.
+We showed that XMP is faster than YML+XMP in this case since the overhead from YML does not compensate for direct communications across all the cores in the Gaussian elimination and the LU factorization although it works well for the Gauss-Jordan elimination.
+Therefore, we executed our applications on a larger amount of the K Computer resources.
+We ran the applications with 8096 cores and larger system sizes.
+We showed that the XMP applications are running slower than the YML+XMP application for 32768 $\times$ 32768 and 65536 $\times$ 65536 dense linear systems on 8096 cores of the K Computer.
+We also showed that the Gaussian elimination in YML+XMP is noticeably faster than the LU factorization and the Gauss-Jordan elimination in YML+XMP whereas the three of them were equivalent with smaller sizes and resources.
+Moreover, the Gaussian elimination and the LU factorization have almost the same number of tasks but the Gaussian elimination executes faster since its critical path is shorter than the critical path of the LU factorization.
+This is due to the fact that, in the LU factorization, there is two triangular systems to solve while there is only one in the Gaussian elimination.
+This can also be seen on the dependency graphs introduced in the start of the chapter.
+
+Furthermore, we implemented these applications with MPI and ScaLAPACK since MPI is the commonly used library to implement parallel and distributed applications and ScaLAPACK is an efficient implementation of the common dense linear operations.
+We showed that YML+XMP for $1 \times 1$ block has a large overhead when compared to the same application with XMP alone.
+Thus, YML induces a large overhead for each task.
+We showed that, with a good compromise between the number of blocks and the number of cores per task, we can get results relatively close to XMP and MPI with YML+XMP and even be faster in some cases.
+This compromise is difficult to obtain as it can only be found though trials and errors with the current schedulers.
+Moreover, we can expect to get closer results with greater sizes of systems and even get better results with more efficient storage systems since YML+XMP heavily rely on it.
+In YML, the communications are only made on a subset of cores while, in XMP, communications are made across all the cores.
+Furthermore, YML has a scheduler that manage the tasks and the data migrations between the tasks in order to optimize them.
+They can optimized further with YML asynchronous communications between tasks.
+MPI applications are very well adapted to the current systems so applications well implemented with MPI can expect good performances with a relatively low development cost.
+We also showed that, due to the cyclic data distribution in ScaLAPACK, the IOs involved in the reading and writing of the matrix is not as efficient as with MPI and most of the execution time is spent in IOs.
+
+Finally, we focused on the block based LU factorization and implemented it with several task based programming models.
+We made task based applications with YML+XMP, HPX, PaRSEC and Regent.
+We also implemented MPI, XMP and ScaLAPACK applications as comparison.
+We performed strong scaling experiments with each application up to 64 nodes for $16384 \times 16384$, $32768 \times 32768$ and $49512 \times 49512$ matrices.
+We showed that MPI has the fastest execution times and the best scalability on 64 nodes and that, although, XMP translates its directives into MPI code, the PGAS model used in XMP is not as efficient as using directly MPI whereas HPX is the most efficient task based programming model on 64 nodes.
+However, PaRSEC also shows interesting performances in some cases and Regent applications execution time increase while increasing the number of nodes from 32 to 64 which should not be the case.
+This is due to their ability to manage the number of tasks, the dependencies between the tasks, tasks workload and the data migrations between nodes.
+Regent poor performances may also be due to Legion default mapper used by Regent since the performances of this mapper are not very efficient.
+We showed that HPX and PaRSEC are performing better with a higher number of smaller tasks.
+YML+XMP execution times are higher than the other task based programming models due to the use of the file system but its strong scaling speedups are higher so YML+XMP could obtain better performances on a larger number of resources as we showed on the K Computer.
+
+Besides, the installation of the different task based programming models is not trivial.
+They require the knowledge of the cluster or supercomputer on which the programming models will be installed as well as the knowledge of the installation process of the programming models themselves.
+For these experiments, we installed ScaLAPACK, XMP, YML, HPX, PaRSEC and Regent as well as their missing dependencies.
+Although, the installation process was successful on the K Computer and Poincare, there were issues.
+Indeed, Regent and YML+XMP have multiple dependencies that are not easy to install and do not provide enough installation help in order to install the softwares without help from the developer teams.
+
+Moreover, integrating these task based programming models into an application also arises issues during the applications development and may limit what is possible to achieve.
+For instance, Legion default mapper used by Regent may reduce the performances obtain with the applications.
+Thus, the user has to use another one or implements his/her own.
+Another issue is the YML+XMP type that holds dense matrices does not support non divisible values and greatly limits the number of blocks that can be used.
+
+Due to Regent difficulty of installation and the poor performances observed while scaling from 32 nodes to 64, we choose to stop using Regent to implement our applications.
+We still use HPX and PaRSEC as task based programming models due to their interesting properties and their easier use.
+We also use YML+XMP in our following applications with new data types to hold data so it bypasses the limitations of the dense matrix type.
+
+This work could be completed with applications implemented with other task based programming models such as X10, Chapel, Uintah or Charm++.
+Improving the YML+XMP dense matrix type can also be considered since it would allow more flexibility for YML+XMP dense linear algebra applications and allow the use of parameter values that could lead to better results.
+These experiments could also be reproduced on other cluster or supercomputers.
 Furthermore, we introduced sparse linear algebra methods in Chapter \ref{chap:methods}.
 In the following chapter, the sparse matrix vector product will be implemented with the selected task based programming models.
 Then we will perform numerical experiments on several clusters and supercomputers as well as discuss the results we obtained.
+
+
+%\subsection{ce qui a été fait}
+%\begin{itemize}
+%\item Implementation of the solution of dense linear systems with three block based methods
+%\item Implementation using ScaLAPACK, MPI, XMP and YML+XMP
+%\item Experiments on K with YML+XMP and XMP
+%\item Experiments on Poincare with ScaLAPACK, MPI, XMP and YML+XMP
+%\item Implementation of a block based LU factorization with MPI, ScaLAPACK, XMP, YML+XMP, Regent, HPX and PaRSEC
+%\item Installation and set up of ScaLAPACK, XMP, YML+XMP, Regent, HPX and PaRSEC on Poincare
+%\item Experiments on Poincare
+%\end{itemize}
+%
+%\subsection{resultats obtenus}
+%\begin{itemize}
+%\item
+%\end{itemize}
+%
+%\subsection{pb rencontrés}
+%\begin{itemize}
+%\item Installation of Regent and YML+XMP complex
+%\item The YML+XMP type that holds dense matrices does not support non divisible values and greatly limits the number of blocks that can be used.
+%\item parameter (number of blocks, size of the blocks) exploration
+%\end{itemize}
+%
+%\subsection{pb resolus}
+%\begin{itemize}
+%\item Successful installation of the programming models and languages used in this study
+%\end{itemize}
+%
+%\subsection{points à mettre en avant}
+%\begin{itemize}
+%\item Programming models complex to install
+%\item Use of file system to transmit data between tasks is not efficient enough on the current clusters and supercomputer
+%\end{itemize}
+%
+%\subsection{ce qui est bien}
+%\begin{itemize}
+%\item YML+XMP faster than XMP on the K Computer
+%\item YML+XMP has better strong scaling speedup than HPX, Regent and PaRSEC
+%\end{itemize}
+%
+%\subsection{ce qui n'est pas bien}
+%\begin{itemize}
+%\item Use of file system to transmit data between tasks is not efficient enough on the current clusters and supercomputer
+%\item Installation difficult
+%\item Difficult to infer the number of blocks and size of task (parameters to determine the number of tasks executed)
+%\item Regent has difficulties to scale above 32 nodes
+%\item Regent default mapper is not very efficient
+%\item Inefficient IOs with ScaLAPACK data distribution
+%\item YML has a large overhead for each component.
+%\end{itemize}
+%
+%\subsection{perspectives / ce qu'il reste à faire}
+%\begin{itemize}
+%\item Improve YML+XMP dense matrix type
+%\item Compare with other programming models such as X10, Chapel, Uintah or Charm++
+%\item Reproduce experiments on other clusters / supercomputers
+%\item Use other type of applications such as sparse linear algebra. Next chapter --> sparse matrix vector product + experimentations with sequences of sparse matrix vector products
+%\item better file systems and schedulers
+%\end{itemize}
+
