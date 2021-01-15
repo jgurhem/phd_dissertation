@@ -919,10 +919,35 @@ However, these operations are not available in HPX and YML+XMP so they were impl
 They are not as efficient as the one included in MPI and it shows up in the performances.
 Although, they are not the only reason of the performance difference between the programming models.
 
+\section{Synthesis and Perspectives}
+In this chapter, we introduced the 2D block decomposition used to store our matrices in which each block is a sparse matrix compressed with a sparse storage format.
+Then, we introduced the task based algorithms that have been implemented with task based programming models as well as the algorithms implemented as task for each considered sparse storage format.
+We analyzed, evaluated and experimented the sequence of sparse operation $A(Ax+x)$ using HPX, a fine grain task based programming model with data-oriented dependencies, and YML+XMP, a task based programming model in which tasks are parallel and distributed, and MPI, a message passing library commonly used on supercomputers.
+The results are easy to extrapolate for larger sequences.
+We implemented the applications on top of a common kernel that performs the sparse matrix vector multiplication on matrices stored in CSR, ELL, COO and SCOO sparse classical storage formats.
+Our different experiments on a subset of a Petascale supercomputer with our C-diagonal Q-perturbed test matrices allow us to propose strong and weak scaling analysis, with respect to multiple values of C and Q,  and several matrix distributions.
 
-% chapter transition
-\paragraph{}
-In this chapter, we introduced the experiments we made with the parallel and distributed sparse matrix vector product we implemented using the selected task based programming models.
-We also discussed the numerical experiments we performed and the results we obtained.
+Our multi-level distributed and parallel experiments have shown that the dispersion of the matrix (Q) only influences the time spent in the kernel due to our data distribution and not the output vector construction which consists in collective operations.
+The CSR sparse format storage obtains the best performances in most of the cases.
+The COO storage format has better load balancing but requires larger output vector which increases the size of collective operations, therefore their execution time.
+
+We have shown that collective operations are an issue in task-based programming models since most of them do not provide a highly optimized implementation and generate all-all communications.
+We also have shown that collective communications in MPI are taking more and more time as the number of computing resources used increases, especially for weak scaling experiments.
+Therefore, task-based programming models, that can avoid large scale collective communications by turning them in collective operations that can be efficiently scheduled or by running them on a subset of the allocated resources, is an interesting alternative to MPI.
+
+However, current systems are more suitable for message passing libraries since both are designed and optimized to work well together.
+Moreover, file systems are not suitable either for programming models that use IOs to transfer data between tasks, it is the main reason that YML+XMP does not scale well above 4 nodes.
+The current task-based programming model schedulers lack the capability to completely manage the memory it uses and are not efficient enough to reduce the data migrations.
+
+We did not implement a task based sparse matrix vector product with PaRSEC due to issues with the definition of new data types.
+PaRSEC provides dense matrix and vector types that can be used in applications as well as the possibility to register new types if needed.
+Nevertheless, we did not succeed in implementing types suitable to store the compressed matrices in the different sparse storage formats.
+
+This work could be completed with applications implemented with other task based programming models such as X10, Chapel, Uintah or Charm++.
+These experiments could also be reproduced on other cluster or supercomputers.
+A possible amelioration is to improve the capabilities of the schedulers in terms of memory management and task scheduling in order to avoid the data migrations and fit data in the available memory of the nodes.
+Implementing efficient task based collective operations will also help to improve performances of task based programming models.
+Sequence of sparse matrix-vector multiplications on post-petascale supercomputers would benefit of task-based programming paradigms when the supercomputer middleware and the IO file systems will be adapted.
+
 The selected task based programming models are also used to implement a parallel and distributed task based Kirchhoff seismic pre-stack depth migration application in the following chapter.
 Then, we also perform numerical experiments on supercomputers as well as discuss the results obtained from these experiments.
