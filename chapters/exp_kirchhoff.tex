@@ -2,15 +2,17 @@
 \graphicspath{{chapters/exp_kirchhoff/}}
 
 
+The Kirchhoff seismic pre-stack depth migration, previously introduced in Chapter \ref{chap:methods}, is a technique used to visualize the underground.
+It is often used in geoscience and is a large application developed in TOTAL.
 In this chapter the Kirchhoff seismic pre-stack depth migration is implemented with several task based programming models.
 The definition of the tasks is also introduced in this chapter.
-Moreover, we will also perform numerical experiments on supercomputers as well as discuss the results obtained from these experiments.
+Moreover, we also perform numerical experiments on supercomputers as well as discuss the results obtained from these experiments.
 
 \section{Algorithms}
-In this section, the algorithms for the  Kirchhoff seismic pre-stack depth migration will be introduced.
-To begin with, the basic algorithm of the method will be presented.
-Then, multi-grid algorithms will be introduced.
-Finally, parallelism in the method will be discussed and task based algorithms will be shown.
+In this section, the algorithms for the  Kirchhoff seismic pre-stack depth migration is introduced.
+To begin with, the basic algorithm of the method is presented.
+Then, multi-grid algorithms are introduced.
+Finally, parallelism in the method is discussed and task based algorithms are shown.
 
 \subsection{Basic Algorithm}
 
@@ -112,7 +114,6 @@ In order to better express the dependencies, the method is described as a graph 
 \subsection{Task algorithm}
 
 The algorithms are rewritten to allow the use of tasks.
-Basically, functions were created and those functions will be the tasks that will be used.
 The task algorithm is the Algorithm \ref{alg:kirchhoff_task} and the function associated can be found in the Algorithm \ref{alg:kirchhoff_task_def}.
 
 \begin{algorithm}[h]
@@ -172,7 +173,7 @@ Indeed, the operation is a linear combination of several arrays at the same poin
 \subsection{Pre-fetching and spreading the data}
 Since the main issue is the communications between the storage system where the Green functions are and the computing units inside the super-computer, a solution would be to pre-fetch the data.
 The Green functions would be stored in a storage system closer of the computing unit and faster.
-It is possible to efficiently predict which Green function will be needed by the program when the source and the receiver of the trace are loaded.
+It is possible to efficiently predict which Green function is needed by the program when the source and the receiver of the trace are loaded.
 
 Moreover, two block side by side share the Green functions at their frontier.
 That means the same Green functions are loaded several times in a short amount of time from the file system.
@@ -193,7 +194,7 @@ This application is available at \url{https://github.com/jgurhem/KirchhoffMigrat
 The kernel performing the main operations for this method is implemented in C and provide functions to manage traces, Green functions and images.
 There is three kind of functions implemented in this kernel.
 The first type is IOs to read and write traces, images and Green functions from files.
-The second type of function is used to associate propagation time precomputed with Green functions to the trace that will be used to create the image.
+The second type of function is used to associate propagation time precomputed with Green functions to the trace that are used to create the image.
 Then, the last type is the actual migration.
 
 The migration function expect a fine grain image to update and a trace with the propagation times to make the round trip from the source of the trace to the receiver passing by every point of the large grain image.
@@ -237,8 +238,8 @@ Distributed and parallel applications were implemented on top of the C kernel in
 
 The MPI application uses the C functions to generate the traces and propagation time associated on the distributed processes.
 The image is distributed across the processes allocated to the application.
-The traces are duplicated on each process since they will be accessed depending on the travel time extracted from the propagation time shipped with the trace.
-The propagation times are generated with the trace and only the part that will be used in the migration is selected.
+The traces are duplicated on each process since they are accessed depending on the travel time extracted from the propagation time shipped with the trace.
+The propagation times are generated with the trace and only the part that is used in the migration is selected.
 Then, the migration can be executed on the local image with the local trace and propagation times.
 
 The HPX application is based on same principles.
@@ -334,9 +335,22 @@ Therefore, there may be migration of the images and the traces across the nodes 
 Moreover, there is a conversion between the C data structures used in the C kernel and the C++ data structure used in HPX that may also decrease the performances of the application since the data are not converted in the C based MPI application.
 Finally, the introduction of OpenMP directives in the kernel is not successful since the performances are not improved with an hybrid MPI+OpenMP implementation compared to a pure MPI implementation.
 
-% chapter transition
-\paragraph{}
-In this chapter, we introduced the experiments we made with the parallel and distributed sparse matrix vector product we implemented using the selected task based programming models.
-We also discussed the numerical experiments we performed and the results we obtained.
+\section{Synthesis and Perspectives}
+In this chapter, we introduced task based algorithms for the Kirchhoff seismic pre-stack depth migration and the parallelism intrinsic to the method.
+Then, we introduced and implemented a simplified 2D version of the Kirchhoff seismic pre-stack depth migration as a task based application with HPX.
+We also implemented a MPI and a MPI+OpenMP applications to compare with our task based implementation.
+Then, we performed strong scaling and weak scaling experiments as well as studied the influence of the number of OpenMP threads on our kernel.
+We showed that our HPX application does not scale very well both in term of weak and strong scaling compared to our MPI application.
+We deduced that there were migrations of the images and the traces across the nodes which reduced the performances.
+We also showed that our addition of OpenMP directives in the kernel did not bring as good performances as our pure MPI application.
+
+Task based programming models are an interesting alternative to MPI due to their capacity to schedule computations and data migrations in order to reduce costly communications while optimizing the use of the computing resources.
+Therefore, the scheduler could anticipate data migrations and, in particular, IOs with the file system in order to load data in advance so that they are ready to be used.
+However, the current task-based programming model schedulers lack the capability to completely manage the memory it uses and are not efficient enough to reduce the data migrations.
+Moreover, current systems are more suitable for message passing libraries since both are designed and optimized to work well together.
+
+Our task based Kirchhoff seismic pre-stack depth migration could be improved to be closer to what is done in practice as well as include IOs tasks to test the ability of the task based programming models to schedule such tasks.
+The application could also be implemented with other task based programming models to explore their capabilities to solve such problem.
+
 The experiments and the studies made with the tasks based programming models allowed the selection of key features for the task based programming models.
-We will resume these key features and how they are expressed in the task based programming models in the following chapter.
+We resume these key features and how they are expressed in the task based programming models in the following chapter.
