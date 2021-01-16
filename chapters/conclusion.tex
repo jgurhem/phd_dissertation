@@ -1,3 +1,70 @@
 \chapter{Conclusion and Perspectives \label{chap:ccl}}
 \section{Synthesis}
+
+% chap 2
+First, we introduced the High Performance Computing (HPC) time line as well as most of the task based programming models used by the HPC community.
+We also discussed the upcoming challenges for exascale in HPC.
+
+% chap 3
+Afterwards, we explained the three kind of methods we implemented with several programming models in this dissertation.
+The first algorithms we introduced are block-based direct methods tp solve dense linear systems; the block Gaussian elimination, the block Gauss-Jordan elimination and the LU factorization with the forward and backward substitutions to solve the two triangular systems.
+The second algorithm is the sparse matrix vector product.
+In this part, we introduced several sparse matrix storage formats that are more efficient to store matrices with large amount of zeros in memory.
+In particular, we explained the compressed sparse row (CSR), Ellpack (ELL) and coordinates (COO) sparse storage formats as well as their corresponding algorithms to perform the sparse matrix vector product.
+The last method is the Kirchhoff seismic pre-stack depth migration which is commonly used in geoscience and by Total to study the underground.
+
+% chap 4
+Thereafter, we described several task based programming models in greater details.
+In this study, we are interested in task based programming models working on distributed memory.
+we split them into two categories : fine grain task-based distributed and parallel programming models in which tasks are executed on one thread or process and task-based distributed and parallel programming models in which tasks are executed on multiple processes or nodes.
+For the first category, we selected Regent, Legion, HPX, PaRSEC and TensorFlow.
+For the second category, we selected YML+XMP, Pegasus and Swift.
+We highlighted the main features of each programming models studied and how to use them to define task, the dependencies between them, how to register the data used in the tasks and how to execute the tasks to perform the intended computations.
+
+% chap 5
+Then, we introduced our task-based applications to solve dense linear systems and perform the LU factorization.
+We introduced three block based direct methods to solve dense linear systems : the block Gaussian elimination, the block Gauss-Jordan elimination and the LU factorization.
+We implemented the solution to dense linear systems in YML+XMP, XMP, MPI and ScaLAPACK whereas the LU factorization application was also implemented with HPX, Regent and PaRSEC.
+We performed experiments on the K Computer with YML+XMP and XMP.
+We showed that the YML+XMP applications were running faster than the XMP corresponding applications on 8096 cores.
+We also performed experiments on Poincare, \textit{La Maison de la Simulation} cluster, with the LU factorization implemented with the task based programming models YML+XMP, HPX, PaRSEC and Regent as well as MPI, XMP and ScaLAPACK.
+We performed strong scaling experiments with each application up to 64 nodes for $16384 \times 16384$, $32768 \times 32768$ and $49512 \times 49512$ matrices.
+We showed that MPI has the fastest execution times and the best scalability on 64 nodes and that, although, XMP translates its directives into MPI code, the PGAS model used in XMP is not as efficient as using directly MPI whereas HPX is the most efficient task based programming model on 64 nodes.
+However, PaRSEC also shows interesting performances in some cases and Regent applications execution time increase while increasing the number of nodes from 32 to 64 which should not be the case.
+We showed that HPX and PaRSEC are performing better with a higher number of smaller tasks.
+YML+XMP execution times are higher than the other task based programming models due to the use of the file system but its strong scaling speedups are higher so YML+XMP could obtain better performances on a larger number of resources as we showed on the K Computer.
+
+% chap 6
+Subsequently, we described our sparse matrix vector product based application with its 2D block decomposition used to store our matrices in which each block is a sparse matrix compressed with a sparse storage format.
+We analyzed, evaluated and experimented the sparse operation $A(Ax+x)$ using HPX, YML+XMP and MPI.
+The applications are implemented on top of a common kernel that performs the sparse matrix vector multiplication on matrices stored in CSR, ELL, COO and SCOO sparse classical storage formats.
+We showed that the CSR sparse format storage obtains the best performances in most of the cases and that the COO storage format has better load balancing but requires larger output vector which increases the size of collective operations, therefore their execution time.
+We have shown that collective operations are an issue in task-based programming models since most of them do not provide a highly optimized implementation and generate all-all communications.
+We also have shown that collective communications in MPI are taking more and more time as the number of computing resources used increases, especially for weak scaling experiments.
+Therefore, task-based programming models, that can avoid large scale collective communications by turning them in collective operations that can be efficiently scheduled or by running them on a subset of the allocated resources, is an interesting alternative to MPI.
+However, current systems are more suitable for message passing libraries since both are designed and optimized to work well together.
+Moreover, file systems are not suitable either for programming models that use IOs to transfer data between tasks.
+The current task-based programming model schedulers lack the capability to completely manage the memory it uses and are not efficient enough to reduce the data migrations.
+
+% chap 7
+Thereupon, we introduced task based algorithms for the Kirchhoff seismic pre-stack depth migration and the parallelism intrinsic to the method.
+Then, we presented and implemented a simplified 2D version of the Kirchhoff seismic pre-stack depth migration with HPX, MPI and MPI+OpenMP.
+We used these applications to perform strong scaling and weak scaling experiments as well as study the influence of the number of OpenMP threads on our kernel.
+We showed that our HPX application does not scale very well both in term of weak and strong scaling compared to our MPI application.
+We deduced that there were migrations of the images and the traces across the nodes which reduced the performances.
+We also showed that our addition of OpenMP directives in the kernel did not bring as good performances as our pure MPI application.
+
+% chap 8
+Finally, we resume the key features that we were able to extract from the experiments and studies performed.
+We also show how they are expressed in the different task based programming models.
+
 \section{Future Research}
+
+This work could be completed with applications implemented with other task based programming models such as X10, Chapel, Uintah or Charm++ in order to explore their capabilities to solve such problem.
+These experiments could also be reproduced on other cluster or supercomputers.
+Our task based Kirchhoff seismic pre-stack depth migration could be improved to be closer to what is done in practice as well as include IOs tasks to test the ability of the task based programming models to schedule such tasks.
+
+Improving the YML+XMP dense matrix type can also be considered since it would allow more flexibility for YML+XMP dense linear algebra applications and allow the use of parameter values that could lead to better results.
+
+A possible amelioration to task based programming models is to improve the capabilities of the schedulers in terms of memory management and task scheduling in order to avoid the data migrations and fit data in the available memory of the nodes.
+Implementing efficient task based collective operations will also help to improve performances of task based programming models.
