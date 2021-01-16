@@ -8,14 +8,12 @@ do
 		par(i:= k+1; blockcount-1)
 		do
 			#A[k,i] = AInv[k] * A[k,i]
-			wait(Aev[k][k][k+1]);
-			wait(Aev[k][i][k]);
+			wait(Aev[k][k][k+1] and Aev[k][i][k]);
 			compute XMP_prodMat(AInv[k],A[k][i]);
 			notify(Aev[k][i][k+1]);
 		enddo
 	//
-		wait(Aev[k][k][k+1]);
-		wait(Bev[k][k]);
+		wait(Aev[k][k][k+1] and Bev[k][k]);
 		compute XMP_prodMV(AInv[k],B[k]);
 		notify(Bev[k][k+1]);
 	//
@@ -25,17 +23,13 @@ do
 				par (j:= k+1; blockcount-1)
 				do
 					#A[i,j] = A[i,j] - A[i,k] * A[k,j]
-					wait(Aev[i][k][k]);
-					wait(Aev[i][j][k]);
-					wait(Aev[k][j][k+1]);
+					wait(Aev[i][k][k] and Aev[i][j][k] and Aev[k][j][k+1]);
 					compute XMP_prodDiff(A[i][k],A[k][j],A[i][j]);
 					notify(Aev[i][j][k+1]);
 				enddo
 			//
 				#B[i] = B[i] - A[i,k] * B[k]
-				wait(Bev[i][k]);
-				wait(Bev[k][k+1]);
-				wait(Aev[i][k][k]);
+				wait(Bev[i][k] and Bev[k][k+1] and Aev[i][k][k]);
 				compute XMP_prodDiffMV(A[i][k],B[k],B[i]);
 				notify(Bev[i][k+1]);
 			endpar
@@ -51,9 +45,8 @@ par(k:= 1; blockcount-1)
 do
 	par (i:= 0; blockcount-k-1)
 	do
-		wait(Bev[i][k+i]);
-		wait(Bev[blockcount-k][blockcount]);
-		wait(Aev[i][blockcount-k][i+1]);
+		wait(Bev[i][k+i] and Bev[blockcount-k][blockcount]
+		                 and Aev[i][blockcount-k][i+1]);
 		compute XMP_prodDiffMV(A[i][blockcount-k],B[blockcount-k],B[i]);
 		notify(Bev[i][k+i+1]);
 	enddo

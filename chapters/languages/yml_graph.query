@@ -10,9 +10,7 @@ enddo
 par(i:=0;blockcount-1)(j:=0;blockcount-1) do
     if (j gt i) then
         par(k:=i+1;blockcount-1) do
-            wait(p[k][j][i]);
-            wait(p[k][i][i+1]);
-            wait(p[i][j][i]);
+            wait(p[k][j][i] and p[k][i][i+1] and p[i][j][i]);
             compute XMP_prodDiff(A[k][i],A[i][j],A[k][j]);
             notify(p[k][j][i+1]);
         enddo
@@ -24,8 +22,7 @@ par(i:=0;blockcount-1)(j:=0;blockcount-1) do
                 notify(p[i][i][i+1]);
             endif
         else
-            wait(p[j][j][j+1]);
-            wait(p[i][j][j]);
+            wait(p[j][j][j+1] and p[i][j][j]);
             compute XMP_prodMat2(A[i][j],B[j]);
             notify(p[i][j][j+1]);
         endif
