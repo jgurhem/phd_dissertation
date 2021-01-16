@@ -243,6 +243,8 @@ caption=YML Graph for the Gaussian elimination\label{lst:yml_graph_bg}]{chapters
 The XMP components that make the different operations are also written to take advantage of the XMP directives and use the processors allocated by YML to efficiently run the operations on the block matrices.
 The tasks perform operations on matrices like matrix product and inversion as well as operations on vectors like matrix vector product.
 Tasks on matrix products and matrix inversions have a comparable complexity compared to matrix vector products which have less operations.
+The \textit{XMP\_prodMat} component was implemented in Chapter \ref{chap:languages}.
+Listing \ref{lst:yml_task} shows \textit{XMP\_prodMat} implementation component with XMP code and Listing \ref{lst:yml_task_abst} shows \textit{XMP\_prodMat} abstract component.
 
 \subsubsection{Resolution of a linear system of size 16384 on 1024 cores}
 This experiment consists in solving a dense linear system of size 16384 with the block-wise Gaussian elimination with YML/XMP.
@@ -356,7 +358,7 @@ The Gauss-Jordan elimination may even execute faster than the Gaussian eliminati
 
 
 We compared YML/XMP to XMP for several cases on the K computer to evaluate the multi-level distributed/parallel programming associated to the studied programming paradigm on such supercomputer, even if the system of these machines does not yet propose smart scheduling.
-As YML and XMP were introduced by authors of this paper, as the OmniRPC middleware used fore these experiments, we have to evaluate such programming on a more general cluster and compare it to more classic end-user programming.
+As we only used YML+XMP and XMP on the K Computer, we have to evaluate such programming on a more general cluster and compare it to more classic end-user programming.
 Then, in the next section, we compare YML/XMP and XMP to ScaLAPACK and our MPI implementation of the resolution of a dense linear system on Poincare, an IBM cluster.
 As MPI and ScaLAPACK are more optimized than our YML/XMP implementations, it is certain that they will obtain better performances.
 However, MPI is the current and most commonly used library to implement parallel and distributed applications.
