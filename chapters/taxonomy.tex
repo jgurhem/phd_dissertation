@@ -8,10 +8,49 @@ This taxonomy also presents how each property is expressed in the different task
 The taxonomy of the task based programming models introduced in the previous chapter is detailed in this section.
 
 \subsection{Task Capabilities}
+
+\subsubsection{Task Granularity}
+This property represents the amount of resources on which a task can be executed.
+For this study, we consider that either \textit{sequential}, \textit{parallel} or \textit{parallel and distributed} code can be executed as task.
+Usually, a sequential task is run as a lightweight thread, a thread or a single process without multi-threading.
+A parallel task can also use multiple threads or processes up to one node like OpenMP or MPI on shared memory.
+Finally, distributed and parallel resources like multiple nodes from a cluster can be allocated to parallel and distributed tasks.
+These tasks could be able to execute MPI or PGAS based code on their allocated resources.
+
+As seen in Chapter \ref{chap:exp_dense}, a good balance between the number of tasks and the work load given to the task is required to express enough parallelism so that the computing resources can execute tasks and to make sure there is not too much overhead from having too many tasks.
+Therefore, sequential tasks are more likely to be fine grain tasks that process a relatively small amount of data while distributed and parallel tasks are more likely to process more data and have a larger grain.
+For instance, YML+XMP tasks are distributed and parallel while HPX, PaRSEC and Regent tasks are sequential tasks that run in threads.
+In Table \ref{tab:blocks}, we explore the number of blocks used in YML+XMP, HPX, PaRSEC and Regent to get the best results for our task based LU factorization for a 16384 $\times$ 16384 matrix.
+The size of the block can be computed by dividing the size of the matrix by the number of blocks.
+Therefore, the higher the number of blocks, the smaller the size of the block is.
+In this case, there is up to 8 $\times$ 8 blocks for YML+XMP whereas there is at least 30 $\times$ 30 blocks for Regent, HPX and PaRSEC.
+Thus, YML+XMP distributed and parallel tasks managed around 16 times ($ \sim (30/8)^2 $) more data than the largest task executed by Regent, HPX and PaRSEC.
+Moreover, these tasks are matrix products and matrix inversions which correspond to $\sim n^3$ operations where $n$ is the dimension of the matrix.
+So, YML+XMP tasks performed around 64 times ($ \sim (30/8)^3 $) more operations.
+
+In Table \ref{tab:taxo:prop_task_granularity}, the granularity of the tasks of the considered task based programming models is presented.
+
+\begin{table}[H]
+	\caption{Task Granularity property for each task based programming model \label{tab:taxo:prop_task_granularity}}
+	\centering
+	\begin{multicols}{2}
+		\input{"chapters/taxonomy/_table_taxo_Task Granularity_p1.tex"}
+
+		\input{"chapters/taxonomy/_table_taxo_Task Granularity_p2.tex"}
+	\end{multicols}
+\end{table}
+
 \subsubsection{Architecture}
 The architecture supported by the task based programming models is an important property to take into consideration since it will impact the scale at which the task based programming models can be used.
 There is two main scale used in high performance computing : the shared memory and the distributed memory.
+Shared memory involves the usage of limited resources since these task based programming models can only be used on one cluster or supercomputer since they do not provide means to transfer data between several nodes.
+They can be used with data transfer libraries to address distributed memory.
+One of such case is the use of OpenMP on the nodes and MPI to manage distributed memory.
+They can also be used in a task that could run on a complete node.
+On the other hand, with distributed memory, it is possible to address multiple nodes, thus, as much resources as available.
 Therefore, the two values considered for this property are the \textit{shared memory} and the \textit{distributed memory} architectures.
+
+Shared memory task based programming models cannot be used to address exascale computing without being used with another technology to manage distributed memory.
 
 In Table \ref{tab:taxo:prop_architecture}, the architecture which is supported by the considered task based programming models is introduced.
 
@@ -29,6 +68,8 @@ In Table \ref{tab:taxo:prop_architecture}, the architecture which is supported b
 This property indicates if the programming model supports accelerators (for instance, GPUs).
 \textit{Explicit} support means that the user has to provide the implementation of the task that will be run on the accelerator.
 \textit{Implicit} support means that the tasks can be run on different devices while the user has to provide only one implementation.
+In this case, the programming models also manage data transfer between the CPUs and the GPUs memory.
+For instance, tasks implemented with OpenMP can be run both on CPUs and GPUs while OpenMP manages the data offloads to the GPU.
 
 In Table \ref{tab:taxo:prop_heterogeneity}, it is shown if the accelerator support is explicit or implicit for the considered task based programming models.
 
@@ -42,32 +83,14 @@ In Table \ref{tab:taxo:prop_heterogeneity}, it is shown if the accelerator suppo
 	\end{multicols}
 \end{table}
 
-\subsubsection{Task Granularity}
-This property represents the amount of resources on which a task can be executed.
-For this study, we consider that either \textit{sequential}, \textit{parallel} or \textit{parallel and distributed} code can be executed as task.
-Usually, a sequential task is run as a lightweight thread, a thread or a single process without multi-threading.
-A parallel task can also use multiple threads or processes up to one node like OpenMP or MPI on shared memory.
-Finally, distributed and parallel resources like multiple nodes from a cluster can be allocated to parallel and distributed tasks.
-These tasks could be able to execute MPI or PGAS based code on their allocated resources.
-
-In Table \ref{tab:taxo:prop_task_granularity}, the granularity of the tasks of the considered task based programming models is presented.
-
-\begin{table}[H]
-	\caption{Task Granularity property for each task based programming model \label{tab:taxo:prop_task_granularity}}
-	\centering
-	\begin{multicols}{2}
-		\input{"chapters/taxonomy/_table_taxo_Task Granularity_p1.tex"}
-
-		\input{"chapters/taxonomy/_table_taxo_Task Granularity_p2.tex"}
-	\end{multicols}
-\end{table}
-
 \subsubsection{Data Handling}
 This property describes how the data are accessed in a task.
 The data can be accessed \textit{directly}.
 For instance, the data can be accessed through function parameters.
 The data can also be requested or retrieved from a \textit{container}.
-For instance, the data can be retrieved through a future.
+For instance, the data can be retrieved through a future in HPX.
+
+This represents the current (as experienced during this dissertation) implementations of the task based programming models and can evolve with time.
 
 In Table \ref{tab:taxo:prop_data_handling}, how to access the data from the tasks is described.
 \begin{table}[H]
@@ -81,11 +104,18 @@ In Table \ref{tab:taxo:prop_data_handling}, how to access the data from the task
 \end{table}
 
 \subsubsection{Task Implementation}
-This property indicates what kind of interface the user has to fill in to create a task which will be executed by the runtime of the programming model.
-The tasks can use a \textit{program} where the user has to provide the parameters through the API.
+This property indicates what kind of interface the user has to fill in to create a task which will be executed during the execution of the application.
+The tasks can use a \textit{program} where the user has to provide the parameters through the API such as Pegasus.
 It can also use a \textit{function pointer} which the user has to pass to the API as well as its parameters.
 The programing paradigm can also be based on \textit{pragmas} which are used to delimit and describe the task.
-Another possibility is a custom interface like a \textit{function with specific parameters} or a \textit{custom syntax}.
+Another possibility is a custom interface like a \textit{function with specific parameters}.
+The tasks can also be implemented by \textit{encapsulating} them such as in YML+XMP where the task code is encapsulated in an XML file.
+Moreover, the tasks can be implemented using the dedicated language of the task based programming model.
+For instance, Regent task have to be implemented with Regent which allows the conversion of the tasks into CPU and GPU code.
+
+Task encapsulation or function calls with existing softwares is an important feature and useful for task based programming models since it allows to reuse already implemented functions in tasks.
+The programming model should be able to provide a way to easily access data from a task to call an existing library e.g. existing code already written in C/C++/Fortran.
+This allows faster developments since existing code can be reused.
 
 In Table \ref{tab:taxo:prop_task_implementation}, how the tasks are implemented is detailed.
 \begin{table}[H]
@@ -105,6 +135,14 @@ There is also the possibility of supporting \textit{multiple} accelerator archit
 This may be achieved by having a suitable backend for each supported accelerator architecture.
 Another possibility is to let the \textit{user} chose how and which type of accelerator to use by interfacing with an accelerator programming language.
 
+It depends on the existing technologies and can evolve over time or with apparition of new technologies.
+
+Furthermore, the multiplication of supercomputer architectures makes the portability between supercomputers difficult especially if the support of multiple architectures is necessary.
+Therefore, the portability of an application is mandatory if there is a large amount of users.
+Indeed, in a large user base, there is a high probability that the users will have access to different computer architectures.
+At least, the architecture of their local computers should be different than the supercomputer they have access to.
+Portability to a large set of architectures allows the users to be able to familiarize with the application locally and the developers to easily make local modifications and tests then experiment them on larger scale on supercomputers.
+
 In Table \ref{tab:taxo:prop_portability_accelerators}, the accelerators supported by the different task based programming models are shown.
 \begin{table}[H]
 	\caption{Portability Accelerators property for each task based programming model \label{tab:taxo:prop_portability_accelerators}}
@@ -119,6 +157,10 @@ In Table \ref{tab:taxo:prop_portability_accelerators}, the accelerators supporte
 \subsection{Task and Data Management}
 \subsubsection{Dependency Type}
 This property describes how the dependencies between the tasks are provided by the user of the task based programming models.
+This means that depending on the provided informations (in task description, in particular), the scheduler can deduce other dependency types.
+For instance, the control dependency graph combined with the informations on the use of the data parameters provided to the task could allow the scheduler to deduce the data dependency graph.
+Therefore, the user has to provide the required informations so that the scheduler is able to work properly.
+
 The user may have to provide \textit{control} dependencies between the tasks.
 They describe in which order the tasks can be executed and which tasks can be executed at the time.
 \textit{Data} dependencies can also be provided.
@@ -138,6 +180,7 @@ In Table \ref{tab:taxo:prop_dependency_type}, the dependency type used to descri
 
 \subsubsection{Worker Management}
 This property indicates whether the worker thread or process which hosts the tasks in the task based programming models has to be started and maintained by the user (\textit{explicit}) or is provided by the runtime (\textit{implicit}).
+This means the user has to put more efforts to launch its application in the explicit case.
 
 In Table \ref{tab:taxo:prop_worker_management}, the worker management is shown for each task based programming model.
 \begin{table}[H]
@@ -150,23 +193,14 @@ In Table \ref{tab:taxo:prop_worker_management}, the worker management is shown f
 	\end{multicols}
 \end{table}
 
-\subsubsection{Interoperability}
-This property shows whether task based programming models can be integrated (\textit{callee}) into another language, can call other languages (\textit{caller}) or \textit{both}.
-
-In Table \ref{tab:taxo:prop_interoperability}, the interoperability of each task based programming model is detailed.
-\begin{table}[H]
-	\caption{Interoperability property for each task based programming model \label{tab:taxo:prop_interoperability}}
-	\centering
-	\begin{multicols}{2}
-		\input{"chapters/taxonomy/_table_taxo_Interoperability_p1.tex"}
-
-		\input{"chapters/taxonomy/_table_taxo_Interoperability_p2.tex"}
-	\end{multicols}
-\end{table}
-
 \subsubsection{Data Distribution}
-This property describes how the data distribution is handled in the programming model.
+This property describes how the data distribution is handled by the programming model scheduler.
+The scheduler can be able to migrate data between computing resources.
 \textit{Implicit} data distribution means that the runtime system decides where to place the data on the nodes whereas \textit{explicit} data distribution means that the user has to specify the distribution of the data across the nodes.
+In the implicit case, the scheduler has more liberty to optimize the computations and the data migrations when the scheduler is able to do so.
+
+When the schedulers will be more efficient and perform better, the implicit management of the data will be very interesting to manage data.
+However, it is still not the case as we showed in Chapter \ref{chap:exp_km}.
 
 In Table \ref{tab:taxo:prop_data_distribution}, the data distribution management in the task based programming models is introduced.
 \begin{table}[H]
@@ -181,6 +215,7 @@ In Table \ref{tab:taxo:prop_data_distribution}, the data distribution management
 
 \subsubsection{Task Binding}
 This property describes how the tasks are bound to the allocated hardware resources.
+It demands more effort to the scheduler in order to place the tasks on the resources but with efficient enough schedulers, it will allow to increase the performances of the task based programming models.
 The binding can be \textit{implicit} when automatically determined by the task based programming runtime or \textit{explicit} when the user has to provide a binding map.
 
 In Table \ref{tab:taxo:prop_task_binding}, the task binding management of the task based programming models is highlighted.
@@ -196,6 +231,9 @@ In Table \ref{tab:taxo:prop_task_binding}, the task binding management of the ta
 
 \subsubsection{Task Insertion}
 This property indicates if new tasks can be added to the task pool during the execution of the already scheduled tasks.
+This feature was not required for the studied applications but it is an important feature for certain applications such as iterative methods.
+This feature can allow them to start a new iteration or stop iterating according to a given metrics that can be the output of a task.
+For instance, HPX provides such features.
 
 In Table \ref{tab:taxo:prop_task_insertion}, the insertion of new tasks during the execution of the tasks is described.
 \begin{table}[H]
@@ -229,6 +267,10 @@ In Table \ref{tab:taxo:prop_dependency_expression}, how the dependency are expre
 This property describes how data are sent from a task to another.
 The runtime system can use \textit{message passing} (msg), \textit{global address space} (gas) or the \textit{file system} (fs).
 
+This feature can provide many interesting optimizations such as data migration anticipation or data pre-loading.
+However, these features are not implemented yet.
+They also induces complex choices for the scheduler that may not improve performances at the end.
+
 In Table \ref{tab:taxo:prop_communication_model}, the communication model used in each task based programming model is shown.
 \begin{table}[H]
 	\caption{Communication Model property for each task based programming model \label{tab:taxo:prop_communication_model}}
@@ -257,6 +299,7 @@ In Table \ref{tab:taxo:prop_fault_tolerance}, the fault tolerance support is giv
 \subsubsection{Implementation Type}
 This property describes how the programming model API is included in an application.
 It can be done through a \textit{library}, a \textit{language extension} or a \textit{language}.
+This property shows how the programming models are used to implement an application with them.
 
 In Table \ref{tab:taxo:prop_implementation_type}, the API access is introduced.
 \begin{table}[H]
