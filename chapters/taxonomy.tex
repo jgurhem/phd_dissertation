@@ -29,6 +29,8 @@ Moreover, these tasks are matrix products and matrix inversions which correspond
 So, YML+XMP tasks performed around 64 times ($ \sim (30/8)^3 $) more operations.
 
 In Table \ref{tab:taxo:prop_task_granularity}, the granularity of the tasks of the considered task based programming models is presented.
+Most of the task based programming models use sequential tasks.
+For our studies and experiments, we used task based programming models for distributed memory with sequential tasks and with parallel and distributed tasks.
 
 \begin{table}[H]
 	\caption{Task Granularity property for each task based programming model \label{tab:taxo:prop_task_granularity}}
@@ -48,11 +50,14 @@ They can be used with data transfer libraries to address distributed memory.
 One of such case is the use of OpenMP on the nodes and MPI to manage distributed memory.
 They can also be used in a task that could run on a complete node.
 On the other hand, with distributed memory, it is possible to address multiple nodes, thus, as much resources as available.
+In this case, the programming models that can manage distributed memory are able to migrate data between cluster nodes.
 Therefore, the two values considered for this property are the \textit{shared memory} and the \textit{distributed memory} architectures.
 
 Shared memory task based programming models cannot be used to address exascale computing without being used with another technology to manage distributed memory.
 
 In Table \ref{tab:taxo:prop_architecture}, the architecture which is supported by the considered task based programming models is introduced.
+Task based programming models that manage shared memory can only execute sequential tasks expect for QUARK that can execute multi-threaded functions.
+On the other hand, some of the task based programming models that manage distributed can execute parallel and distributed tasks.
 
 \begin{table}[H]
 	\caption{Architecture property for each task based programming model \label{tab:taxo:prop_architecture}}
@@ -72,6 +77,9 @@ In this case, the programming models also manage data transfer between the CPUs 
 For instance, tasks implemented with OpenMP can be run both on CPUs and GPUs while OpenMP manages the data offloads to the GPU.
 
 In Table \ref{tab:taxo:prop_heterogeneity}, it is shown if the accelerator support is explicit or implicit for the considered task based programming models.
+Most of the task based programming models do not support a direct implementation of the tasks for accelerators.
+Indeed, the users have to provide such implementation if they want to execute tasks addressing accelerator computations.
+Our experiments were mostly performed on CPUs so this feature was not used during our experiments.
 
 \begin{table}[H]
 	\caption{Heterogeneity property for each task based programming model \label{tab:taxo:prop_heterogeneity}}
@@ -93,6 +101,9 @@ For instance, the data can be retrieved through a future in HPX.
 This represents the current (as experienced during this dissertation) implementations of the task based programming models and can evolve with time.
 
 In Table \ref{tab:taxo:prop_data_handling}, how to access the data from the tasks is described.
+Most of the programming models provide a direct access to the input and output data for tasks whereas only a few of them require the user to request for the data they use in their tasks.
+During our experiments, we used HPX that uses futures to retrieve data in tasks and YML+XMP that provide a direct access to the data.
+
 \begin{table}[H]
 	\caption{Data Handling property for each task based programming model \label{tab:taxo:prop_data_handling}}
 	\centering
@@ -118,6 +129,9 @@ The programming model should be able to provide a way to easily access data from
 This allows faster developments since existing code can be reused.
 
 In Table \ref{tab:taxo:prop_task_implementation}, how the tasks are implemented is detailed.
+During our experiments, we used Regent with its dedicated language based on Lua and Terra to implement applications and tasks.
+We also used HPX that uses function pointers to implement tasks as well as YML+XMP and PaRSEC.
+
 \begin{table}[H]
 	\caption{Task Implementation property for each task based programming model \label{tab:taxo:prop_task_implementation}}
 	\centering
@@ -144,6 +158,10 @@ At least, the architecture of their local computers should be different than the
 Portability to a large set of architectures allows the users to be able to familiarize with the application locally and the developers to easily make local modifications and tests then experiment them on larger scale on supercomputers.
 
 In Table \ref{tab:taxo:prop_portability_accelerators}, the accelerators supported by the different task based programming models are shown.
+Our applications do not support accelerators so we were not able to try this feature.
+Nvidia cards are the most used GPUs so CUDA that can address Nvidia GPU programming is supported by most of the task programming models that can execute tasks on GPUs.
+However, other constructors are producing GPUs such as Intel and AMD.
+
 \begin{table}[H]
 	\caption{Portability Accelerators property for each task based programming model \label{tab:taxo:prop_portability_accelerators}}
 	\centering
@@ -168,6 +186,8 @@ This approach is used to infer the dependencies and the parallelism between the 
 The user may have to provide \textit{both} dependency type although it is possible to convert a dependency graph type into the other with the appropriate informations.
 
 In Table \ref{tab:taxo:prop_dependency_type}, the dependency type used to describe the dependencies between the tasks in task based programming models is introduced.
+In our experiments, we used data oriented such as HPX and control oriented dependency programming models such as YML+XMP.
+
 \begin{table}[H]
 	\caption{Dependency Type property for each task based programming model \label{tab:taxo:prop_dependency_type}}
 	\centering
@@ -183,6 +203,9 @@ This property indicates whether the worker thread or process which hosts the tas
 This means the user has to put more efforts to launch its application in the explicit case.
 
 In Table \ref{tab:taxo:prop_worker_management}, the worker management is shown for each task based programming model.
+Most of the task based programming models manage their worker placement to execute the tasks without user interference.
+Only a few need user intervention while some of them allow hints from the user.
+
 \begin{table}[H]
 	\caption{Worker Management property for each task based programming model \label{tab:taxo:prop_worker_management}}
 	\centering
@@ -203,6 +226,9 @@ When the schedulers will be more efficient and perform better, the implicit mana
 However, it is still not the case as we showed in Chapter \ref{chap:exp_km}.
 
 In Table \ref{tab:taxo:prop_data_distribution}, the data distribution management in the task based programming models is introduced.
+In our YML+XMP applications, we had implicit data distributions for the tasks but not in the parallel and distributed tasks in which we had to place our data.
+For our HPX and PaRSEC applications, we had to explicitly map our data with process ranks representing cores or nodes from a cluster or supercomputer.
+
 \begin{table}[H]
 	\caption{Data Distribution property for each task based programming model \label{tab:taxo:prop_data_distribution}}
 	\centering
@@ -219,6 +245,9 @@ It demands more effort to the scheduler in order to place the tasks on the resou
 The binding can be \textit{implicit} when automatically determined by the task based programming runtime or \textit{explicit} when the user has to provide a binding map.
 
 In Table \ref{tab:taxo:prop_task_binding}, the task binding management of the task based programming models is highlighted.
+All the programming models propose a implicit task binding with some of them allowing the user to pin tasks on computing resources.
+For our experiments we did not try to optimize the task binding by giving hints to PaRSEC and HPX that support explicit bindings.
+
 \begin{table}[H]
 	\caption{Task Binding property for each task based programming model \label{tab:taxo:prop_task_binding}}
 	\centering
@@ -236,6 +265,8 @@ This feature can allow them to start a new iteration or stop iterating according
 For instance, HPX provides such features.
 
 In Table \ref{tab:taxo:prop_task_insertion}, the insertion of new tasks during the execution of the tasks is described.
+This feature is very useful for iterative methods but we did not implement such methods so we did not use this feature in our experiments.
+
 \begin{table}[H]
 	\caption{Task Insertion property for each task based programming model \label{tab:taxo:prop_task_insertion}}
 	\centering
@@ -252,6 +283,9 @@ This property describes how the dependencies between the tasks are represented i
 The possibilities include a \textit{graph}, a \textit{directed acyclic graph} or DAG, a \textit{tree} and a \textit{Petri Net}.
 
 In Table \ref{tab:taxo:prop_dependency_expression}, how the dependency are expressed in each task based programming model is detailed.
+The difference between graph and DAG is not always clear in the implementations of the task based programming models.
+In this table, we recorded the informations we found in papers introducing the task based programming models.
+
 \begin{table}[H]
 	\caption{Dependency Expression property for each task based programming model \label{tab:taxo:prop_dependency_expression}}
 	\centering
@@ -272,6 +306,9 @@ However, these features are not implemented yet.
 They also induces complex choices for the scheduler that may not improve performances at the end.
 
 In Table \ref{tab:taxo:prop_communication_model}, the communication model used in each task based programming model is shown.
+Task based programming models that only work in shared memory do not have a communication model since they do not manage distributed memory.
+In our applications, we used programming models that use each communication model.
+
 \begin{table}[H]
 	\caption{Communication Model property for each task based programming model \label{tab:taxo:prop_communication_model}}
 	\centering
@@ -284,8 +321,12 @@ In Table \ref{tab:taxo:prop_communication_model}, the communication model used i
 
 \subsubsection{Fault Tolerance}
 This property indicates if the task based programming models support fault tolerance.
+Fault tolerance allows applications to recover from errors during execution.
+If errors still appear, the application can be stopped properly.
 
 In Table \ref{tab:taxo:prop_fault_tolerance}, the fault tolerance support is given for each task based programming model.
+Task based programming models that support fault tolerance are mainly the ones that can execute distributed and parallel tasks such as YML+XMP we used to implement our applications.
+
 \begin{table}[H]
 	\caption{Fault Tolerance property for each task based programming model \label{tab:taxo:prop_fault_tolerance}}
 	\centering
@@ -302,6 +343,9 @@ It can be done through a \textit{library}, a \textit{language extension} or a \t
 This property shows how the programming models are used to implement an application with them.
 
 In Table \ref{tab:taxo:prop_implementation_type}, the API access is introduced.
+Most of the task based programming models are available as libraries or languages.
+During our experiments, we used one of each implementation type.
+
 \begin{table}[H]
 	\caption{Implementation Type property for each task based programming model \label{tab:taxo:prop_implementation_type}}
 	\centering
@@ -316,6 +360,9 @@ In Table \ref{tab:taxo:prop_implementation_type}, the API access is introduced.
 This property indicates if the task based programming model supports data persistence.
 
 The support for data persistence is given in Table \ref{tab:taxo:prop_data_persistence}.
+The task based programming models predominantly do not support data persistence.
+Task based programming models using the file system to transfer data between the tasks can be considered as using data persistence since data stays if it is not deleted by the programming models after errors or applications terminations.
+
 \begin{table}[H]
 	\caption{Data Persistence property for each task based programming model \label{tab:taxo:prop_data_persistence}}
 	\centering
@@ -332,6 +379,9 @@ It can be \textit{centralized} where there only one scheduler instance that mana
 The tasks can also be managed at the local level in the workers in a \textit{distributed} way.
 
 In Table \ref{tab:taxo:prop_scheduler_location}, the location of the scheduler is shown for each task based programming model.
+Most of the task based programming models use centralized schedulers.
+In our experiments, we used task based programming models that use both type of schedulers.
+
 \begin{table}[H]
 	\caption{Scheduler Location property for each task based programming model \label{tab:taxo:prop_scheduler_location}}
 	\centering
