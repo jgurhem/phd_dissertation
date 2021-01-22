@@ -5,9 +5,22 @@ In this chapter, the taxonomy and the properties deduced from the usage of sever
 This taxonomy also presents how each property is expressed in the different tasks programming models.
 
 \section{Taxonomy}
-The taxonomy of the task based programming models introduced in the previous chapter is detailed in this section.
+In this section, we introduce the taxonomy of the task based programming models that is deduced from the studies and experiments.
+We divided the features of the taxonomy into three categories.
+\textit{Task Capabilities} is the first category which contains the features related to the abilities of the tasks such as the granularity of the tasks and the architectures they can be executed on.
+The second category is \textit{Task and Data Management} which contains the features related to the scheduling properties of the tasks and data migrations.
+The last category is \textit{Programming Model Features} in which we present capabilities of the programming model itself such as data persistence and fault tolerance.
+
 
 \subsection{Task Capabilities}
+In this section, the features related to the category \textit{Task Capabilities} are presented.
+They include task features that we believe interesting in the choice of a task based programming model to implement the tasks in a task based application.
+The \textit{Task Granularity} can help to understand the scale and the amount of computations of the tasks.
+The memory \textit{Architecture} is also a metric that help to understand the scale at which the task based programming models can be used to implement an application.
+The \textit{Heterogeneity} and the \textit{Portability Accelerator} help to understand if the task can be executed on different accelerators with the same implementation and on which type of accelerators.
+These informations are critical depending on the cluster or supercomputers architectures targeted.
+The \textit{Task Implementation} represents the interface available to user to implement the tasks and the kind of effort needed to port an existing kernel application into a task.
+Finally, the \textit{Data Handling} shows how the data are accessed from the tasks and can help to understand the effort necessary to use and perform operations on the data in the tasks.
 
 \subsubsection{Task Granularity}
 This property represents the amount of resources on which a task can be executed.
@@ -173,6 +186,15 @@ However, other constructors are producing GPUs such as Intel and AMD.
 \end{table}
 
 \subsection{Task and Data Management}
+In this section, the features related to the category \textit{Task and Data Management} are introduced.
+They include task and data scheduling properties that we believe interesting in the choice of a task based programming model to implement a task based application.
+The \textit{Dependency Type} is an interesting feature to know which  type of dependency the user has to extract from his/her algorithm and to provide during the implementation of the task based application.
+The \textit{Worker Management} indicated the user investment in term of application management.
+The \textit{Data Distribution} describes how the scheduler manage the placement of the data on the computing resources.
+This placement can be made by the scheduler or directly by the user which demands more effort.
+The \textit{Task Binding} represents the if the user has to provide the binding between tasks and computing resources.
+The \textit{Task Insertion} indicates if the scheduler is capable of adding new tasks to schedule during the execution of already scheduled tasks.
+
 \subsubsection{Dependency Type}
 This property describes how the dependencies between the tasks are provided by the user of the task based programming models.
 This means that depending on the provided informations (in task description, in particular), the scheduler can deduce other dependency types.
@@ -278,6 +300,15 @@ This feature is very useful for iterative methods but we did not implement such 
 \end{table}
 
 \subsection{Programming Model Features}
+In this section, the features related to the category \textit{Programming Model Features} are described.
+They include programming model properties that we believe interesting in the choice of a task based programming model to implement a task based application.
+The \textit{Dependency Expression} property describes the type of structures that hold the dependencies between the tasks and can help the user understand how he/she has to express the dependencies during the implementation.
+The \textit{Communication Model} property can help the user chose the communication model the most appropriate for the application and the cluster or supercomputer on which the application will be executed.
+The \textit{Fault Tolerance} property indicates if the programming model supports fault tolerance.
+The \textit{Implementation Type} property refers to how the programming model is implemented and can help the user to understand how the programming model will be integrated in the development and the deployment of the application.
+The \textit{Data Persistence} property indicates if the task based programming model support data persistence which can be a mandatory feature needed for an application.
+Finally, the \textit{Scheduler Location} property helps the user to understand the scheduling policy of the task based programming model schedulers.
+
 \subsubsection{Dependency Expression}
 This property describes how the dependencies between the tasks are represented in the considered model.
 The possibilities include a \textit{graph}, a \textit{directed acyclic graph} or DAG, a \textit{tree} and a \textit{Petri Net}.
@@ -421,23 +452,46 @@ In our experiments, we used task based programming models that use both type of 
 %\subsection{Communicativeness}
 
 \section{Taxonomy Summary}
+In this section, we present a summary for the features presented in each category as well as the expression of these features so that it is easier to compare the features of the different task based programming models.
+
+Table \ref{tab:taxo:sum_cat2} summarizes the \textit{Task Capabilities} category.
+In this category, we introduced the \textit{Task Granularity} which can take the values Sequential tasks (s) as well as parallel and distributed tasks (p).
+We also indicated if the programming models support \textit{Nested Tasks}.
+The values for the property \textit{Task Implementation} are Dedicated Language (dl), Function Pointer (fp), Program (pgm), Pragma (p) and Code Encapsulation (ce).
+We detailed if the \textit{Heterogeneity} is implicit (i) or explicit (e).
+We explained the memory \textit{Architecture} values which are Distributed Memory (d) and Shared Memory (s).
+We introduced the \textit{Data Handling} that can be a direct access (d) or made through a request to the data management system (c).
+Withe the \textit{Portability Accelerators} property, we gave the technology that can be used to address accelerators with the task based programming models.
+
+Table \ref{tab:taxo:sum_cat1} summarizes the \textit{Task and Data Management} category.
+We gave the \textit{Dependency Type} used to express the dependencies between the tasks which are data (d), control (c) or both (b).
+We also indicated if the task based programming models support \textit{Task Insertion}.
+We described \textit{Data Distribution}, \textit{Worker Management} and \textit{Task Binding} properties which values are implicit (i) or explicit (e).
+
+Table \ref{tab:taxo:sum_cat3} summarizes the \textit{Programming Model Features} category.
+We indicated if the task based programming models support \textit{Fault Tolerance} and \textit{Data Persistence}.
+We explained which structure holds the dependencies between the tasks in \textit{Dependency Expression}.
+We detailed which \textit{Communication Model} is used.
+The values can be Global Address Space (gas), Shared Memory (sm), File System (fs) and Message Passing (msg).
+We also introduced the \textit{Implementation Type} of the task based programming models which can be a language (lang), a runtime system (rt), a library (lib) and a language extension (ext).
+We gave the \textit{Scheduler Location} which can be external (e), distributed (d) or centralized (c).
 
 \begin{table}[H]
-	\caption{Taxonomy I}
-	\centering
-	\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
-	\input{chapters/taxonomy/_table_taxo_cat1.tex}
-\end{table}
-
-\begin{table}[H]
-	\caption{Taxonomy II}
+	\caption{Task Capabilities Summary \label{tab:taxo:sum_cat2}}
 	\centering
 	\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
 	\input{chapters/taxonomy/_table_taxo_cat2.tex}
 \end{table}
 
 \begin{table}[H]
-	\caption{Taxonomy III}
+	\caption{Task and Data Management Summary \label{tab:taxo:sum_cat1}}
+	\centering
+	\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+	\input{chapters/taxonomy/_table_taxo_cat1.tex}
+\end{table}
+
+\begin{table}[H]
+	\caption{Programming Model Features Summary \label{tab:taxo:sum_cat3}}
 	\centering
 	\input{chapters/taxonomy/_table_taxo_cat3.tex}
 \end{table}
