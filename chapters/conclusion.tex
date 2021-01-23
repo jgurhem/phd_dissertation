@@ -1,5 +1,5 @@
 \chapter{Conclusion and Perspectives \label{chap:ccl}}
-\section{Synthesis}
+\section{Conclusion}
 
 % chap 2
 First, we introduced the High Performance Computing (HPC) time line as well as most of the task based programming models used by the HPC community.
@@ -14,7 +14,7 @@ In particular, we explained the compressed sparse row (CSR), Ellpack (ELL) and c
 The last method is the Kirchhoff seismic pre-stack depth migration which is commonly used in geoscience and by Total to study the underground.
 
 % chap 4
-Thereafter, we described several task based programming models in greater details.
+Thereafter, we described several task based programming models in greater details as our first contribution.
 In this study, we are interested in task based programming models working on distributed memory.
 we split them into two categories : fine grain task-based distributed and parallel programming models in which tasks are executed on one thread or process and task-based distributed and parallel programming models in which tasks are executed on multiple processes or nodes.
 For the first category, we selected Regent, Legion, HPX, PaRSEC and TensorFlow.
@@ -23,6 +23,7 @@ We highlighted the main features of each programming models studied and how to u
 
 % chap 5
 Then, we introduced our task-based applications to solve dense linear systems and perform the LU factorization.
+These applications are part of our second contribution.
 We introduced three block based direct methods to solve dense linear systems : the block Gaussian elimination, the block Gauss-Jordan elimination and the LU factorization.
 We implemented the solution to dense linear systems in YML+XMP, XMP, MPI and ScaLAPACK whereas the LU factorization application was also implemented with HPX, Regent and PaRSEC.
 We performed experiments on the K Computer with YML+XMP and XMP.
@@ -36,6 +37,7 @@ YML+XMP execution times are higher than the other task based programming models 
 
 % chap 6
 Subsequently, we described our sparse matrix vector product based application with its 2D block decomposition used to store our matrices in which each block is a sparse matrix compressed with a sparse storage format.
+This application is also included in our second contribution.
 We analyzed, evaluated and experimented the sparse operation $A(Ax+x)$ using HPX, YML+XMP and MPI.
 The applications are implemented on top of a common kernel that performs the sparse matrix vector multiplication on matrices stored in CSR, ELL, COO and SCOO sparse classical storage formats.
 We showed that the CSR sparse format storage obtains the best performances in most of the cases and that the COO storage format has better load balancing but requires larger output vector which increases the size of collective operations, therefore their execution time.
@@ -49,14 +51,18 @@ The current task-based programming model schedulers lack the capability to compl
 % chap 7
 Thereupon, we introduced task based algorithms for the Kirchhoff seismic pre-stack depth migration and the parallelism intrinsic to the method.
 Then, we presented and implemented a simplified 2D version of the Kirchhoff seismic pre-stack depth migration with HPX, MPI and MPI+OpenMP.
+This application is the last part of our second contribution.
 We used these applications to perform strong scaling and weak scaling experiments as well as study the influence of the number of OpenMP threads on our kernel.
 We showed that our HPX application does not scale very well both in term of weak and strong scaling compared to our MPI application.
 We deduced that there were migrations of the images and the traces across the nodes which reduced the performances.
 We also showed that our addition of OpenMP directives in the kernel did not bring as good performances as our pure MPI application.
 
 % chap 8
-Finally, we resume the key features that we were able to extract from the experiments and studies performed.
-We also show how they are expressed in the different task based programming models.
+Finally, we summarized the key features that we were able to extract from the experiments and studies performed.
+We also showed how they are expressed in the different task based programming models.
+Then we used these data to form a taxonomy of the task based programming models.
+We also provided recommendations to improve task based programming models and their usage.
+These are our third contribution.
 
 \section{Future Research}
 
