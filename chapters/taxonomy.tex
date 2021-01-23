@@ -496,7 +496,78 @@ We gave the \textit{Scheduler Location} which can be external (e), distributed (
 	\input{chapters/taxonomy/_table_taxo_cat3.tex}
 \end{table}
 
+We summarized the different features and values we introduced in this taxonomy.
+Now, we can propose recommendations for implementing task based applications and improving task based programming models.
 
-\section{Language Properties Relevant for Task-Based Programming}
+\section{Analyze and Recommendations}
+In this section, we will provide recommendations for implementing task based applications and improving task based programming models.
+We introduce them by importance order.
+We start with those we believe are the more important.
 
-\section{Languages Extension}
+\subsection{Adapted Programming Model to Algorithm Granularity}
+Choosing the right granularity for tasks is an important parameter to obtain optimal performances with task based programming models.
+Moreover, the number of tasks is also important to get optimal performances since too much tasks induces a large scheduling and task launching overhead whereas not enough tasks does not expose enough parallelism nor computations to take advantage of all the computing resources available which is sub-optimal.
+Thus, an compromise between the number of tasks executed and the granularity of the tasks is mandatory as we experienced on the K Computer in Chapter \ref{chap:exp_dense}.
+Besides, the granularity also depends on the cluster or supercomputer used to execute the applications due to the difference of core performances.
+Thus, the compromise has to be found for each different architecture.
+
+\subsection{Data Migrations}
+As data migrations are costing more time and energy due to the larger networks, it is mandatory to favor programming models optimizing them in order to reduce their usage while still obtaining good performances.
+In order to do so, tasks based programming models require the data and control dependencies between the tasks to be able to optimize the computations placement on the computing resources as well as the data migrations.
+Data migrations comprise communications between nodes, data copy between caches, offloading to accelerators and IOs with the file system.
+An efficient scheduler could favor data locality and cache reuse depending on the granularity of the tasks.
+
+
+\subsection{Encapsulated Tasks}
+As we try to reduce the communications between the nodes of the clusters and supercomputers in order to improve performances, it is not advised to make let the tasks make communications during their executions.
+The only data transfer that should happen in tasks are during their initialization with their input parameters and during their finalization with the output parameters.
+Note that parameters could be inputs and outputs.
+In this case, the are modified by the tasks and the programming model should be able to manage such cases.
+This way, the communications and the parameters of the tasks can be managed efficiently by the task based programming model schedulers.
+
+\subsection{Dependencies Expression}
+The dependencies should be expressed as a graph or an equivalent.
+It is not mandatory to explicitly be a graph.
+However, under the format of a graph, it may be possible to use graph exploration methods in order to optimize the data distribution and the computations placement so that the communications are minimal and the maximum of computations can run at the same time.
+For instance, YML multidimensional arrays of event used to represent dependencies can be transformed into graphs then used to optimize execution of the tasks and the data migrations.
+With graphs, even irregular dependencies can be expressed which may no be the case with other dependencies representations.
+
+\subsection{Dynamical Task Scheduling}
+With dynamical scheduling, it is possible to introduce conditional branchings in the graph of dependencies.
+For instance, this could be used to stop iterative methods expressed with graphs of tasks when they reach their stopping conditions.
+Dynamical graphs for tasks execution in YML+XMP were introduced in \cite{Wu2019}.
+
+
+\subsection{High Level Languages}
+Although pragmas are a fast solution to implement task based applications, in practice, only task based programming models working on shared memory choose this approach such as OpenMP which is based on directives and OmPSs which is an extension of OpenMP.
+Higher level programming models are suitable to express complex dependencies and give task related informations.
+For instance, Kokkos is a high level library that also provides a tasking interface.
+
+\subsection{Fault Tolerance}
+With the increase of the usage of computing resources for the execution of an application, the probability of a failure appearing has increased.
+Indeed, even if the probability of a failure on a given computing resource is low, the large amount of computing resources used means that the probability of a failure occurring on one of the computing resource is higher.
+Therefore, fault tolerance is an important feature to manage the increasing probability of a failure occurring.
+Moreover, fault tolerance can be integrated in schedulers since most of the failures should happen during tasks execution.
+
+If a task fails, it can be re-scheduled and executed on another resource.
+If it still fails, it is probably an error in the task then the application should stop.
+If tasks are regularly failing on a computing resource and are working fine on other computing resources, it means that there is a problem with this computing resource and it should be excluded from the list of available resources.
+
+In case of missing data, the scheduler could re-execute previously executed task in order to rebuild the missing data from the data still available to the scheduler or stop the application if the missing data cannot be recovered.
+Check-pointing can be a solution to save critical data regularly and rebuild missing data if necessary.
+
+\subsection{Check-Pointing}
+There is only few programming models that provide check-pointing.
+Usually, it is done via external and dedicated tools.
+A scheduler could be implemented to regularly save the output of tasks.
+Then the scheduler could re-start the application and continue executing task from the last saved task parameters.
+In conjunction with fault tolerance, check-pointing could allow the recovery of data lost during computing resources failures and the success of the application even with critical resource failures.
+
+\subsection{Multi-Level Programming}
+Multi-level programming can be an interesting solution to express very efficient applications.
+Indeed, it could be possible to express large grain tasks with high level task based programming models and use parallel and distributed tasks.
+Then these tasks could be implemented with lower level programming models that are very efficient with medium sized applications.
+For instance, YML+XMP+StarPU is such an example.
+YML was used to express large grain task and dependencies.
+Parallel and distributed tasks were implemented with XMP and small grain computations at the level of the processes were managed by StarPU.
+Another possibility is to implement large grain tasks as a smaller grain task based application.
