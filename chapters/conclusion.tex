@@ -106,3 +106,9 @@ Improving the YML+XMP dense matrix type can also be considered since it would al
 
 A possible amelioration to task based programming models is to improve the capabilities of the schedulers in terms of memory management and task scheduling in order to avoid the data migrations and fit data in the available memory of the nodes.
 Implementing efficient task based collective operations will also help to improve performances of task based programming models.
+
+Fault tolerance can also be integrated in task based programming models in order to restart failed tasks.
+The scheduler could try to determine if the failure comes from the task implementation by trying to restart the failed tasks on other resources or if the failure comes from the hardware by checking if the workers that execute tasks are still functioning.
+
+Check-pointing is also an interesting feature that could be integrated into task based programming models.
+The scheduler could add tasks to save data regularly in oder to restart the application on a given snapshot.
