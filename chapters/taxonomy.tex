@@ -571,3 +571,22 @@ For instance, YML+XMP+StarPU is such an example.
 YML was used to express large grain task and dependencies.
 Parallel and distributed tasks were implemented with XMP and small grain computations at the level of the processes were managed by StarPU.
 Another possibility is to implement large grain tasks as a smaller grain task based application.
+
+\subsection{Collective Operations}
+Collective operations are the equivalent to collective communications defined in MPI such as all-to-all, one-to-all or all-to-one communications for task based applications.
+Collective communications include reductions, gathers and scatters.
+They exist in an one-to-all version as well as an all-to-all version depending on where the results are expected to be sent.
+Such operations on task outputs do not exist natively in most of the task based programming models.
+Therefore, efficiently implementing such task operations can help to obtain better performances when these operations are needed, for instance, in the task based sparse matrix vector product implemented in Chapter \ref{chap:exp_sparse}.
+
+A possible implementation for a reduction could be implemented as high level operation that takes an array of task output dependencies and a reduction operation that will be performed on the data such as a sum, a multiplication or a maximum.
+The reduction operation has to be provided by the user for custom types defined by the user.
+It corresponds to the task performed on two data to reduce it.
+It also should return the result of the reduction operation.
+Then, the results can be reused as input for other tasks.
+This high level reduction could create a dependency graph to efficiently perform the reduction operation with every data dependency provided.
+Afterwards, the scheduler can schedule and execute tasks according to the generated dependencies and the provided reduction operation.
+
+Furthermore, other collective operations could be implemented following this process.
+They could be reused efficiently multiple times in an application.
+Moreover, they could be efficiently implemented and even improved when possible.
