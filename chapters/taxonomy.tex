@@ -1,8 +1,9 @@
 \chapter{Taxonomy of Task-Based Programming Models}
 \label{chap:taxonomy}
 
-In this chapter, the taxonomy and the properties deduced from the usage of several task based programming models is introduced.
-This taxonomy also presents how each property is expressed in the different tasks programming models.
+In this chapter, the taxonomy and the properties extracted from the usage of several task based programming models is introduced.
+This taxonomy also presents how each property is expressed in the different task based programming models.
+Then, we provide recommendations to improve capabilities and performances of task based programming models.
 
 \section{Taxonomy}
 In this section, we introduce the taxonomy of the task based programming models that is deduced from the studies and experiments.
@@ -554,20 +555,22 @@ If it still fails, it is probably an error in the task then the application shou
 If tasks are regularly failing on a computing resource and are working fine on other computing resources, it means that there is a problem with this computing resource and it should be excluded from the list of available resources.
 
 In case of missing data, the scheduler could re-execute previously executed task in order to rebuild the missing data from the data still available to the scheduler or stop the application if the missing data cannot be recovered.
+To do so, the scheduler has to keep the input data of a task until the task is finished in order to be able to relaunch the task to recompute the missing data.
 Check-pointing can be a solution to save critical data regularly and rebuild missing data if necessary.
 
 \subsection{Check-Pointing}
-There is only few programming models that provide check-pointing.
+There is only few programming models that provide check-pointing but extending task based programming models to support check-pointing is possible.
 Usually, it is done via external and dedicated tools.
-A scheduler could be implemented to regularly save the output of tasks.
+A scheduler could be implemented to regularly save the output of tasks since the expression of tasks and their data input and output is a very helpful base to define and implement check-pointing for task based programming models.
 Then the scheduler could re-start the application and continue executing task from the last saved task parameters.
+The user could also provide information about which data has to be saved and when through the task based programming model API since no task based programming model provide an API that lets the user chose the check-pointing operations.
 In conjunction with fault tolerance, check-pointing could allow the recovery of data lost during computing resources failures and the success of the application even with critical resource failures.
 
 \subsection{Multi-Level Programming}
 Multi-level programming can be an interesting solution to express very efficient applications.
 Indeed, it could be possible to express large grain tasks with high level task based programming models and use parallel and distributed tasks.
 Then these tasks could be implemented with lower level programming models that are very efficient with medium sized applications.
-For instance, YML+XMP+StarPU is such an example.
+For instance, YML+XMP+StarPU, which was used on T2K at Tsukuba, is such an example.
 YML was used to express large grain task and dependencies.
 Parallel and distributed tasks were implemented with XMP and small grain computations at the level of the processes were managed by StarPU.
 Another possibility is to implement large grain tasks as a smaller grain task based application.
