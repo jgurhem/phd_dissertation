@@ -1,9 +1,10 @@
-\chapter{Taxonomy of Task-Based Programming Models}
+\chapter{Taxonomy of Task-Based Programming Models and Recommendations}
 \label{chap:taxonomy}
 
 In this chapter, the taxonomy and the properties extracted from the usage of several task based programming models is introduced.
 This taxonomy also presents how each property is expressed in the different task based programming models.
 Then, we provide recommendations to improve capabilities and performances of task based programming models.
+Finally, we present a methodology for parallel and distributed programming based on graphs of tasks for post-petascale supercomputers.
 
 \section{Taxonomy}
 In this section, we introduce the taxonomy of the task based programming models that is deduced from the studies and experiments.
@@ -594,10 +595,35 @@ Furthermore, other collective operations could be implemented following this pro
 They could be reused efficiently multiple times in an application.
 Moreover, they could be efficiently implemented and even improved when possible.
 
+\section{Preliminary Methodology for Post-Petascale Programming}
+The recommendations provided in the previous section allow to make a preliminary methodology for task based parallel and distributed programming which optimizes data migrations and computations for post-petascale supercomputers.
+The programming introduced in this methodology is based on efficient schedulers and file systems.
+To begin with, the user has to chose an adapted granularity for the tasks.
+The tasks are executed by the scheduler while optimizing computations placement and data migrations including file system IOs.
+
+The tasks have to perform enough computations in order to recoup the scheduling cost of the tasks while expressing enough parallelism and tasks to execute in order to keep busy the avail computing resources.
+Tasks could also be implemented with multi-level programming in which large grain parallel and distributed tasks could be implemented with graphs of finer grain tasks.
+Task based programming models working only on shared memory cannot be directly used to implement applications for post-petascale supercomputers since they are built with a large amount of node with distributed memory.
+However, they can be used to implement large scale tasks that can be executed on one node.
+
+This would require a high level and multi-level task based programming model to implement such applications.
+These programming models would also be used to express tasks and data dependencies as well as provide task implementations.
+They could also be used to allow the user to provide semantic information that would help the scheduler to improve its performances.
+These informations could also include data that the users want to see regularly saved through check-pointing.
+Furthermore, task based programming models should provide fault tolerance and check-pointing features in order to ensure data safety and complete execution of the application.
+These are important features for post-petascale supercomputers since the probability of a failure occurring is increasing due the large amount of resources used to execute an application.
+
+Moreover, graph of task dependencies should be dynamic to support conditional branchings in dependencies in order to increase the expressiveness of the task based programming models.
+Tasks should be encapsulated and should not be allowed to perform communications by themselves.
+The data transfers between the tasks should be efficiently scheduled by the task based programming model schedulers in order to minimize data migrations between nodes.
+Then, the tasks should only receive data through their input parameters and return their results through their output parameters.
+The encapsulation of tasks could also avoid blocking communications performed by the user during the execution of the task that would make the task waiting for data that will only be available when the other task concerned by the communication is executed.
+
 \section{Synthesis and Perspectives}
 In this chapter, we introduced the features that we believe interesting for task based programming models and how they are expressed in the different task based programming models studied in this dissertation.
 We divided the features into three categories : \textit{Task Capabilities} which contains the features related to the abilities of the tasks, the \textit{Task and Data Management} which contains the features related to the scheduling properties of the tasks and data migrations as well as \textit{Programming Model Features} in which we present capabilities of the programming models.
 Then, we provided recommendations to improve the task based programming models according to the features they possess and the features we believe task based programming should have in order to increase their capabilities and performances.
+Finally, we proposed a preliminary methodology for parallel and distributed programming based on graphs of tasks which optimizes data migrations and computations scheduling.
 
 To go further, more features and their values for each task based programming models could be added in the taxonomy.
 Furthermore, the recommendations could be integrated into some of the existing task based programming models and make experiments with the additions to show their efficiency.
