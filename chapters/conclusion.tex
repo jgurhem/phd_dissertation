@@ -108,9 +108,10 @@ However, they are less suitable for fork-join based applications which rely on s
 Furthermore, we outlined that task based programming models have great potential for optimizing computation placement and data migrations including file system IOs as well as managing fault tolerance and check-pointing with an efficient scheduler.
 With the appearance of more efficient scheduler that are adapted to the post-petascale supercomputer used and the integration of our recommendations, programming models based on a graph of task could become a very efficient tool to implement scientific applications on post-petascale supercomputers such as linear algebra applications or geoscience applications for Total.
 
-\section{Future Research}
+\section{Future Researches}
 
-This work could be completed with applications implemented with other task based programming models such as X10, Chapel, Uintah or Charm++ in order to explore their capabilities to solve such problem.
+This work could be completed with applications implemented and experiments performed with Pegasus since it is very suitable with our methodology.
+Moreover, applications could be implemented with other task based programming models such as X10, Chapel, Uintah or Charm++ in order to explore their capabilities to solve such problem.
 These experiments could also be reproduced on other cluster or supercomputers.
 Our task based Kirchhoff seismic pre-stack depth migration could be improved to be closer to what is done in practice as well as include IOs tasks to test the ability of the task based programming models to schedule such tasks.
 
