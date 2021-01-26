@@ -178,7 +178,7 @@ They are the fundamental abstraction used to describe data in Legion application
 Logical regions can be partitioned into sub-regions and data structures can be encoded in logical regions to express locality describing data independence.
 
 A Legion program executes as a tree of tasks spawning sub-tasks recursively.
-Each tasks specifies the logical region they will access.
+Each task specifies the logical region they will access.
 With the understanding of the data and their use, Legion can extract parallelism and find the data movement related to the specified data properties.
 Legion also provides a mapping interface to control the mapping of the tasks and the data on the processors during the execution of the application.
 
@@ -1125,7 +1125,7 @@ Finally, containers can be used to replicate software stack and application deve
 % chapter transition
 \paragraph{}
 We introduced several task based programming models and how to use them to implement task, define dependencies, register distributed data and how to execute the graph of tasks.
-This classification and the informations on how to use the programming models to define tasks, express dependencies as well as register data are a contribution of this dissertation.
+This classification and the information on how to use the programming models to define tasks, express dependencies as well as register data are a contribution of this dissertation.
 We also selected YML+XMP, PaRSEC and HPX to implement out applications and make out experiments.
 These programming models will be used in the following chapter to experiment on dense linear algebra on petascale supercomputers.
 We will discuss our numerical experiments with the LU factorization and the solution of dense linear systems.

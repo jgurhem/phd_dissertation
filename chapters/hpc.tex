@@ -229,7 +229,7 @@ They are the fundamental abstraction used to describe data in Legion application
 Logical regions can be partitioned into sub-regions and data structures can be encoded in logical regions to express locality describing data independence.
 
 A Legion program is executed as a tree of tasks spawning sub-tasks recursively.
-Each tasks specifies the logical region they will access.
+Each task specifies the logical region they will access.
 With the understanding of the data and their use, Legion can extract parallelism and find the data movement related to the specified data properties.
 Legion also provides a mapping interface to control the mapping of the tasks and the data on the processors during the execution of the application.
 
@@ -387,7 +387,7 @@ Pegasus also keeps track of what has been done, where, which software was used a
 The upcoming exascale supercomputers are raising both hardware and software challenges.
 On one side, computing power is now achieved with the multiplication of computing resources.
 This leads to highly hierarchical supercomputer with hundreds of high level computing nodes which are made of several multi-core processors and eventually one or more accelerators.
-In each node, there are also several levels of memory with the RAM and the different cache level of each processors and accelerators.
+In each node, there are also several levels of memory with the RAM and the different cache level of each processor and accelerator.
 These machines tend to be both massively parallel with the large amount of diverse cores available and massively distributed with their multiple memory levels only accessible directly by a few cores whereas the local memory can be remotely accessed through data communications.
 Furthermore, there is the network connecting the nodes between themselves.
 Each node cannot be directly connected to all the others since it would be very costly with the large amount of computing nodes available in the supercomputers.

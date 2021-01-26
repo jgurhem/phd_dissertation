@@ -21,7 +21,7 @@ They include task features that we believe interesting in the choice of a task b
 The \textit{Task Granularity} can help to understand the scale and the amount of computations of the tasks.
 The memory \textit{Architecture} is also a metric that help to understand the scale at which the task based programming models can be used to implement an application.
 The \textit{Heterogeneity} and the \textit{Portability Accelerator} help to understand if the task can be executed on different accelerators with the same implementation and on which type of accelerators.
-These informations are critical depending on the cluster or supercomputers architectures targeted.
+This information is critical depending on the cluster or supercomputers architectures targeted.
 The \textit{Task Implementation} represents the interface available to user to implement the tasks and the kind of effort needed to port an existing kernel application into a task.
 Finally, the \textit{Data Handling} shows how the data are accessed from the tasks and can help to understand the effort necessary to use and perform operations on the data in the tasks.
 
@@ -200,15 +200,15 @@ The \textit{Task Insertion} indicates if the scheduler is capable of adding new 
 
 \subsubsection{Dependency Type}
 This property describes how the dependencies between the tasks are provided by the user of the task based programming models.
-This means that depending on the provided informations (in task description, in particular), the scheduler can deduce other dependency types.
-For instance, the control dependency graph combined with the informations on the use of the data parameters provided to the task could allow the scheduler to deduce the data dependency graph.
-Therefore, the user has to provide the required informations so that the scheduler is able to work properly.
+This means that depending on the provided information (in task description, in particular), the scheduler can deduce other dependency types.
+For instance, the control dependency graph combined with the information on the use of the data parameters provided to the task could allow the scheduler to deduce the data dependency graph.
+Therefore, the user has to provide the required information so that the scheduler is able to work properly.
 
 The user may have to provide \textit{control} dependencies between the tasks.
 They describe in which order the tasks can be executed and which tasks can be executed at the time.
 \textit{Data} dependencies can also be provided.
 This approach is used to infer the dependencies and the parallelism between the tasks by studying how the data are used by the tasks and how they flow from one task to the other.
-The user may have to provide \textit{both} dependency type although it is possible to convert a dependency graph type into the other with the appropriate informations.
+The user may have to provide \textit{both} dependency type although it is possible to convert a dependency graph type into the other with the appropriate information.
 
 In Table \ref{tab:taxo:prop_dependency_type}, the dependency type used to describe the dependencies between the tasks in task based programming models is introduced.
 In our experiments, we used data oriented such as HPX and control oriented dependency programming models such as YML+XMP.
@@ -318,7 +318,7 @@ The possibilities include a \textit{graph}, a \textit{directed acyclic graph} or
 
 In Table \ref{tab:taxo:prop_dependency_expression}, how the dependency are expressed in each task based programming model is detailed.
 The difference between graph and DAG is not always clear in the implementations of the task based programming models.
-In this table, we recorded the informations we found in papers introducing the task based programming models.
+In this table, we recorded the information we found in papers introducing the task based programming models.
 
 \begin{table}[H]
 	\caption{Dependency Expression property for each task based programming model \label{tab:taxo:prop_dependency_expression}}
@@ -543,7 +543,7 @@ Dynamical graphs for tasks execution in YML+XMP were introduced in \cite{Wu2019}
 
 \subsection{High Level Languages}
 Although pragmas are a fast solution to implement task based applications, in practice, only task based programming models working on shared memory choose this approach such as OpenMP which is based on directives and OmPSs which is an extension of OpenMP.
-Higher level programming models are suitable to express complex dependencies and give task related informations.
+Higher level programming models are suitable to express complex dependencies and give task related information.
 For instance, Kokkos is a high level library that also provides a tasking interface.
 
 \subsection{Fault Tolerance}
@@ -610,7 +610,7 @@ However, they can be used to implement large scale tasks that can be executed on
 This would require a high level and multi-level task based programming model to implement such applications.
 These programming models would also be used to express tasks and data dependencies as well as provide task implementations.
 They could also be used to allow the user to provide semantic information that would help the scheduler to improve its performances.
-These informations could also include data that the users want to see regularly saved through check-pointing.
+This information could also include data that the users want to see regularly saved through check-pointing.
 Furthermore, task based programming models should provide fault tolerance and check-pointing features in order to ensure data safety and complete execution of the application.
 These are important features for post-petascale supercomputers since the probability of a failure occurring is increasing due the large amount of resources used to execute an application.
 
@@ -639,7 +639,7 @@ Nonetheless, with our experiments, taxonomy and recommendations, we can list the
 	Furthermore, the parallel and distributed tasks that can be considered coarse grain could also be implemented with finer grain tasks.
 	This could be made by using task based programming model with sequential tasks that can be executed on one thread or process.
 	\item The task based programming model should allow the user to express data and control dependencies as well as task implementation in order to discover as much parallelism as possible.
-	It also should allow to provide semantic informations about tasks such as placement hints and check-pointing options.
+	It also should allow to provide semantic information about tasks such as placement hints and check-pointing options.
 \end{itemize}
 
 \section{Synthesis and Perspectives}
@@ -648,6 +648,6 @@ We divided the features into three categories : \textit{Task Capabilities} which
 Then, we provided recommendations to improve the task based programming models according to the features they possess and the features we believe task based programming should have in order to increase their capabilities and performances.
 Finally, we proposed a preliminary methodology for parallel and distributed programming based on graphs of tasks which optimizes data migrations and computations scheduling.
 
-To go further, more features and their values for each task based programming models could be added in the taxonomy.
+To go further, more features and their values for each task based programming model could be added in the taxonomy.
 Furthermore, the recommendations could be integrated into some of the existing task based programming models and make experiments with the additions to show their efficiency.
 Another possibility is to implement a new task based programming model showcasing the recommendations as main features.

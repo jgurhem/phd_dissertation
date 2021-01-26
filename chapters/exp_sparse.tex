@@ -146,9 +146,9 @@ This is discussed in Section \ref{sec:sla:task_based_parallel_algorithms}.
 
 Algorithm \ref{alg:sparse:spmv_scoo} defines a data structure to store the sub-matrices stored in the SCOO format in which we expect a given range of coordinates for the values contrary to the COO format.
 It also shows the algorithm to make a matrix vector product on the sub-matrix given the proper input vector.
-The data structure contains the three arrays necessary to store the matrix in the SCOO storage format as well as useful informations about the position of the sub-matrix in the global matrix.
-These informations are the first row (\textit{fr}) and the first column (\textit{fc}) possibles in the sub-matrix (It may not correspond to the actual values stored in the sub-matrix since it corresponds to the lower boundaries of the possible coordinates in the sub-matrix for the algorithm to work properly).
-The algorithm for the SCOO storage format is similar to the algorithm for COO whereas the supplementary informations are used in the algorithm to properly position the output vector.
+The data structure contains the three arrays necessary to store the matrix in the SCOO storage format as well as useful information about the position of the sub-matrix in the global matrix.
+This information is the first row (\textit{fr}) and the first column (\textit{fc}) possibles in the sub-matrix (It may not correspond to the actual values stored in the sub-matrix since it corresponds to the lower boundaries of the possible coordinates in the sub-matrix for the algorithm to work properly).
+The algorithm for the SCOO storage format is similar to the algorithm for COO whereas the supplementary information is used in the algorithm to properly position the output vector.
 In this case, the range of position for the input and output vectors can be computed since the range of coordinates for the values in the SCOO storage format are restricted to the data distributions discussed in Section \ref{sec:sla:data_distribution}.
 Therefore, depending of the data distribution, the input and output vector shapes change.
 
@@ -180,8 +180,8 @@ This is detailed further in Section \ref{sec:sla:task_based_parallel_algorithms}
 
 Algorithm \ref{alg:sparse:spmv_csr} defines a data structure to store the sub-matrices stored in the CSR format in which we expect a given range of coordinates for the values.
 It also shows the algorithm to make a matrix vector product on the sub-matrix given the proper input vector.
-The data structure contains the three arrays necessary to store the matrix in the CSR storage format as well as useful informations about the position of the sub-matrix in the global matrix.
-These informations are the first column (\textit{fc}) possibles in the sub-matrix.
+The data structure contains the three arrays necessary to store the matrix in the CSR storage format as well as useful information about the position of the sub-matrix in the global matrix.
+This information is the first column (\textit{fc}) possibles in the sub-matrix.
 As for the SCOO storage format, the ranges of position for the input and output vectors can be computed.
 
 
@@ -363,7 +363,7 @@ The kernel is also called in HPX tasks to perform the sparse matrix vector produ
 For HPX, there is no particular restrictions on $N_{gr}$ and $N_{gc}$ since there is no obligations to execute tasks on each worker process, even though, these workers could be idling due to the lack of tasks.
 Finally, the kernel is also used in YML+XMP components (tasks) to perform the sparse matrix vector product in each processes allocated to each sparse matrix vector product task.
 Afterwards, the output vector is combined inside the tasks then combined at the level of the graph of tasks.
-Each YML tasks have an allocated number of processes.
+Each YML task has an allocated number of processes.
 Therefore, in order to make sure that each process works on a sub-matrix, the number of sub-matrices ($N_{tr} \times N_{tc}$) in the grid of sub-matrices in the tasks have to match the number of processes allocated to the tasks.
 In our application, each task has the same number of processes allocated, which means that, in order to fill each processes of the tasks, the number of rows (resp. columns) in the division of the global matrix has to match the number of rows (resp. columns) in the division of the matrix in the tasks multiplied by the number of rows (resp. columns) in the division of the matrix at the task level (see Figure \ref{fig:sparse:yml_matrix_div}).
 
