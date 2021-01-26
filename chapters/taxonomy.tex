@@ -620,6 +620,28 @@ The data transfers between the tasks should be efficiently scheduled by the task
 Then, the tasks should only receive data through their input parameters and return their results through their output parameters.
 The encapsulation of tasks could also avoid blocking communications performed by the user during the execution of the task that would make the task waiting for data that will only be available when the other task concerned by the communication is executed.
 
+It is always difficult to propose a methodology to solve such complex problems.
+Nonetheless, with our experiments, taxonomy and recommendations, we can list the main points by order of importance in the following list.
+
+\begin{itemize}
+	\item Use a programming model that provides an adapted scheduler that can optimize data migrations, IOs management and computation placement in order perform the minimum amount of data migrations while using the available computing resources to execute the maximum amount of tasks at the same time.
+	If the selected task based programming model does not provide one, it may be interesting to integrate a more efficient external scheduler or improve the existing one.
+	This can also mean that the selected task based programming model is not suitable enough and that it should be replaced.
+	This scheduler should also support fault tolerance and check-pointing.
+	\item Find an appropriate granularity for tasks.
+	It can be done by finding a compromise between the size of the task and the number of tasks to execute.
+	Indeed, tasks without enough computations will not recover the overhead for schedule them while tasks that are too large means that there is not enough parallelism at the level of the graph of task and that some of the computing resources will not be used.
+	\item Several level of programming should be available, for instance, with a graph of parallel and distributed tasks.
+	This provides at least three levels of programming.
+	The higher level could be the graph of task that performs the high level algorithm.
+	The middle level could be the parallel and distributed task that manages distributed memory or a most a node with shared memory.
+	The low level could be the process or thread that runs computations at the level of the core.
+	Furthermore, the parallel and distributed tasks that can be considered coarse grain could also be implemented with finer grain tasks.
+	This could be made by using task based programming model with sequential tasks that can be executed on one thread or process.
+	\item The task based programming model should allow the user to express data and control dependencies as well as task implementation in order to discover as much parallelism as possible.
+	It also should allow to provide semantic informations about tasks such as placement hints and check-pointing options.
+\end{itemize}
+
 \section{Synthesis and Perspectives}
 In this chapter, we introduced the features that we believe interesting for task based programming models and how they are expressed in the different task based programming models studied in this dissertation.
 We divided the features into three categories : \textit{Task Capabilities} which contains the features related to the abilities of the tasks, the \textit{Task and Data Management} which contains the features related to the scheduling properties of the tasks and data migrations as well as \textit{Programming Model Features} in which we present capabilities of the programming models.
