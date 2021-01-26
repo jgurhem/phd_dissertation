@@ -75,8 +75,10 @@ We also implemented several applications to solve dense linear system, an applic
 Then, we performed experiments with our applications such as strong scaling and weak scaling experiments.
 We had to explore a large amount of parameters including seven different applications (three direct methods to solve linear systems, the LU factorization alone, the sparse matrix vector product with several sparse storage formats and the Kirchhoff seismic pre-stack depth migration) implemented with multiple programming models such as MPI, XMP and several task based programming models.
 Each application had parameters to find to obtain optimal parameters especially the number of tasks and the size of the task for the dense linear applications as well as the data distribution for the sparse applications.
-We installed and performed experiments on two post-petascale computers, PangeII at Total and Jean Zay at IDRIS although we do not have results on Jean Zay and were not able to use the full supercomputer.
-Therefore, we were able to observe the capabilities and performances as well as the shortcomings and limitations of the task based programming models on post-petascale supercomputers.
+We installed and performed experiments on two post-petascale computers, PangeII at Total and Jean Zay at the CNRS National Center of Computation (IDRIS).
+We did not have results on Jean Zay since we did not manage to install the task based programming models and fully deploy our applications before the end of the dissertation writing.
+Moreover, due to exploitation reasons, we were not able to use the complete PangeII supercomputer.
+Nonetheless, we were able to observe the capabilities and performances as well as the shortcomings and limitations of the task based programming models on post-petascale supercomputers.
 We encountered installation and deployment issues while proceeding to the installation of the task based programming models and the deployment of our applications such as missing dependencies that we had to install and incompatibilities with some versions and implementations of compilers.
 We also showed the behavior of these algorithms while implemented with task based programming models.
 The goal was not to make the most efficient parallelization of the algorithms but we tried to obtain the best performances we could.
