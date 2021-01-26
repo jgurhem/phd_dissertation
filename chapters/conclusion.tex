@@ -1,5 +1,8 @@
 \chapter{Conclusion and Perspectives \label{chap:ccl}}
-\section{Synthesis}
+
+We will start by giving an synthesis of the content of this dissertation then we will conclude and suggest perspectives for future research.
+
+\section{Conclusion}
 
 % chap 2
 First, we introduced the High Performance Computing (HPC) time line as well as most of the task based programming models used by the HPC community.
@@ -65,18 +68,18 @@ We also provided recommendations to improve the efficiency and performances of t
 Finally, we presented a methodology for parallel and distributed programming based on graphs of tasks for post-petascale supercomputers.
 These are our third contribution.
 
-\section{Conclusion}
+% ccl
 The purpose of this dissertation was to study and experiment with task based programming models.
 We introduced and explained the usage of several task based programming models.
 We also implemented several applications to solve dense linear system, an application to perform the sparse operation $A(Ax+x)$ based on a common kernel that performs the sparse matrix vector product with several sparse storage formats and a scientific application used by Total to explore the sub-surface, the Kirchhoff seismic pre-stack depth migration.
 Then, we performed experiments with our applications such as strong scaling and weak scaling experiments.
-We were able to observe the capabilities and performances as well as the shortcomings and limitations of the task based programming models.
-We also showed the behavior of these algorithms while implemented with task based programming models.
-The goal was not to make the most efficient parallelization of the algorithms.
-
 We had to explore a large amount of parameters including seven different applications (three direct methods to solve linear systems, the LU factorization alone, the sparse matrix vector product with several sparse storage formats and the Kirchhoff seismic pre-stack depth migration) implemented with multiple programming models such as MPI, XMP and several task based programming models.
 Each application had parameters to find to obtain optimal parameters especially the number of tasks and the size of the task for the dense linear applications as well as the data distribution for the sparse applications.
-We made as much as possible optimizations to obtain the best performances we could.
+We installed and performed experiments on two post-petascale computers, PangeII at Total and Jean Zay at IDRIS although we do not have results on Jean Zay and were not able to use the full supercomputer.
+Therefore, we were able to observe the capabilities and performances as well as the shortcomings and limitations of the task based programming models on post-petascale supercomputers.
+We encountered installation and deployment issues while proceeding to the installation of the task based programming models and the deployment of our applications such as missing dependencies that we had to install and incompatibilities with some versions and implementations of compilers.
+We also showed the behavior of these algorithms while implemented with task based programming models.
+The goal was not to make the most efficient parallelization of the algorithms but we tried to obtain the best performances we could.
 
 We showed that task based programming models are very suitable to solve problems with irregular dependencies such as block dense linear algebra.
 However, to achieve good performances, the user has to find the optimal parameters in term of the number and the granularity of tasks in order to balance overhead from task scheduling and execution with enough parallelism and tasks to fully use the available resources.
@@ -84,7 +87,7 @@ As for algorithm more based on a fork-join process in which computations are per
 This is illustrated by our implementation of the sparse operation $A(Ax+x)$ which needs to combine the output of the first sparse matrix vector through a reduction and/or a gather depending on the decomposition of the sparse matrix.
 We showed that task based programming models do not provide efficient collective operations that can be executed on multiple data coming from tasks.
 That makes algorithm based on fork-join parallelization not suitable for task based programming models without collective operations on a given amount of task outputs.
-Lastly, the current task based programming models support interactions with the file system only by directly implementing IOs in tasks.
+Lastly, the current task based programming models support interactions with the file system only by directly implementing IOs in tasks without having any hint that the task performs IOs.
 This means that the scheduler is not aware that the task performs IOs and cannot schedule it accordingly.
 Therefore, we were not able to make IOs task properly scheduled by the programming model for our Kirchhoff seismic pre-stack depth migration that heavily relies on the file system to load the input data and the Green functions used to approximate the travel time of the recorded sound waves.
 Thus, we generated most of our data during the execution which was not as close to the original application as we would like.
@@ -96,6 +99,12 @@ Besides, we highlighted that task based programming models have great potential 
 The scheduler could also manage fault tolerance due to the possibility of restarting failed tasks on other resources if necessary.
 Moreover, the expression of tasks and data dependencies provides the necessary informations to implement check-pointing.
 Indeed, the task output and the execution informations such as the position in the execution graph could be regularly and efficiently saved during execution in order to let the scheduler relaunch the application at a previous save depending on the available data.
+
+Therefore, task based programming models require a good balance between the number and the granularity of tasks to obtain the best performances but these crucial parameters can only be found by experimenting.
+They are very suitable for applications with irregular dependencies
+However, they are less suitable for fork-join based applications which rely on same computations on split data on multiple computing resources and an operation that combines each output due to the lack of efficient to express and execute such operations (like reductions) with task based programming models.
+Furthermore, we outlined that task based programming models have great potential for optimizing computation placement and data migrations including file system IOs as well as managing fault tolerance and check-pointing with an efficient scheduler.
+With the appearance of more efficient scheduler that are adapted to the post-petascale supercomputer used and the integration of our recommendations, programming models based on a graph of task could become a very efficient tool to implement scientific applications on post-petascale supercomputers such as linear algebra applications or geoscience applications for Total.
 
 \section{Future Research}
 
