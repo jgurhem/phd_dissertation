@@ -3,7 +3,7 @@
 
 The task based programming models used to make experiments in this dissertations have been introduced and selected in the previous chapter.
 In this chapter, we introduce the dependency graphs of the block based dense linear algebra algorithms to solve linear systems previously introduced in Chapter \ref{chap:methods}.
-Afterwards, these graphs are converted into with YML+XMP applications that are used to perform experiments on the K computer.
+Afterwards, these graphs are converted into with YML+XMP applications that are used to perform experiments on the petascale K computer.
 Then, we focus on the block based LU factorization and implement it with YML+XMP, PaRSEC, Regent and HPX due to the fact that implementing the three algorithms to solve linear systems with every task based programming model would have taken too much time and is not the purpose of this dissertation.
 We perform experiments to compare and analyze the performances we obtain with the different task based implementations.
 We also compare the task based implementations to our MPI implementation and ScaLAPACK since MPI is the current library used to implement parallel and distributed applications and ScaLAPACK is a well optimized dense linear algebra library.
@@ -700,7 +700,7 @@ In this chapter, we introduced the dependency graph of three block based algorit
 Then we used the dependency graphs to implement corresponding task based applications with YML+XMP in which dependencies between tasks are expressed with a graph.
 Each task is parallel and distributed and correspond to a operation on sub-matrices in the block algorithms.
 We also implemented a XMP, a MPI and a ScaLAPACK version of these applications.
-Then, we compared the efficiency of the the YML+XMP and XMP applications on the 1024 cores of the K Computer.
+Then, we compared the efficiency of the the YML+XMP and XMP applications on the 1024 cores of the petascale K Computer.
 We showed that XMP is faster than YML+XMP in this case since the overhead from YML does not compensate for direct communications across all the cores in the Gaussian elimination and the LU factorization although it works well for the Gauss-Jordan elimination.
 Therefore, we executed our applications on a larger amount of the K Computer resources.
 We ran the applications with 8096 cores and larger system sizes.
@@ -753,7 +753,7 @@ Improving the YML+XMP dense matrix type can also be considered since it would al
 These experiments could also be reproduced on other cluster or supercomputers.
 Furthermore, we introduced sparse linear algebra methods in Chapter \ref{chap:methods}.
 In the following chapter, the sparse matrix vector product will be implemented with the selected task based programming models.
-Then we will perform numerical experiments on several clusters and supercomputers as well as discuss the results we obtained.
+Then, we will perform numerical experiments on several clusters and petascale supercomputers as well as discuss the results we obtained.
 
 
 %\subsection{ce qui a été fait}
