@@ -126,10 +126,6 @@ The task algorithm is the Algorithm \ref{alg:kirchhoff_task} and the function as
 		Gs = loadPrecomputedGreenFunc(s)\;
 		Gr = loadPrecomputedGreenFunc(r)\;
 		\ForEach{(x, y, z) sub-block of the coarse grid CG}{
-			r = extractR(t)\;
-			s = extractS(t)\;
-			Gs = loadPrecomputedGreenFunc(s)\;
-			Gr = loadPrecomputedGreenFunc(r)\;
 			CG(x, y, z).TS(s) = computeTravelTimeFromGreenFunc(Gs, x, y, z)\;
 			CG(x, y, z).TR(r) = computeTravelTimeFromGreenFunc(Gr, x, y, z)\;
 			CG(x, y, z).A(s,r) = computeAmplitude(s, r, x, y, z)\;
