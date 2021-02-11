@@ -265,8 +265,24 @@ We study the performances improvement of the migration while the number of nodes
 
 Figure \ref{fig:km:pangea2_ss} shows the results of our strong scaling experiments on the Kirchhoff seismic pre-stack depth migration for a image of size of 15000 $\times$ 15000 and 10 traces.
 HPX execution times are increasing with the increase of computing resources which should not be the case.
-This may be due to the internal management of the memory in HPX as we have to convert the C data structures in C++ data structures that HPX can work with since the applications use the same kernel to perform the computations but the performances are different than MPI's.
+
+The MPI and HPX applications use the same kernel on the same division of the data to perform the computations but the performances are different than MPI's.
+This may be due to the internal management of the memory in HPX as we have to convert the C data structures in C++ data structures that HPX can work with.
+Indeed, HPX can only migrate data structures that satisfies its requirement in order to be able to send them between nodes.
+However, the plain C pointers and data structures used to hold the data for our C kernel are not recognized by HPX.
+Therefore, we had to wrap our C data structures into C++ data structures that HPX can migrate.
+While doing so, we may have also introduced memory management issues that arise with the new C++ data structures and HPX data management system.
+
 Moreover, HPX may induce image migration between nodes that are not necessary.
+HPX assigns data to a locality which represents a physical node.
+A trace may be assigned to a different location than the one of the image on which the trace will be migrated.
+At this moment, either the image or the trace has to be migrated to compute the new image.
+The image is larger than the trace so if the image is transfered between the nodes, it is not efficient.
+Besides, the traces can be used on several sub-images at the same time.
+This one-to-many dependency may not be properly understood by HPX, especially in the case where the data could be duplicated to run tasks on multiple instances of the data at the same time.
+In this case, the one-to-many dependencies between the trace and the sub-image could be transformed by HPX into a sequence of tasks processing sub-images one by one instead of processing them at the same time.
+It could restrict the execution flow of the tasks and reduce the performances.
+
 MPI+OpenMP has issues when scaling from 2 to 4 nodes but scales well from 4 to 8.
 It has performances close to MPI, especially for 8 nodes.
 MPI has the best performances and also scales well.
@@ -300,6 +316,7 @@ The MPI application has a weak scaling almost perfect.
 Experimentations on the MPI+OpenMP Kirchhoff seismic pre-stack depth migration application with different number of OpenMP threads allocated to the application have been performed for an image of 15000 $\times$ 15000 points.
 On one hand, we used only one process and changed the number of OpenMP threads allocated to the application until all the cores of the node are used.
 On the other hand, we used all the cores of the node but we changed the number of processes allocated to the MPI+OpenMP as well as the number of OpenMP threads allocated per process in order to keep one thread per core.
+We test the performances of our migration kernel with the addition of the OpenMP directives.
 
 \begin{table}[H]
 	\centering
@@ -307,9 +324,10 @@ On the other hand, we used all the cores of the node but we changed the number o
 	\caption{Execution time for a pure OpenMP application while increasing the number of OpenMP threads allocated to the application for a 15000 $\times$ 15000 point image on Pangea II. \label{tab:km:omp_testp1}}
 \end{table}
 
-Table \ref{tab:km:omp_testp1} shows the execution times depending on the number of threads allocated to the pure OpenMP application on one node of Pangea II.
-We can see that the execution time does not change while increasing the number of threads except for 24 threads where it is very high.
-This shows that the OpenMP directives introduced in the kernel does not produce multi-threaded code that takes advantage of the available cores.
+Table \ref{tab:km:omp_testp1} shows the execution times of the kernel depending on the number of threads allocated to the pure OpenMP application on one node of Pangea II.
+We can see that the execution time does not change much while increasing the number of threads except for 24 threads where it is very high.
+The execution time should decrease with the increase of parallel resources to solve the same problem.
+This shows that our OpenMP implementation of the migration kernel is not efficient enough to take advantage of the available cores.
 
 \begin{table}[H]
 	\centering
@@ -324,10 +342,18 @@ There is also two unexpected values ; for 4 processes with 6 threads per process
 These values does not line up with the rest.
 Especially the value for 12 processes with 2 threads per process that should reasonably be between the value for 6 and 24 processes.
 
+The migration kernel has to make interpolation of the wave travel time from the receiver and the source to reach the considered point.
+This interpolation accesses the array containing the propagation times to perform the interpolation at the coordinates of the point.
+These accesses may be difficult to predict for the compiler thus the OpenMP runtime is not able to efficiently divide and parallelize the loops during the iteration over the image points while computing the interpolation of the travel times at the point.
+Thus, our implementation of the kernel of the kernel may not be written in a suitable way for the compiler and the OpenMP runtime to efficiently parallelize it.
+Therefore, using a pure MPI implementation avoid this problem by splitting the image and the propagation times beforehand at the process level.
+Then, the kernel is executed on each sub-image without the necessity to try to efficiently parallelize the loops iterating over the points to perform the interpolations since they are already split before calling the kernel.
+
 In conclusion of our scaling experiments on the implementations of the Kirchhoff seismic pre-stack depth migration, our HPX application does not scale very well both in term of weak and strong scaling compared to our MPI application.
 In the MPI application, the location of each piece of data can be exactly controlled and there are no communications during the migration.
 On the contrary, the data migrations in our HPX application are up to the runtime of the programming model.
 Therefore, there may be migration of the images and the traces across the nodes which reduce the performances.
+Besides, the one-to-many dependencies between a trace and the sub-images may be expressed sequentially in HPX instead of in parallel which could restrict the execution and reduce the performances.
 Moreover, there is a conversion between the C data structures used in the C kernel and the C++ data structure used in HPX that may also decrease the performances of the application since the data are not converted in the C based MPI application.
 Finally, the introduction of OpenMP directives in the kernel is not successful since the performances are not improved with an hybrid MPI+OpenMP implementation compared to a pure MPI implementation.
 
