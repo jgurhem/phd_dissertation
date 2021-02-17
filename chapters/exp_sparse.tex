@@ -297,12 +297,12 @@ In this case, the reconstruction of the full output vector is made by summing al
 			Rl[i, j] = SPMV(M[i, j], V[j])\;
 		}
 	}
-	\ParFor{j \KwFrom 0 \KwTo $Ngc - 1$}{
-		V[j] = SUM(Rl[i, 0 : $Ngc - 1$])\;
+	\ParFor{i \KwFrom 0 \KwTo $Ngr - 1$}{
+		Rs[i] = SUM(Rl[i, 0 : $Ngc - 1$])\;
 	}
 	\;
 	\If{dataRelocation}{
-		Vm = MERGE(R[0 : $Ngr - 1$])\;
+		Rg = MERGE(Rs[0 : $Ngr - 1$])\;
 	}
 \end{algorithm}
 
@@ -323,7 +323,7 @@ In this case, the reconstruction of the full output vector is made by summing al
 		Rl[i, j] = SPMV(M[i, j], V[j])\;
 	}
 	\;
-	V = SUM(Rl[0 : $N - 1$])\;
+	Rg = SUM(Rl[0 : $N - 1$])\;
 \end{algorithm}
 
 Algorithm \ref{alg:sparse:task_spmv_COO} performs the matrix vector product on the global matrix when it is distributed as a non restricted and split COO sparse storage format.
