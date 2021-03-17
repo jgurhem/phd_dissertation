@@ -1,0 +1,6 @@
+[submodule "python/PJR_TBSLA"]
+	path = python/PJR_TBSLA
+	url = git@github.com:jgurhem/PJR_TBSLA.git
+[submodule "python/Graph_Generator"]
+	path = python/Graph_Generator
+	url = git@github.com:jgurhem/Graph_Generator.git
